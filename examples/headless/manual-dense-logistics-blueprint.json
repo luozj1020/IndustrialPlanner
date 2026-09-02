@@ -1,0 +1,1812 @@
+{
+  "schemaVersion": 1,
+  "blueprintId": "manual-dense-logistics-v1",
+  "version": "v1.3.0",
+  "name": "Manual full-speed triple dense originium layout",
+  "description": "Equipment and every belt route are hand-authored. Moss powder uses three independent 30/min lanes; no automatic pathfinder is used.",
+  "baseId": "wuling_protocol_core",
+  "initialGridPoint": {
+    "x": 0,
+    "y": 0
+  },
+  "entities": {
+    "cycle-moss-planter-1": {
+      "id": "cycle-moss-planter-1",
+      "definitionId": "item_port_planter_1",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "rotation": 90,
+      "config": {
+        "channelRecipes": {
+          "default": "r_planter_moss_from_moss_seed_basic"
+        }
+      },
+      "tags": [
+        "headless-optimized",
+        "layout:production",
+        "recipe:r_planter_moss_from_moss_seed_basic"
+      ]
+    },
+    "cycle-moss-seed-collector-1": {
+      "id": "cycle-moss-seed-collector-1",
+      "definitionId": "item_port_seedcol_1",
+      "position": {
+        "x": 0,
+        "y": 6
+      },
+      "rotation": 270,
+      "config": {
+        "channelRecipes": {
+          "default": "r_seedcol_moss_seed_from_moss_basic"
+        }
+      },
+      "tags": [
+        "headless-optimized",
+        "layout:production",
+        "recipe:r_seedcol_moss_seed_from_moss_basic"
+      ]
+    },
+    "cycle-moss-planter-2": {
+      "id": "cycle-moss-planter-2",
+      "definitionId": "item_port_planter_1",
+      "position": {
+        "x": 0,
+        "y": 12
+      },
+      "rotation": 90,
+      "config": {
+        "channelRecipes": {
+          "default": "r_planter_moss_from_moss_seed_basic"
+        }
+      },
+      "tags": [
+        "headless-optimized",
+        "layout:production",
+        "recipe:r_planter_moss_from_moss_seed_basic"
+      ]
+    },
+    "warehouse-storage-1": {
+      "id": "warehouse-storage-1",
+      "definitionId": "item_port_storager_1",
+      "position": {
+        "x": 6,
+        "y": 7
+      },
+      "rotation": 270,
+      "config": {
+        "storageSlotGroups[0].slots[0].lock": "item_originium_enr_powder"
+      },
+      "tags": [
+        "headless-optimized",
+        "layout:storage",
+        "item:item_originium_enr_powder"
+      ]
+    },
+    "opt-6-1": {
+      "id": "opt-6-1",
+      "definitionId": "item_port_thickener_1",
+      "position": {
+        "x": 10,
+        "y": 0
+      },
+      "rotation": 270,
+      "config": {
+        "channelRecipes": {
+          "default": "r_thickener_originium_enr_powder_from_originium_and_moss_powder_basic"
+        }
+      },
+      "tags": [
+        "headless-optimized",
+        "layout:production",
+        "recipe:r_thickener_originium_enr_powder_from_originium_and_moss_powder_basic"
+      ]
+    },
+    "opt-6-2": {
+      "id": "opt-6-2",
+      "definitionId": "item_port_thickener_1",
+      "position": {
+        "x": 10,
+        "y": 6
+      },
+      "rotation": 270,
+      "config": {
+        "channelRecipes": {
+          "default": "r_thickener_originium_enr_powder_from_originium_and_moss_powder_basic"
+        }
+      },
+      "tags": [
+        "headless-optimized",
+        "layout:production",
+        "recipe:r_thickener_originium_enr_powder_from_originium_and_moss_powder_basic"
+      ]
+    },
+    "opt-6-3": {
+      "id": "opt-6-3",
+      "definitionId": "item_port_thickener_1",
+      "position": {
+        "x": 10,
+        "y": 12
+      },
+      "rotation": 270,
+      "config": {
+        "channelRecipes": {
+          "default": "r_thickener_originium_enr_powder_from_originium_and_moss_powder_basic"
+        }
+      },
+      "tags": [
+        "headless-optimized",
+        "layout:production",
+        "recipe:r_thickener_originium_enr_powder_from_originium_and_moss_powder_basic"
+      ]
+    },
+    "opt-2-1": {
+      "id": "opt-2-1",
+      "definitionId": "item_port_grinder_1",
+      "position": {
+        "x": 17,
+        "y": 0
+      },
+      "rotation": 270,
+      "config": {
+        "channelRecipes": {
+          "default": "r_crusher_originium_powder_basic"
+        }
+      },
+      "tags": [
+        "headless-optimized",
+        "layout:production",
+        "recipe:r_crusher_originium_powder_basic"
+      ]
+    },
+    "opt-2-2": {
+      "id": "opt-2-2",
+      "definitionId": "item_port_grinder_1",
+      "position": {
+        "x": 17,
+        "y": 3
+      },
+      "rotation": 270,
+      "config": {
+        "channelRecipes": {
+          "default": "r_crusher_originium_powder_basic"
+        }
+      },
+      "tags": [
+        "headless-optimized",
+        "layout:production",
+        "recipe:r_crusher_originium_powder_basic"
+      ]
+    },
+    "opt-2-3": {
+      "id": "opt-2-3",
+      "definitionId": "item_port_grinder_1",
+      "position": {
+        "x": 17,
+        "y": 6
+      },
+      "rotation": 270,
+      "config": {
+        "channelRecipes": {
+          "default": "r_crusher_originium_powder_basic"
+        }
+      },
+      "tags": [
+        "headless-optimized",
+        "layout:production",
+        "recipe:r_crusher_originium_powder_basic"
+      ]
+    },
+    "opt-2-4": {
+      "id": "opt-2-4",
+      "definitionId": "item_port_grinder_1",
+      "position": {
+        "x": 17,
+        "y": 9
+      },
+      "rotation": 270,
+      "config": {
+        "channelRecipes": {
+          "default": "r_crusher_originium_powder_basic"
+        }
+      },
+      "tags": [
+        "headless-optimized",
+        "layout:production",
+        "recipe:r_crusher_originium_powder_basic"
+      ]
+    },
+    "opt-2-5": {
+      "id": "opt-2-5",
+      "definitionId": "item_port_grinder_1",
+      "position": {
+        "x": 17,
+        "y": 12
+      },
+      "rotation": 270,
+      "config": {
+        "channelRecipes": {
+          "default": "r_crusher_originium_powder_basic"
+        }
+      },
+      "tags": [
+        "headless-optimized",
+        "layout:production",
+        "recipe:r_crusher_originium_powder_basic"
+      ]
+    },
+    "opt-2-6": {
+      "id": "opt-2-6",
+      "definitionId": "item_port_grinder_1",
+      "position": {
+        "x": 17,
+        "y": 15
+      },
+      "rotation": 270,
+      "config": {
+        "channelRecipes": {
+          "default": "r_crusher_originium_powder_basic"
+        }
+      },
+      "tags": [
+        "headless-optimized",
+        "layout:production",
+        "recipe:r_crusher_originium_powder_basic"
+      ]
+    },
+    "opt-1-1": {
+      "id": "opt-1-1",
+      "definitionId": "item_port_grinder_1",
+      "position": {
+        "x": 14,
+        "y": 18
+      },
+      "rotation": 0,
+      "config": {
+        "channelRecipes": {
+          "default": "r_crusher_moss_powder_from_moss_basic"
+        }
+      },
+      "tags": [
+        "headless-optimized",
+        "layout:production",
+        "recipe:r_crusher_moss_powder_from_moss_basic"
+      ]
+    },
+    "warehouse-unloader-1": {
+      "id": "warehouse-unloader-1",
+      "definitionId": "item_port_unloader_1",
+      "position": {
+        "x": 21,
+        "y": 1
+      },
+      "rotation": 90,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true,
+        "storageSlotGroups[0].slots[0].initialItemType": "item_originium_ore"
+      },
+      "tags": [
+        "headless-optimized",
+        "layout:warehouse-port",
+        "item:item_originium_ore"
+      ]
+    },
+    "warehouse-unloader-2": {
+      "id": "warehouse-unloader-2",
+      "definitionId": "item_port_unloader_1",
+      "position": {
+        "x": 21,
+        "y": 4
+      },
+      "rotation": 90,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true,
+        "storageSlotGroups[0].slots[0].initialItemType": "item_originium_ore"
+      },
+      "tags": [
+        "headless-optimized",
+        "layout:warehouse-port",
+        "item:item_originium_ore"
+      ]
+    },
+    "warehouse-unloader-3": {
+      "id": "warehouse-unloader-3",
+      "definitionId": "item_port_unloader_1",
+      "position": {
+        "x": 21,
+        "y": 7
+      },
+      "rotation": 90,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true,
+        "storageSlotGroups[0].slots[0].initialItemType": "item_originium_ore"
+      },
+      "tags": [
+        "headless-optimized",
+        "layout:warehouse-port",
+        "item:item_originium_ore"
+      ]
+    },
+    "warehouse-unloader-4": {
+      "id": "warehouse-unloader-4",
+      "definitionId": "item_port_unloader_1",
+      "position": {
+        "x": 21,
+        "y": 10
+      },
+      "rotation": 90,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true,
+        "storageSlotGroups[0].slots[0].initialItemType": "item_originium_ore"
+      },
+      "tags": [
+        "headless-optimized",
+        "layout:warehouse-port",
+        "item:item_originium_ore"
+      ]
+    },
+    "warehouse-unloader-5": {
+      "id": "warehouse-unloader-5",
+      "definitionId": "item_port_unloader_1",
+      "position": {
+        "x": 21,
+        "y": 13
+      },
+      "rotation": 90,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true,
+        "storageSlotGroups[0].slots[0].initialItemType": "item_originium_ore"
+      },
+      "tags": [
+        "headless-optimized",
+        "layout:warehouse-port",
+        "item:item_originium_ore"
+      ]
+    },
+    "warehouse-unloader-6": {
+      "id": "warehouse-unloader-6",
+      "definitionId": "item_port_unloader_1",
+      "position": {
+        "x": 21,
+        "y": 16
+      },
+      "rotation": 90,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true,
+        "storageSlotGroups[0].slots[0].initialItemType": "item_originium_ore"
+      },
+      "tags": [
+        "headless-optimized",
+        "layout:warehouse-port",
+        "item:item_originium_ore"
+      ]
+    },
+    "warehouse-bus-source": {
+      "id": "warehouse-bus-source",
+      "definitionId": "item_port_log_hongs_bus_source",
+      "position": {
+        "x": 22,
+        "y": 0
+      },
+      "rotation": 0,
+      "config": {
+        "warehouseBusSeed": true
+      },
+      "tags": [
+        "headless-optimized",
+        "layout:warehouse-bus"
+      ]
+    },
+    "warehouse-bus-1": {
+      "id": "warehouse-bus-1",
+      "definitionId": "item_port_log_hongs_bus",
+      "position": {
+        "x": 22,
+        "y": 4
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": [
+        "headless-optimized",
+        "layout:warehouse-bus"
+      ]
+    },
+    "warehouse-bus-2": {
+      "id": "warehouse-bus-2",
+      "definitionId": "item_port_log_hongs_bus",
+      "position": {
+        "x": 22,
+        "y": 12
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": [
+        "headless-optimized",
+        "layout:warehouse-bus"
+      ]
+    },
+    "warehouse-bus-3": {
+      "id": "warehouse-bus-3",
+      "definitionId": "item_port_log_hongs_bus",
+      "position": {
+        "x": 22,
+        "y": 20
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": [
+        "headless-optimized",
+        "layout:warehouse-bus"
+      ]
+    },
+    "manual-belt-ore-1-1": {
+      "id": "manual-belt-ore-1-1",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 20,
+        "y": 2
+      },
+      "rotation": 180,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:ore-1",
+        "item:item_originium_ore"
+      ]
+    },
+    "manual-belt-ore-2-1": {
+      "id": "manual-belt-ore-2-1",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 20,
+        "y": 5
+      },
+      "rotation": 180,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:ore-2",
+        "item:item_originium_ore"
+      ]
+    },
+    "manual-belt-ore-3-1": {
+      "id": "manual-belt-ore-3-1",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 20,
+        "y": 8
+      },
+      "rotation": 180,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:ore-3",
+        "item:item_originium_ore"
+      ]
+    },
+    "manual-belt-ore-4-1": {
+      "id": "manual-belt-ore-4-1",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 20,
+        "y": 11
+      },
+      "rotation": 180,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:ore-4",
+        "item:item_originium_ore"
+      ]
+    },
+    "manual-belt-ore-5-1": {
+      "id": "manual-belt-ore-5-1",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 20,
+        "y": 14
+      },
+      "rotation": 180,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:ore-5",
+        "item:item_originium_ore"
+      ]
+    },
+    "manual-belt-ore-6-1": {
+      "id": "manual-belt-ore-6-1",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 20,
+        "y": 17
+      },
+      "rotation": 180,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:ore-6",
+        "item:item_originium_ore"
+      ]
+    },
+    "manual-belt-powder-1a-1": {
+      "id": "manual-belt-powder-1a-1",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 16,
+        "y": 0
+      },
+      "rotation": 180,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:powder-1a",
+        "item:item_originium_powder"
+      ]
+    },
+    "manual-belt-powder-1a-2": {
+      "id": "manual-belt-powder-1a-2",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 15,
+        "y": 0
+      },
+      "rotation": 180,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:powder-1a",
+        "item:item_originium_powder"
+      ]
+    },
+    "manual-belt-powder-1a-3": {
+      "id": "manual-belt-powder-1a-3",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 14,
+        "y": 0
+      },
+      "rotation": 180,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:powder-1a",
+        "item:item_originium_powder"
+      ]
+    },
+    "manual-belt-powder-1b-1": {
+      "id": "manual-belt-powder-1b-1",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 16,
+        "y": 3
+      },
+      "rotation": 180,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:powder-1b",
+        "item:item_originium_powder"
+      ]
+    },
+    "manual-belt-powder-1b-2": {
+      "id": "manual-belt-powder-1b-2",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 15,
+        "y": 3
+      },
+      "rotation": 180,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:powder-1b",
+        "item:item_originium_powder"
+      ]
+    },
+    "manual-belt-powder-1b-3": {
+      "id": "manual-belt-powder-1b-3",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 14,
+        "y": 3
+      },
+      "rotation": 180,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:powder-1b",
+        "item:item_originium_powder"
+      ]
+    },
+    "manual-belt-powder-2a-1": {
+      "id": "manual-belt-powder-2a-1",
+      "definitionId": "item_log_connector",
+      "position": {
+        "x": 16,
+        "y": 6
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:powder-2a",
+        "item:item_originium_powder",
+        "manual-crossing:moss-powder-upper"
+      ]
+    },
+    "manual-belt-powder-2a-2": {
+      "id": "manual-belt-powder-2a-2",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 15,
+        "y": 6
+      },
+      "rotation": 180,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:powder-2a",
+        "item:item_originium_powder"
+      ]
+    },
+    "manual-belt-powder-2a-3": {
+      "id": "manual-belt-powder-2a-3",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 14,
+        "y": 6
+      },
+      "rotation": 180,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:powder-2a",
+        "item:item_originium_powder"
+      ]
+    },
+    "manual-belt-powder-2b-1": {
+      "id": "manual-belt-powder-2b-1",
+      "definitionId": "item_log_connector",
+      "position": {
+        "x": 16,
+        "y": 9
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:powder-2b",
+        "item:item_originium_powder",
+        "manual-crossing:moss-powder-upper"
+      ]
+    },
+    "manual-belt-powder-2b-2": {
+      "id": "manual-belt-powder-2b-2",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 15,
+        "y": 9
+      },
+      "rotation": 180,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:powder-2b",
+        "item:item_originium_powder"
+      ]
+    },
+    "manual-belt-powder-2b-3": {
+      "id": "manual-belt-powder-2b-3",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 14,
+        "y": 9
+      },
+      "rotation": 180,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:powder-2b",
+        "item:item_originium_powder"
+      ]
+    },
+    "manual-belt-powder-3a-1": {
+      "id": "manual-belt-powder-3a-1",
+      "definitionId": "item_log_connector",
+      "position": {
+        "x": 16,
+        "y": 12
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:powder-3a",
+        "item:item_originium_powder",
+        "manual-crossing:moss-powder-upper"
+      ]
+    },
+    "manual-belt-powder-3a-2": {
+      "id": "manual-belt-powder-3a-2",
+      "definitionId": "item_log_connector",
+      "position": {
+        "x": 15,
+        "y": 12
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:powder-3a",
+        "item:item_originium_powder",
+        "manual-crossing:moss-powder-middle"
+      ]
+    },
+    "manual-belt-powder-3a-3": {
+      "id": "manual-belt-powder-3a-3",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 14,
+        "y": 12
+      },
+      "rotation": 180,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:powder-3a",
+        "item:item_originium_powder"
+      ]
+    },
+    "manual-belt-powder-3b-1": {
+      "id": "manual-belt-powder-3b-1",
+      "definitionId": "item_log_connector",
+      "position": {
+        "x": 16,
+        "y": 15
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:powder-3b",
+        "item:item_originium_powder",
+        "manual-crossing:moss-powder-upper"
+      ]
+    },
+    "manual-belt-powder-3b-2": {
+      "id": "manual-belt-powder-3b-2",
+      "definitionId": "item_log_connector",
+      "position": {
+        "x": 15,
+        "y": 15
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:powder-3b",
+        "item:item_originium_powder",
+        "manual-crossing:moss-powder-middle"
+      ]
+    },
+    "manual-belt-powder-3b-3": {
+      "id": "manual-belt-powder-3b-3",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 14,
+        "y": 15
+      },
+      "rotation": 180,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:powder-3b",
+        "item:item_originium_powder"
+      ]
+    },
+    "manual-belt-dense-upper-1": {
+      "id": "manual-belt-dense-upper-1",
+      "definitionId": "belt_turn_ccw_1x1",
+      "position": {
+        "x": 9,
+        "y": 5
+      },
+      "rotation": 90,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:dense-upper",
+        "item:item_originium_enr_powder"
+      ]
+    },
+    "manual-belt-dense-upper-2": {
+      "id": "manual-belt-dense-upper-2",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 9,
+        "y": 6
+      },
+      "rotation": 90,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:dense-upper",
+        "item:item_originium_enr_powder"
+      ]
+    },
+    "manual-belt-dense-upper-3": {
+      "id": "manual-belt-dense-upper-3",
+      "definitionId": "belt_turn_cw_1x1",
+      "position": {
+        "x": 9,
+        "y": 7
+      },
+      "rotation": 270,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:dense-upper",
+        "item:item_originium_enr_powder"
+      ]
+    },
+    "manual-belt-dense-middle-1": {
+      "id": "manual-belt-dense-middle-1",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 9,
+        "y": 8
+      },
+      "rotation": 180,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:dense-middle",
+        "item:item_originium_enr_powder"
+      ]
+    },
+    "manual-belt-dense-lower-1": {
+      "id": "manual-belt-dense-lower-1",
+      "definitionId": "belt_turn_cw_1x1",
+      "position": {
+        "x": 9,
+        "y": 12
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:dense-lower",
+        "item:item_originium_enr_powder"
+      ]
+    },
+    "manual-belt-dense-lower-2": {
+      "id": "manual-belt-dense-lower-2",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 9,
+        "y": 11
+      },
+      "rotation": 270,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:dense-lower",
+        "item:item_originium_enr_powder"
+      ]
+    },
+    "manual-belt-dense-lower-3": {
+      "id": "manual-belt-dense-lower-3",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 9,
+        "y": 10
+      },
+      "rotation": 270,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:dense-lower",
+        "item:item_originium_enr_powder"
+      ]
+    },
+    "manual-belt-dense-lower-4": {
+      "id": "manual-belt-dense-lower-4",
+      "definitionId": "belt_turn_ccw_1x1",
+      "position": {
+        "x": 9,
+        "y": 9
+      },
+      "rotation": 180,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:dense-lower",
+        "item:item_originium_enr_powder"
+      ]
+    },
+    "manual-belt-moss-cycle-1": {
+      "id": "manual-belt-moss-cycle-1",
+      "definitionId": "belt_turn_cw_1x1",
+      "position": {
+        "x": 5,
+        "y": 4
+      },
+      "rotation": 180,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-cycle",
+        "item:item_plant_moss_3"
+      ]
+    },
+    "manual-belt-moss-cycle-2": {
+      "id": "manual-belt-moss-cycle-2",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 5,
+        "y": 5
+      },
+      "rotation": 90,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-cycle",
+        "item:item_plant_moss_3"
+      ]
+    },
+    "manual-belt-moss-cycle-3": {
+      "id": "manual-belt-moss-cycle-3",
+      "definitionId": "belt_turn_cw_1x1",
+      "position": {
+        "x": 5,
+        "y": 6
+      },
+      "rotation": 270,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-cycle",
+        "item:item_plant_moss_3"
+      ]
+    },
+    "manual-belt-seed-upper-1": {
+      "id": "manual-belt-seed-upper-1",
+      "definitionId": "belt_turn_cw_1x1",
+      "position": {
+        "x": -1,
+        "y": 6
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:seed-upper",
+        "item:item_plant_moss_seed_3"
+      ]
+    },
+    "manual-belt-seed-upper-2": {
+      "id": "manual-belt-seed-upper-2",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": -1,
+        "y": 5
+      },
+      "rotation": 270,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:seed-upper",
+        "item:item_plant_moss_seed_3"
+      ]
+    },
+    "manual-belt-seed-upper-3": {
+      "id": "manual-belt-seed-upper-3",
+      "definitionId": "belt_turn_cw_1x1",
+      "position": {
+        "x": -1,
+        "y": 4
+      },
+      "rotation": 90,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:seed-upper",
+        "item:item_plant_moss_seed_3"
+      ]
+    },
+    "manual-belt-seed-lower-1": {
+      "id": "manual-belt-seed-lower-1",
+      "definitionId": "belt_turn_ccw_1x1",
+      "position": {
+        "x": -1,
+        "y": 10
+      },
+      "rotation": 90,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:seed-lower",
+        "item:item_plant_moss_seed_3"
+      ]
+    },
+    "manual-belt-seed-lower-2": {
+      "id": "manual-belt-seed-lower-2",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": -1,
+        "y": 11
+      },
+      "rotation": 90,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:seed-lower",
+        "item:item_plant_moss_seed_3"
+      ]
+    },
+    "manual-belt-seed-lower-3": {
+      "id": "manual-belt-seed-lower-3",
+      "definitionId": "belt_turn_ccw_1x1",
+      "position": {
+        "x": -1,
+        "y": 12
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:seed-lower",
+        "item:item_plant_moss_seed_3"
+      ]
+    },
+    "manual-belt-moss-crusher-1": {
+      "id": "manual-belt-moss-crusher-1",
+      "definitionId": "belt_turn_cw_1x1",
+      "position": {
+        "x": 5,
+        "y": 16
+      },
+      "rotation": 180,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-crusher",
+        "item:item_plant_moss_3"
+      ]
+    },
+    "manual-belt-moss-crusher-2": {
+      "id": "manual-belt-moss-crusher-2",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 5,
+        "y": 17
+      },
+      "rotation": 90,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-crusher",
+        "item:item_plant_moss_3"
+      ]
+    },
+    "manual-belt-moss-crusher-3": {
+      "id": "manual-belt-moss-crusher-3",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 5,
+        "y": 18
+      },
+      "rotation": 90,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-crusher",
+        "item:item_plant_moss_3"
+      ]
+    },
+    "manual-belt-moss-crusher-4": {
+      "id": "manual-belt-moss-crusher-4",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 5,
+        "y": 19
+      },
+      "rotation": 90,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-crusher",
+        "item:item_plant_moss_3"
+      ]
+    },
+    "manual-belt-moss-crusher-5": {
+      "id": "manual-belt-moss-crusher-5",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 5,
+        "y": 20
+      },
+      "rotation": 90,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-crusher",
+        "item:item_plant_moss_3"
+      ]
+    },
+    "manual-belt-moss-crusher-6": {
+      "id": "manual-belt-moss-crusher-6",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 5,
+        "y": 21
+      },
+      "rotation": 90,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-crusher",
+        "item:item_plant_moss_3"
+      ]
+    },
+    "manual-belt-moss-crusher-7": {
+      "id": "manual-belt-moss-crusher-7",
+      "definitionId": "belt_turn_ccw_1x1",
+      "position": {
+        "x": 5,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-crusher",
+        "item:item_plant_moss_3"
+      ]
+    },
+    "manual-belt-moss-crusher-8": {
+      "id": "manual-belt-moss-crusher-8",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 6,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-crusher",
+        "item:item_plant_moss_3"
+      ]
+    },
+    "manual-belt-moss-crusher-9": {
+      "id": "manual-belt-moss-crusher-9",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 7,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-crusher",
+        "item:item_plant_moss_3"
+      ]
+    },
+    "manual-belt-moss-crusher-10": {
+      "id": "manual-belt-moss-crusher-10",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 8,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-crusher",
+        "item:item_plant_moss_3"
+      ]
+    },
+    "manual-belt-moss-crusher-11": {
+      "id": "manual-belt-moss-crusher-11",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 9,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-crusher",
+        "item:item_plant_moss_3"
+      ]
+    },
+    "manual-belt-moss-crusher-12": {
+      "id": "manual-belt-moss-crusher-12",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 10,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-crusher",
+        "item:item_plant_moss_3"
+      ]
+    },
+    "manual-belt-moss-crusher-13": {
+      "id": "manual-belt-moss-crusher-13",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 11,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-crusher",
+        "item:item_plant_moss_3"
+      ]
+    },
+    "manual-belt-moss-crusher-14": {
+      "id": "manual-belt-moss-crusher-14",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 12,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-crusher",
+        "item:item_plant_moss_3"
+      ]
+    },
+    "manual-belt-moss-crusher-15": {
+      "id": "manual-belt-moss-crusher-15",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 13,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-crusher",
+        "item:item_plant_moss_3"
+      ]
+    },
+    "manual-belt-moss-crusher-16": {
+      "id": "manual-belt-moss-crusher-16",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 14,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-crusher",
+        "item:item_plant_moss_3"
+      ]
+    },
+    "manual-belt-moss-crusher-17": {
+      "id": "manual-belt-moss-crusher-17",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 15,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-crusher",
+        "item:item_plant_moss_3"
+      ]
+    },
+    "manual-belt-moss-crusher-18": {
+      "id": "manual-belt-moss-crusher-18",
+      "definitionId": "belt_turn_ccw_1x1",
+      "position": {
+        "x": 16,
+        "y": 22
+      },
+      "rotation": 270,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-crusher",
+        "item:item_plant_moss_3"
+      ]
+    },
+    "manual-belt-moss-crusher-19": {
+      "id": "manual-belt-moss-crusher-19",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 16,
+        "y": 21
+      },
+      "rotation": 270,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-crusher",
+        "item:item_plant_moss_3"
+      ]
+    },
+    "manual-belt-moss-powder-lower-1": {
+      "id": "manual-belt-moss-powder-lower-1",
+      "definitionId": "belt_turn_ccw_1x1",
+      "position": {
+        "x": 14,
+        "y": 17
+      },
+      "rotation": 180,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-powder-lower",
+        "item:item_plant_moss_powder_3"
+      ]
+    },
+    "manual-belt-moss-powder-middle-1": {
+      "id": "manual-belt-moss-powder-middle-1",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 15,
+        "y": 17
+      },
+      "rotation": 270,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-powder-middle",
+        "item:item_plant_moss_powder_3"
+      ]
+    },
+    "manual-belt-moss-powder-middle-2": {
+      "id": "manual-belt-moss-powder-middle-2",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 15,
+        "y": 16
+      },
+      "rotation": 270,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-powder-middle",
+        "item:item_plant_moss_powder_3"
+      ]
+    },
+    "manual-belt-moss-powder-middle-4": {
+      "id": "manual-belt-moss-powder-middle-4",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 15,
+        "y": 14
+      },
+      "rotation": 270,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-powder-middle",
+        "item:item_plant_moss_powder_3"
+      ]
+    },
+    "manual-belt-moss-powder-middle-5": {
+      "id": "manual-belt-moss-powder-middle-5",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 15,
+        "y": 13
+      },
+      "rotation": 270,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-powder-middle",
+        "item:item_plant_moss_powder_3"
+      ]
+    },
+    "manual-belt-moss-powder-middle-7": {
+      "id": "manual-belt-moss-powder-middle-7",
+      "definitionId": "belt_turn_ccw_1x1",
+      "position": {
+        "x": 15,
+        "y": 11
+      },
+      "rotation": 180,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-powder-middle",
+        "item:item_plant_moss_powder_3"
+      ]
+    },
+    "manual-belt-moss-powder-middle-8": {
+      "id": "manual-belt-moss-powder-middle-8",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 14,
+        "y": 11
+      },
+      "rotation": 180,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-powder-middle",
+        "item:item_plant_moss_powder_3"
+      ]
+    },
+    "manual-belt-moss-powder-upper-1": {
+      "id": "manual-belt-moss-powder-upper-1",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 16,
+        "y": 17
+      },
+      "rotation": 270,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-powder-upper",
+        "item:item_plant_moss_powder_3"
+      ]
+    },
+    "manual-belt-moss-powder-upper-2": {
+      "id": "manual-belt-moss-powder-upper-2",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 16,
+        "y": 16
+      },
+      "rotation": 270,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-powder-upper",
+        "item:item_plant_moss_powder_3"
+      ]
+    },
+    "manual-belt-moss-powder-upper-4": {
+      "id": "manual-belt-moss-powder-upper-4",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 16,
+        "y": 14
+      },
+      "rotation": 270,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-powder-upper",
+        "item:item_plant_moss_powder_3"
+      ]
+    },
+    "manual-belt-moss-powder-upper-5": {
+      "id": "manual-belt-moss-powder-upper-5",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 16,
+        "y": 13
+      },
+      "rotation": 270,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-powder-upper",
+        "item:item_plant_moss_powder_3"
+      ]
+    },
+    "manual-belt-moss-powder-upper-7": {
+      "id": "manual-belt-moss-powder-upper-7",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 16,
+        "y": 11
+      },
+      "rotation": 270,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-powder-upper",
+        "item:item_plant_moss_powder_3"
+      ]
+    },
+    "manual-belt-moss-powder-upper-8": {
+      "id": "manual-belt-moss-powder-upper-8",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 16,
+        "y": 10
+      },
+      "rotation": 270,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-powder-upper",
+        "item:item_plant_moss_powder_3"
+      ]
+    },
+    "manual-belt-moss-powder-upper-10": {
+      "id": "manual-belt-moss-powder-upper-10",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 16,
+        "y": 8
+      },
+      "rotation": 270,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-powder-upper",
+        "item:item_plant_moss_powder_3"
+      ]
+    },
+    "manual-belt-moss-powder-upper-11": {
+      "id": "manual-belt-moss-powder-upper-11",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 16,
+        "y": 7
+      },
+      "rotation": 270,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-powder-upper",
+        "item:item_plant_moss_powder_3"
+      ]
+    },
+    "manual-belt-moss-powder-upper-13": {
+      "id": "manual-belt-moss-powder-upper-13",
+      "definitionId": "belt_turn_ccw_1x1",
+      "position": {
+        "x": 16,
+        "y": 5
+      },
+      "rotation": 180,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-powder-upper",
+        "item:item_plant_moss_powder_3"
+      ]
+    },
+    "manual-belt-moss-powder-upper-14": {
+      "id": "manual-belt-moss-powder-upper-14",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 15,
+        "y": 5
+      },
+      "rotation": 180,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-powder-upper",
+        "item:item_plant_moss_powder_3"
+      ]
+    },
+    "manual-belt-moss-powder-upper-15": {
+      "id": "manual-belt-moss-powder-upper-15",
+      "definitionId": "belt_straight_1x1",
+      "position": {
+        "x": 14,
+        "y": 5
+      },
+      "rotation": 180,
+      "config": {},
+      "tags": [
+        "manual-logistics",
+        "route:moss-powder-upper",
+        "item:item_plant_moss_powder_3"
+      ]
+    }
+  },
+  "entityOrder": [
+    "cycle-moss-planter-1",
+    "cycle-moss-seed-collector-1",
+    "cycle-moss-planter-2",
+    "warehouse-storage-1",
+    "opt-6-1",
+    "opt-6-2",
+    "opt-6-3",
+    "opt-2-1",
+    "opt-2-2",
+    "opt-2-3",
+    "opt-2-4",
+    "opt-2-5",
+    "opt-2-6",
+    "opt-1-1",
+    "warehouse-unloader-1",
+    "warehouse-unloader-2",
+    "warehouse-unloader-3",
+    "warehouse-unloader-4",
+    "warehouse-unloader-5",
+    "warehouse-unloader-6",
+    "warehouse-bus-source",
+    "warehouse-bus-1",
+    "warehouse-bus-2",
+    "warehouse-bus-3",
+    "manual-belt-ore-1-1",
+    "manual-belt-ore-2-1",
+    "manual-belt-ore-3-1",
+    "manual-belt-ore-4-1",
+    "manual-belt-ore-5-1",
+    "manual-belt-ore-6-1",
+    "manual-belt-powder-1a-1",
+    "manual-belt-powder-1a-2",
+    "manual-belt-powder-1a-3",
+    "manual-belt-powder-1b-1",
+    "manual-belt-powder-1b-2",
+    "manual-belt-powder-1b-3",
+    "manual-belt-powder-2a-1",
+    "manual-belt-powder-2a-2",
+    "manual-belt-powder-2a-3",
+    "manual-belt-powder-2b-1",
+    "manual-belt-powder-2b-2",
+    "manual-belt-powder-2b-3",
+    "manual-belt-powder-3a-1",
+    "manual-belt-powder-3a-2",
+    "manual-belt-powder-3a-3",
+    "manual-belt-powder-3b-1",
+    "manual-belt-powder-3b-2",
+    "manual-belt-powder-3b-3",
+    "manual-belt-dense-upper-1",
+    "manual-belt-dense-upper-2",
+    "manual-belt-dense-upper-3",
+    "manual-belt-dense-middle-1",
+    "manual-belt-dense-lower-1",
+    "manual-belt-dense-lower-2",
+    "manual-belt-dense-lower-3",
+    "manual-belt-dense-lower-4",
+    "manual-belt-moss-cycle-1",
+    "manual-belt-moss-cycle-2",
+    "manual-belt-moss-cycle-3",
+    "manual-belt-seed-upper-1",
+    "manual-belt-seed-upper-2",
+    "manual-belt-seed-upper-3",
+    "manual-belt-seed-lower-1",
+    "manual-belt-seed-lower-2",
+    "manual-belt-seed-lower-3",
+    "manual-belt-moss-crusher-1",
+    "manual-belt-moss-crusher-2",
+    "manual-belt-moss-crusher-3",
+    "manual-belt-moss-crusher-4",
+    "manual-belt-moss-crusher-5",
+    "manual-belt-moss-crusher-6",
+    "manual-belt-moss-crusher-7",
+    "manual-belt-moss-crusher-8",
+    "manual-belt-moss-crusher-9",
+    "manual-belt-moss-crusher-10",
+    "manual-belt-moss-crusher-11",
+    "manual-belt-moss-crusher-12",
+    "manual-belt-moss-crusher-13",
+    "manual-belt-moss-crusher-14",
+    "manual-belt-moss-crusher-15",
+    "manual-belt-moss-crusher-16",
+    "manual-belt-moss-crusher-17",
+    "manual-belt-moss-crusher-18",
+    "manual-belt-moss-crusher-19",
+    "manual-belt-moss-powder-lower-1",
+    "manual-belt-moss-powder-middle-1",
+    "manual-belt-moss-powder-middle-2",
+    "manual-belt-moss-powder-middle-4",
+    "manual-belt-moss-powder-middle-5",
+    "manual-belt-moss-powder-middle-7",
+    "manual-belt-moss-powder-middle-8",
+    "manual-belt-moss-powder-upper-1",
+    "manual-belt-moss-powder-upper-2",
+    "manual-belt-moss-powder-upper-4",
+    "manual-belt-moss-powder-upper-5",
+    "manual-belt-moss-powder-upper-7",
+    "manual-belt-moss-powder-upper-8",
+    "manual-belt-moss-powder-upper-10",
+    "manual-belt-moss-powder-upper-11",
+    "manual-belt-moss-powder-upper-13",
+    "manual-belt-moss-powder-upper-14",
+    "manual-belt-moss-powder-upper-15"
+  ],
+  "slotLinks": [
+    {
+      "id": "warehouse-link:warehouse-unloader-1:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "warehouse-unloader-1",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_originium_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:warehouse-unloader-2:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "warehouse-unloader-2",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_originium_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:warehouse-unloader-3:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "warehouse-unloader-3",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_originium_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:warehouse-unloader-4:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "warehouse-unloader-4",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_originium_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:warehouse-unloader-5:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "warehouse-unloader-5",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_originium_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:warehouse-unloader-6:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "warehouse-unloader-6",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_originium_ore"
+      }
+    }
+  ],
+  "createdAt": "2026-07-21T06:35:28.885Z",
+  "updatedAt": "2026-07-21T07:23:04.165Z"
+}

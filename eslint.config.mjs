@@ -6,7 +6,7 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   {
-    ignores: ["dist", "node_modules", ".docs", ".temp"],
+    ignores: ["dist", "node_modules", ".docs", ".temp", "**/.venv-headless/**"],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,

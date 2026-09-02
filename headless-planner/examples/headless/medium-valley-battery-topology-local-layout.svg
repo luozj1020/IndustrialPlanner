@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1352" height="1356" viewBox="0 0 1352 1356">
+<title>Medium-capacity Valley battery topology-sequential local convergence</title>
+<defs>
+<marker id="arrow-belt" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#f7b955"/></marker>
+<marker id="arrow-pipe" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#38bdf8"/></marker>
+<pattern id="power-range-hatch" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M-4,4 L4,-4 M0,16 L16,0 M12,20 L20,12" fill="none" stroke="#164e63" stroke-width="3"/></pattern>
+</defs>
+<rect width="100%" height="100%" fill="#10151d"/>
+<text x="52" y="30" fill="#f2f5f8" font-family="sans-serif" font-size="18" font-weight="700">Medium-capacity Valley battery topology-sequential local convergence</text>
+<g font-family="sans-serif" font-size="12" fill="#cbd5e1">
+<rect x="52" y="39" width="13" height="13" rx="2" fill="#475569"/><text x="71" y="50">Production</text>
+<line x1="162" y1="46" x2="192" y2="46" stroke="#f7b955" stroke-width="5"/><text x="200" y="50">Belt</text>
+<line x1="262" y1="46" x2="292" y2="46" stroke="#38bdf8" stroke-width="5"/><text x="300" y="50">Pipe</text>
+<rect x="367" y="39" width="13" height="13" rx="2" fill="#38bdf8" fill-opacity="0.14" stroke="#7dd3fc" stroke-width="1.5" stroke-dasharray="4 3"/><text x="386" y="50">Power range</text>
+</g>
+<g stroke="#263241" stroke-width="1">
+<line x1="52" y1="108" x2="52" y2="1304"/>
+<line x1="104" y1="108" x2="104" y2="1304"/>
+<line x1="156" y1="108" x2="156" y2="1304"/>
+<line x1="208" y1="108" x2="208" y2="1304"/>
+<line x1="260" y1="108" x2="260" y2="1304"/>
+<line x1="312" y1="108" x2="312" y2="1304"/>
+<line x1="364" y1="108" x2="364" y2="1304"/>
+<line x1="416" y1="108" x2="416" y2="1304"/>
+<line x1="468" y1="108" x2="468" y2="1304"/>
+<line x1="520" y1="108" x2="520" y2="1304"/>
+<line x1="572" y1="108" x2="572" y2="1304"/>
+<line x1="624" y1="108" x2="624" y2="1304"/>
+<line x1="676" y1="108" x2="676" y2="1304"/>
+<line x1="728" y1="108" x2="728" y2="1304"/>
+<line x1="780" y1="108" x2="780" y2="1304"/>
+<line x1="832" y1="108" x2="832" y2="1304"/>
+<line x1="884" y1="108" x2="884" y2="1304"/>
+<line x1="936" y1="108" x2="936" y2="1304"/>
+<line x1="988" y1="108" x2="988" y2="1304"/>
+<line x1="1040" y1="108" x2="1040" y2="1304"/>
+<line x1="1092" y1="108" x2="1092" y2="1304"/>
+<line x1="1144" y1="108" x2="1144" y2="1304"/>
+<line x1="1196" y1="108" x2="1196" y2="1304"/>
+<line x1="1248" y1="108" x2="1248" y2="1304"/>
+<line x1="1300" y1="108" x2="1300" y2="1304"/>
+<line x1="52" y1="108" x2="1300" y2="108"/>
+<line x1="52" y1="160" x2="1300" y2="160"/>
+<line x1="52" y1="212" x2="1300" y2="212"/>
+<line x1="52" y1="264" x2="1300" y2="264"/>
+<line x1="52" y1="316" x2="1300" y2="316"/>
+<line x1="52" y1="368" x2="1300" y2="368"/>
+<line x1="52" y1="420" x2="1300" y2="420"/>
+<line x1="52" y1="472" x2="1300" y2="472"/>
+<line x1="52" y1="524" x2="1300" y2="524"/>
+<line x1="52" y1="576" x2="1300" y2="576"/>
+<line x1="52" y1="628" x2="1300" y2="628"/>
+<line x1="52" y1="680" x2="1300" y2="680"/>
+<line x1="52" y1="732" x2="1300" y2="732"/>
+<line x1="52" y1="784" x2="1300" y2="784"/>
+<line x1="52" y1="836" x2="1300" y2="836"/>
+<line x1="52" y1="888" x2="1300" y2="888"/>
+<line x1="52" y1="940" x2="1300" y2="940"/>
+<line x1="52" y1="992" x2="1300" y2="992"/>
+<line x1="52" y1="1044" x2="1300" y2="1044"/>
+<line x1="52" y1="1096" x2="1300" y2="1096"/>
+<line x1="52" y1="1148" x2="1300" y2="1148"/>
+<line x1="52" y1="1200" x2="1300" y2="1200"/>
+<line x1="52" y1="1252" x2="1300" y2="1252"/>
+<line x1="52" y1="1304" x2="1300" y2="1304"/>
+</g>
+<g data-layer="power-ranges">
+<g data-power-source="power-diffuser-1">
+<rect x="156" y="524" width="624" height="624" fill="url(#power-range-hatch)" stroke="#7dd3fc" stroke-width="2.5" stroke-dasharray="10 7"/>
+<text x="164" y="542" fill="#bae6fd" font-family="monospace" font-size="11">Power power-diffuser-1 · 12×12</text>
+</g>
+</g>
+<g>
+<rect x="54" y="630" width="152" height="152" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="130" y="702" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">furnace_iron_nugget_…</text>
+<text x="130" y="720" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">opt-2-1</text>
+<circle cx="182" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="130" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="78" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="182" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="130" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="78" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="210" y="630" width="152" height="152" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="286" y="702" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">furnace_iron_nugget_…</text>
+<text x="286" y="720" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">opt-2-2</text>
+<circle cx="338" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="286" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="234" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="338" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="286" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="234" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="366" y="630" width="152" height="152" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="442" y="702" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">crusher_originium_po…</text>
+<text x="442" y="720" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">opt-3-1</text>
+<circle cx="494" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="442" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="390" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="494" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="442" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="390" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="522" y="630" width="152" height="152" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="598" y="702" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">crusher_originium_po…</text>
+<text x="598" y="720" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">opt-3-2</text>
+<circle cx="650" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="598" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="546" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="650" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="598" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="546" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="678" y="630" width="152" height="152" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="754" y="702" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">crusher_originium_po…</text>
+<text x="754" y="720" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">opt-3-3</text>
+<circle cx="806" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="754" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="702" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="806" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="754" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="702" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="54" y="838" width="152" height="152" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="130" y="910" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">component_iron_cmpt_…</text>
+<text x="130" y="928" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">opt-1-1</text>
+<circle cx="182" cy="862" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="130" cy="862" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="78" cy="862" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="182" cy="966" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="130" cy="966" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="78" cy="966" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="210" y="838" width="152" height="152" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="286" y="910" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">component_iron_cmpt_…</text>
+<text x="286" y="928" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">opt-1-2</text>
+<circle cx="338" cy="862" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="286" cy="862" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="234" cy="862" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="338" cy="966" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="286" cy="966" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="234" cy="966" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="314" y="1046" width="308" height="204" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="468" y="1144" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">packaging_battery_2_from_iron_cmpt_and_or…</text>
+<text x="468" y="1162" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">opt-6-1</text>
+<circle cx="598" cy="1070" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="546" cy="1070" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="494" cy="1070" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="442" cy="1070" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="390" cy="1070" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="338" cy="1070" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="598" cy="1226" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="546" cy="1226" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="494" cy="1226" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="442" cy="1226" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="390" cy="1226" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="338" cy="1226" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="158" y="1098" width="152" height="152" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="234" y="1170" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_storager_1</text>
+<text x="234" y="1188" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">warehouse-storage-1</text>
+<circle cx="182" cy="1226" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="234" cy="1226" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="286" cy="1226" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="182" cy="1122" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="234" cy="1122" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="286" cy="1122" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="54" y="110" width="204" height="204" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="156" y="208" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_log_hongs_bus_sou…</text>
+<text x="156" y="226" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">warehouse-bus-source</text>
+</g>
+<g>
+<rect x="54" y="318" width="412" height="204" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="260" y="416" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_log_hongs_bus</text>
+<text x="260" y="434" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">warehouse-bus-1</text>
+</g>
+<g>
+<rect x="470" y="318" width="412" height="204" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="676" y="416" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_log_hongs_bus</text>
+<text x="676" y="434" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">warehouse-bus-2</text>
+</g>
+<g>
+<rect x="886" y="318" width="412" height="204" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="1092" y="416" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_log_hongs_bus</text>
+<text x="1092" y="434" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">warehouse-bus-3</text>
+</g>
+<g>
+<rect x="54" y="526" width="152" height="48" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="130" y="546" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_unloader_1</text>
+<text x="130" y="564" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">warehouse-unloader-1</text>
+<circle cx="130" cy="550" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="210" y="526" width="152" height="48" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="286" y="546" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_unloader_1</text>
+<text x="286" y="564" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">warehouse-unloader-2</text>
+<circle cx="286" cy="550" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="366" y="526" width="152" height="48" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="442" y="546" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_unloader_1</text>
+<text x="442" y="564" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">warehouse-unloader-3</text>
+<circle cx="442" cy="550" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="522" y="526" width="152" height="48" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="598" y="546" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_unloader_1</text>
+<text x="598" y="564" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">warehouse-unloader-4</text>
+<circle cx="598" cy="550" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="678" y="526" width="152" height="48" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="754" y="546" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_unloader_1</text>
+<text x="754" y="564" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">warehouse-unloader-5</text>
+<circle cx="754" cy="550" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="263" y="579" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="286,578.6 286,602 286,625.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="419" y="579" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="442,578.6 442,602 442,625.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="575" y="579" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="598,578.6 598,602 598,625.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="731" y="579" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="754,578.6 754,602 754,625.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="315" y="995" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="314.6" y1="1018" x2="361.4" y2="1018" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="338" y1="994.6" x2="338" y2="1041.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="338" cy="1018" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="575" y="787" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="574.6" y1="810" x2="621.4" y2="810" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="598" y1="786.6" x2="598" y2="833.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="598" cy="810" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="575" y="839" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="598,838.6 598,862 598,885.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="575" y="891" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="598,890.6 598,914 598,937.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="575" y="943" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="598,942.6 598,966 598,989.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="575" y="995" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="598,994.6 598,1018 598,1041.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="367" y="787" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="390,786.6 390,810 390,833.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="367" y="839" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="390,838.6 390,862 390,885.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="367" y="891" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="390,890.6 390,914 390,937.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="367" y="943" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="390,942.6 390,966 390,989.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="367" y="995" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="366.6" y1="1018" x2="413.4" y2="1018" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="390" y1="994.6" x2="390" y2="1041.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="390" cy="1018" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="315" y="1255" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="338,1254.6 338,1278 314.6,1278" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="263" y="1255" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="309.4,1278 286,1278 286,1254.6" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="159" y="787" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="182,786.6 182,810 182,833.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="315" y="787" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="338,786.6 338,810 338,833.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="679" y="787" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="702,786.6 702,810 678.6,810" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="627" y="787" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="673.4,810 650,810 626.6,810" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="523" y="787" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="569.4,810 546,810 546,833.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="523" y="839" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="546,838.6 546,862 546,885.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="523" y="891" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="546,890.6 546,914 546,937.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="523" y="943" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="546,942.6 546,966 546,989.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="523" y="995" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="546,994.6 546,1018 546,1041.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="159" y="995" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="182,994.6 182,1018 205.4,1018" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="211" y="995" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="210.6,1018 234,1018 257.4,1018" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="263" y="995" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="262.6,1018 286,1018 309.4,1018" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="419" y="995" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="418.6,1018 442,1018 442,1041.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="107" y="579" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="130,578.6 130,602 130,625.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="418" y="786" width="100" height="100" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="468" y="832" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_pow…</text>
+<text x="468" y="850" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">power-diffuser-1</text>
+</g>
+</svg>

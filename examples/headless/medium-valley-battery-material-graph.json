@@ -1,0 +1,398 @@
+{
+  "name": "Medium-capacity Valley battery topology-sequential local convergence",
+  "nodes": [
+    {
+      "id": "warehouse-unloader-1",
+      "kind": "warehouse-port",
+      "definitionId": "item_port_unloader_1",
+      "definitionNameKey": "registry.entity.item_port_unloader_1.name",
+      "recipeId": null,
+      "componentId": "C1",
+      "layer": 0,
+      "inputItemIds": [],
+      "outputItemIds": [
+        "item_iron_ore"
+      ]
+    },
+    {
+      "id": "warehouse-unloader-2",
+      "kind": "warehouse-port",
+      "definitionId": "item_port_unloader_1",
+      "definitionNameKey": "registry.entity.item_port_unloader_1.name",
+      "recipeId": null,
+      "componentId": "C2",
+      "layer": 0,
+      "inputItemIds": [],
+      "outputItemIds": [
+        "item_iron_ore"
+      ]
+    },
+    {
+      "id": "warehouse-unloader-3",
+      "kind": "warehouse-port",
+      "definitionId": "item_port_unloader_1",
+      "definitionNameKey": "registry.entity.item_port_unloader_1.name",
+      "recipeId": null,
+      "componentId": "C3",
+      "layer": 0,
+      "inputItemIds": [],
+      "outputItemIds": [
+        "item_originium_ore"
+      ]
+    },
+    {
+      "id": "warehouse-unloader-4",
+      "kind": "warehouse-port",
+      "definitionId": "item_port_unloader_1",
+      "definitionNameKey": "registry.entity.item_port_unloader_1.name",
+      "recipeId": null,
+      "componentId": "C4",
+      "layer": 0,
+      "inputItemIds": [],
+      "outputItemIds": [
+        "item_originium_ore"
+      ]
+    },
+    {
+      "id": "warehouse-unloader-5",
+      "kind": "warehouse-port",
+      "definitionId": "item_port_unloader_1",
+      "definitionNameKey": "registry.entity.item_port_unloader_1.name",
+      "recipeId": null,
+      "componentId": "C5",
+      "layer": 0,
+      "inputItemIds": [],
+      "outputItemIds": [
+        "item_originium_ore"
+      ]
+    },
+    {
+      "id": "opt-2-1",
+      "kind": "production",
+      "definitionId": "item_port_furnance_1",
+      "definitionNameKey": "registry.entity.item_port_furnance_1.name",
+      "recipeId": "r_furnace_iron_nugget_from_iron_ore_basic",
+      "componentId": "C6",
+      "layer": 1,
+      "inputItemIds": [
+        "item_iron_ore"
+      ],
+      "outputItemIds": [
+        "item_iron_nugget"
+      ]
+    },
+    {
+      "id": "opt-2-2",
+      "kind": "production",
+      "definitionId": "item_port_furnance_1",
+      "definitionNameKey": "registry.entity.item_port_furnance_1.name",
+      "recipeId": "r_furnace_iron_nugget_from_iron_ore_basic",
+      "componentId": "C7",
+      "layer": 1,
+      "inputItemIds": [
+        "item_iron_ore"
+      ],
+      "outputItemIds": [
+        "item_iron_nugget"
+      ]
+    },
+    {
+      "id": "opt-3-1",
+      "kind": "production",
+      "definitionId": "item_port_grinder_1",
+      "definitionNameKey": "registry.entity.item_port_grinder_1.name",
+      "recipeId": "r_crusher_originium_powder_basic",
+      "componentId": "C8",
+      "layer": 1,
+      "inputItemIds": [
+        "item_originium_ore"
+      ],
+      "outputItemIds": [
+        "item_originium_powder"
+      ]
+    },
+    {
+      "id": "opt-3-2",
+      "kind": "production",
+      "definitionId": "item_port_grinder_1",
+      "definitionNameKey": "registry.entity.item_port_grinder_1.name",
+      "recipeId": "r_crusher_originium_powder_basic",
+      "componentId": "C9",
+      "layer": 1,
+      "inputItemIds": [
+        "item_originium_ore"
+      ],
+      "outputItemIds": [
+        "item_originium_powder"
+      ]
+    },
+    {
+      "id": "opt-3-3",
+      "kind": "production",
+      "definitionId": "item_port_grinder_1",
+      "definitionNameKey": "registry.entity.item_port_grinder_1.name",
+      "recipeId": "r_crusher_originium_powder_basic",
+      "componentId": "C10",
+      "layer": 1,
+      "inputItemIds": [
+        "item_originium_ore"
+      ],
+      "outputItemIds": [
+        "item_originium_powder"
+      ]
+    },
+    {
+      "id": "opt-1-1",
+      "kind": "production",
+      "definitionId": "item_port_cmpt_mc_1",
+      "definitionNameKey": "registry.entity.item_port_cmpt_mc_1.name",
+      "recipeId": "r_component_iron_cmpt_from_iron_nugget_basic",
+      "componentId": "C11",
+      "layer": 2,
+      "inputItemIds": [
+        "item_iron_nugget"
+      ],
+      "outputItemIds": [
+        "item_iron_cmpt"
+      ]
+    },
+    {
+      "id": "opt-1-2",
+      "kind": "production",
+      "definitionId": "item_port_cmpt_mc_1",
+      "definitionNameKey": "registry.entity.item_port_cmpt_mc_1.name",
+      "recipeId": "r_component_iron_cmpt_from_iron_nugget_basic",
+      "componentId": "C12",
+      "layer": 2,
+      "inputItemIds": [
+        "item_iron_nugget"
+      ],
+      "outputItemIds": [
+        "item_iron_cmpt"
+      ]
+    },
+    {
+      "id": "opt-6-1",
+      "kind": "production",
+      "definitionId": "item_port_tools_asm_mc_1",
+      "definitionNameKey": "registry.entity.item_port_tools_asm_mc_1.name",
+      "recipeId": "r_packaging_battery_2_from_iron_cmpt_and_originium_powder_basic",
+      "componentId": "C13",
+      "layer": 3,
+      "inputItemIds": [
+        "item_iron_cmpt",
+        "item_originium_powder"
+      ],
+      "outputItemIds": [
+        "item_proc_battery_2"
+      ]
+    },
+    {
+      "id": "warehouse-storage-1",
+      "kind": "storage",
+      "definitionId": "item_port_storager_1",
+      "definitionNameKey": "registry.entity.item_port_storager_1.name",
+      "recipeId": null,
+      "componentId": "C14",
+      "layer": 4,
+      "inputItemIds": [
+        "item_proc_battery_2"
+      ],
+      "outputItemIds": []
+    }
+  ],
+  "edges": [
+    {
+      "sourceId": "opt-1-1",
+      "targetId": "opt-6-1",
+      "itemId": "item_iron_cmpt",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-1-2",
+      "targetId": "opt-6-1",
+      "itemId": "item_iron_cmpt",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-2-1",
+      "targetId": "opt-1-1",
+      "itemId": "item_iron_nugget",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-2-2",
+      "targetId": "opt-1-2",
+      "itemId": "item_iron_nugget",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-3-1",
+      "targetId": "opt-6-1",
+      "itemId": "item_originium_powder",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-3-2",
+      "targetId": "opt-6-1",
+      "itemId": "item_originium_powder",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-3-3",
+      "targetId": "opt-6-1",
+      "itemId": "item_originium_powder",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-6-1",
+      "targetId": "warehouse-storage-1",
+      "itemId": "item_proc_battery_2",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "warehouse-unloader-1",
+      "targetId": "opt-2-1",
+      "itemId": "item_iron_ore",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "warehouse-unloader-2",
+      "targetId": "opt-2-2",
+      "itemId": "item_iron_ore",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "warehouse-unloader-3",
+      "targetId": "opt-3-1",
+      "itemId": "item_originium_ore",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "warehouse-unloader-4",
+      "targetId": "opt-3-2",
+      "itemId": "item_originium_ore",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "warehouse-unloader-5",
+      "targetId": "opt-3-3",
+      "itemId": "item_originium_ore",
+      "laneCount": 1
+    }
+  ],
+  "components": [
+    {
+      "id": "C1",
+      "layer": 0,
+      "deviceIds": [
+        "warehouse-unloader-1"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C2",
+      "layer": 0,
+      "deviceIds": [
+        "warehouse-unloader-2"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C3",
+      "layer": 0,
+      "deviceIds": [
+        "warehouse-unloader-3"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C4",
+      "layer": 0,
+      "deviceIds": [
+        "warehouse-unloader-4"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C5",
+      "layer": 0,
+      "deviceIds": [
+        "warehouse-unloader-5"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C6",
+      "layer": 1,
+      "deviceIds": [
+        "opt-2-1"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C7",
+      "layer": 1,
+      "deviceIds": [
+        "opt-2-2"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C8",
+      "layer": 1,
+      "deviceIds": [
+        "opt-3-1"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C9",
+      "layer": 1,
+      "deviceIds": [
+        "opt-3-2"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C10",
+      "layer": 1,
+      "deviceIds": [
+        "opt-3-3"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C11",
+      "layer": 2,
+      "deviceIds": [
+        "opt-1-1"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C12",
+      "layer": 2,
+      "deviceIds": [
+        "opt-1-2"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C13",
+      "layer": 3,
+      "deviceIds": [
+        "opt-6-1"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C14",
+      "layer": 4,
+      "deviceIds": [
+        "warehouse-storage-1"
+      ],
+      "cyclic": false
+    }
+  ]
+}

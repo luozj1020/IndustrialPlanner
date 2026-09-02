@@ -1,0 +1,12 @@
+{
+  "width": 24,
+  "height": 24,
+  "name": "每分钟 60 铁块紧凑布局",
+  "targets": [
+    {
+      "itemId": "item_iron_nugget",
+      "perMinute": 60
+    }
+  ],
+  "allowRotate": true
+}

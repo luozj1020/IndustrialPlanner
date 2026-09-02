@@ -1,0 +1,6 @@
+node_modules/
+dist/
+*.tsbuildinfo
+optimized-blueprint.json
+optimization-report.json
+optimized-layout.svg

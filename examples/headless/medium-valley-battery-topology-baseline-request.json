@@ -1,0 +1,27 @@
+{
+  "width": 48,
+  "height": 64,
+  "routingClearance": 1,
+  "frontageConstraint": "hard",
+  "name": "Medium-capacity Valley battery topology-sequential baseline",
+  "targets": [
+    {
+      "itemId": "item_proc_battery_2",
+      "perMinute": 6
+    }
+  ],
+  "recipeChoices": {
+    "item_proc_battery_2": "r_packaging_battery_2_from_iron_cmpt_and_originium_powder_basic"
+  },
+  "search": {
+    "initialLayout": "topology-sequential",
+    "scope": "local",
+    "iterations": 0,
+    "routingVariants": 3,
+    "refinementCandidates": 6,
+    "cpSat": {
+      "enabled": false
+    },
+    "seed": 20260803
+  }
+}

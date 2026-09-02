@@ -1,0 +1,90 @@
+import type {
+  GridFloatPoint,
+  GridPoint,
+  GridRotation,
+} from "../shared/grid";
+import { createUuid } from "../shared/uuid";
+import type {
+  SlotLinkDefinition,
+  CacheLinkEndpointDefinition,
+  LinkType,
+} from "../shared/slot-link";
+
+export type { SlotLinkDefinition, CacheLinkEndpointDefinition, LinkType };
+
+export interface WorldEntity {
+  id: string;
+  definitionId: string;
+  position: GridPoint;
+  rotation: GridRotation;
+  config: Record<string, unknown>;
+  tags: string[];
+}
+
+export interface WorldDocumentViewportSettings {
+  readonly center: GridFloatPoint;
+  readonly gridSize: number;
+  readonly displayRotation: GridRotation;
+}
+
+export interface WorldDocumentSettings {
+  // 需要添加zoom
+  // 订正（2026-05-10）：缩放已以 `viewport.gridSize` 的形式进入文档设置。
+  // 需要添加viewportRect
+  // 订正（2026-05-10）：本轮只持久化 viewport center 与 gridSize；clientRect 仍归属 DOM runtime。
+  readonly viewport: WorldDocumentViewportSettings;
+  /** 电力模式：real（真实电力）或 infinite（无限电力），默认 infinite。 */
+  readonly powerMode: "real" | "infinite";
+  /** 手动覆盖总耗电（kW）。undefined = 按真实计算值。仅 powerMode === "real" 时生效。 */
+  readonly powerConsumptionOverride?: number;
+  readonly [key: string]: unknown;
+}
+
+export interface WorldDocument {
+  schemaVersion: number;
+  documentKey: string;
+  baseId: string;
+  meta: {
+    id: string;
+    name: string;
+    createdAt: string;
+    updatedAt: string;
+  };
+  entities: Record<string, WorldEntity>;
+  entityOrder: string[];
+  slotLinks: SlotLinkDefinition[];
+  documentSettings: WorldDocumentSettings;
+}
+
+export const DEFAULT_WORLD_BASE_ID = "wuling_protocol_core";
+
+export const createWorldDocument = (options: {
+  baseId?: string;
+} = {}): WorldDocument => {
+  const timestamp = new Date().toISOString();
+  return {
+    schemaVersion: 1,
+    documentKey: createUuid(),
+    baseId: options.baseId ?? DEFAULT_WORLD_BASE_ID,
+    meta: {
+      id: `world-${timestamp}`,
+      name: "Untitled World",
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    },
+    entities: {},
+    entityOrder: [],
+    slotLinks: [],
+    documentSettings: {
+      viewport: {
+        center: {
+          x: 0,
+          y: 0,
+        },
+        gridSize: 1,
+        displayRotation: 0,
+      },
+      powerMode: "infinite",
+    },
+  };
+};

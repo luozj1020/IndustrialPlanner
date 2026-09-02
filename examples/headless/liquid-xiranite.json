@@ -1,0 +1,15 @@
+{
+  "width": 24,
+  "height": 24,
+  "routingClearance": 1,
+  "name": "Liquid xiranite compact line",
+  "targets": [
+    { "itemId": "item_liquid_xiranite", "perMinute": 5 }
+  ],
+  "supplies": [
+    { "itemId": "item_iron_bottle_filled_liquid_xiranite", "perMinute": 5, "infinite": true }
+  ],
+  "recipeChoices": {
+    "item_liquid_xiranite": "r_liquid_dismantling_iron_bottle_xiranite_default"
+  }
+}

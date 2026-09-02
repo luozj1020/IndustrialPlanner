@@ -1,0 +1,1551 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1352" height="2604" viewBox="0 0 1352 2604">
+<title>Dense originium powder search-efficiency benchmark</title>
+<defs>
+<marker id="arrow-belt" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#f7b955"/></marker>
+<marker id="arrow-pipe" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#38bdf8"/></marker>
+</defs>
+<rect width="100%" height="100%" fill="#10151d"/>
+<text x="52" y="30" fill="#f2f5f8" font-family="sans-serif" font-size="18" font-weight="700">Dense originium powder search-efficiency benchmark</text>
+<g font-family="sans-serif" font-size="12" fill="#cbd5e1">
+<rect x="52" y="39" width="13" height="13" rx="2" fill="#475569"/><text x="71" y="50">Production</text>
+<line x1="162" y1="46" x2="192" y2="46" stroke="#f7b955" stroke-width="5"/><text x="200" y="50">Belt</text>
+<line x1="262" y1="46" x2="292" y2="46" stroke="#38bdf8" stroke-width="5"/><text x="300" y="50">Pipe</text>
+</g>
+<g stroke="#263241" stroke-width="1">
+<line x1="52" y1="108" x2="52" y2="2552"/>
+<line x1="104" y1="108" x2="104" y2="2552"/>
+<line x1="156" y1="108" x2="156" y2="2552"/>
+<line x1="208" y1="108" x2="208" y2="2552"/>
+<line x1="260" y1="108" x2="260" y2="2552"/>
+<line x1="312" y1="108" x2="312" y2="2552"/>
+<line x1="364" y1="108" x2="364" y2="2552"/>
+<line x1="416" y1="108" x2="416" y2="2552"/>
+<line x1="468" y1="108" x2="468" y2="2552"/>
+<line x1="520" y1="108" x2="520" y2="2552"/>
+<line x1="572" y1="108" x2="572" y2="2552"/>
+<line x1="624" y1="108" x2="624" y2="2552"/>
+<line x1="676" y1="108" x2="676" y2="2552"/>
+<line x1="728" y1="108" x2="728" y2="2552"/>
+<line x1="780" y1="108" x2="780" y2="2552"/>
+<line x1="832" y1="108" x2="832" y2="2552"/>
+<line x1="884" y1="108" x2="884" y2="2552"/>
+<line x1="936" y1="108" x2="936" y2="2552"/>
+<line x1="988" y1="108" x2="988" y2="2552"/>
+<line x1="1040" y1="108" x2="1040" y2="2552"/>
+<line x1="1092" y1="108" x2="1092" y2="2552"/>
+<line x1="1144" y1="108" x2="1144" y2="2552"/>
+<line x1="1196" y1="108" x2="1196" y2="2552"/>
+<line x1="1248" y1="108" x2="1248" y2="2552"/>
+<line x1="1300" y1="108" x2="1300" y2="2552"/>
+<line x1="52" y1="108" x2="1300" y2="108"/>
+<line x1="52" y1="160" x2="1300" y2="160"/>
+<line x1="52" y1="212" x2="1300" y2="212"/>
+<line x1="52" y1="264" x2="1300" y2="264"/>
+<line x1="52" y1="316" x2="1300" y2="316"/>
+<line x1="52" y1="368" x2="1300" y2="368"/>
+<line x1="52" y1="420" x2="1300" y2="420"/>
+<line x1="52" y1="472" x2="1300" y2="472"/>
+<line x1="52" y1="524" x2="1300" y2="524"/>
+<line x1="52" y1="576" x2="1300" y2="576"/>
+<line x1="52" y1="628" x2="1300" y2="628"/>
+<line x1="52" y1="680" x2="1300" y2="680"/>
+<line x1="52" y1="732" x2="1300" y2="732"/>
+<line x1="52" y1="784" x2="1300" y2="784"/>
+<line x1="52" y1="836" x2="1300" y2="836"/>
+<line x1="52" y1="888" x2="1300" y2="888"/>
+<line x1="52" y1="940" x2="1300" y2="940"/>
+<line x1="52" y1="992" x2="1300" y2="992"/>
+<line x1="52" y1="1044" x2="1300" y2="1044"/>
+<line x1="52" y1="1096" x2="1300" y2="1096"/>
+<line x1="52" y1="1148" x2="1300" y2="1148"/>
+<line x1="52" y1="1200" x2="1300" y2="1200"/>
+<line x1="52" y1="1252" x2="1300" y2="1252"/>
+<line x1="52" y1="1304" x2="1300" y2="1304"/>
+<line x1="52" y1="1356" x2="1300" y2="1356"/>
+<line x1="52" y1="1408" x2="1300" y2="1408"/>
+<line x1="52" y1="1460" x2="1300" y2="1460"/>
+<line x1="52" y1="1512" x2="1300" y2="1512"/>
+<line x1="52" y1="1564" x2="1300" y2="1564"/>
+<line x1="52" y1="1616" x2="1300" y2="1616"/>
+<line x1="52" y1="1668" x2="1300" y2="1668"/>
+<line x1="52" y1="1720" x2="1300" y2="1720"/>
+<line x1="52" y1="1772" x2="1300" y2="1772"/>
+<line x1="52" y1="1824" x2="1300" y2="1824"/>
+<line x1="52" y1="1876" x2="1300" y2="1876"/>
+<line x1="52" y1="1928" x2="1300" y2="1928"/>
+<line x1="52" y1="1980" x2="1300" y2="1980"/>
+<line x1="52" y1="2032" x2="1300" y2="2032"/>
+<line x1="52" y1="2084" x2="1300" y2="2084"/>
+<line x1="52" y1="2136" x2="1300" y2="2136"/>
+<line x1="52" y1="2188" x2="1300" y2="2188"/>
+<line x1="52" y1="2240" x2="1300" y2="2240"/>
+<line x1="52" y1="2292" x2="1300" y2="2292"/>
+<line x1="52" y1="2344" x2="1300" y2="2344"/>
+<line x1="52" y1="2396" x2="1300" y2="2396"/>
+<line x1="52" y1="2448" x2="1300" y2="2448"/>
+<line x1="52" y1="2500" x2="1300" y2="2500"/>
+<line x1="52" y1="2552" x2="1300" y2="2552"/>
+</g>
+<g>
+<rect x="54" y="630" width="152" height="152" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="130" y="702" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">crusher_originium_po…</text>
+<text x="130" y="720" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">opt-2-1</text>
+<circle cx="182" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="130" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="78" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="182" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="130" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="78" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="210" y="630" width="152" height="152" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="286" y="702" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">crusher_originium_po…</text>
+<text x="286" y="720" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">opt-2-2</text>
+<circle cx="338" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="286" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="234" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="338" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="286" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="234" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="366" y="630" width="152" height="152" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="442" y="702" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">crusher_originium_po…</text>
+<text x="442" y="720" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">opt-2-3</text>
+<circle cx="494" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="442" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="390" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="494" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="442" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="390" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="522" y="630" width="152" height="152" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="598" y="702" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">crusher_originium_po…</text>
+<text x="598" y="720" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">opt-2-4</text>
+<circle cx="650" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="598" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="546" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="650" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="598" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="546" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="678" y="630" width="152" height="152" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="754" y="702" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">crusher_originium_po…</text>
+<text x="754" y="720" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">opt-2-5</text>
+<circle cx="806" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="754" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="702" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="806" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="754" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="702" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="834" y="630" width="152" height="152" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="910" y="702" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">crusher_originium_po…</text>
+<text x="910" y="720" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">opt-2-6</text>
+<circle cx="962" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="910" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="858" cy="654" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="962" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="910" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="858" cy="758" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="54" y="1098" width="256" height="256" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="182" y="1222" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">seedcol_moss_seed_from_moss_basic</text>
+<text x="182" y="1240" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">cycle-1-2-1</text>
+<circle cx="286" cy="1122" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="234" cy="1122" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="182" cy="1122" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="130" cy="1122" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="78" cy="1122" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="286" cy="1330" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="234" cy="1330" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="182" cy="1330" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="130" cy="1330" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="78" cy="1330" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="730" y="1098" width="256" height="256" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="858" y="1222" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">planter_moss_from_moss_seed_basic</text>
+<text x="858" y="1240" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">cycle-1-1-1</text>
+<circle cx="754" cy="1330" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="806" cy="1330" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="858" cy="1330" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="910" cy="1330" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="962" cy="1330" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="754" cy="1122" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="806" cy="1122" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="858" cy="1122" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="910" cy="1122" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="962" cy="1122" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="158" y="1566" width="256" height="256" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="286" y="1690" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">planter_moss_from_moss_seed_basic</text>
+<text x="286" y="1708" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">cycle-1-1-2</text>
+<circle cx="182" cy="1590" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="182" cy="1642" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="182" cy="1694" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="182" cy="1746" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="182" cy="1798" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="390" cy="1590" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="390" cy="1642" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="390" cy="1694" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="390" cy="1746" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="390" cy="1798" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="470" y="1566" width="152" height="152" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="546" y="1638" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">crusher_moss_powder_…</text>
+<text x="546" y="1656" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">opt-1-1</text>
+<circle cx="494" cy="1590" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="494" cy="1642" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="494" cy="1694" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="598" cy="1590" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="598" cy="1642" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="598" cy="1694" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="54" y="2190" width="308" height="204" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="208" y="2288" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">thickener_originium_enr_powder_from_origi…</text>
+<text x="208" y="2306" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">opt-6-1</text>
+<circle cx="338" cy="2214" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="286" cy="2214" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="234" cy="2214" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="182" cy="2214" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="130" cy="2214" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="78" cy="2214" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="338" cy="2370" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="286" cy="2370" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="234" cy="2370" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="182" cy="2370" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="130" cy="2370" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="78" cy="2370" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="366" y="2190" width="308" height="204" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="520" y="2288" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">thickener_originium_enr_powder_from_origi…</text>
+<text x="520" y="2306" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">opt-6-2</text>
+<circle cx="650" cy="2214" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="598" cy="2214" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="546" cy="2214" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="494" cy="2214" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="442" cy="2214" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="390" cy="2214" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="650" cy="2370" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="598" cy="2370" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="546" cy="2370" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="494" cy="2370" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="442" cy="2370" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="390" cy="2370" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="678" y="2190" width="308" height="204" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="832" y="2288" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">thickener_originium_enr_powder_from_origi…</text>
+<text x="832" y="2306" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">opt-6-3</text>
+<circle cx="962" cy="2214" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="910" cy="2214" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="858" cy="2214" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="806" cy="2214" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="754" cy="2214" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="702" cy="2214" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="962" cy="2370" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="910" cy="2370" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="858" cy="2370" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="806" cy="2370" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="754" cy="2370" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="702" cy="2370" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="834" y="2398" width="152" height="152" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="910" y="2470" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_storager_1</text>
+<text x="910" y="2488" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">warehouse-storage-1</text>
+<circle cx="858" cy="2422" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="858" cy="2474" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="858" cy="2526" r="4" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+<circle cx="962" cy="2422" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="962" cy="2474" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+<circle cx="962" cy="2526" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="54" y="110" width="204" height="204" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="156" y="208" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_log_hongs_bus_sou…</text>
+<text x="156" y="226" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">warehouse-bus-source</text>
+</g>
+<g>
+<rect x="54" y="318" width="412" height="204" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="260" y="416" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_log_hongs_bus</text>
+<text x="260" y="434" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">warehouse-bus-1</text>
+</g>
+<g>
+<rect x="470" y="318" width="412" height="204" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="676" y="416" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_log_hongs_bus</text>
+<text x="676" y="434" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">warehouse-bus-2</text>
+</g>
+<g>
+<rect x="886" y="318" width="412" height="204" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="1092" y="416" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_log_hongs_bus</text>
+<text x="1092" y="434" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">warehouse-bus-3</text>
+</g>
+<g>
+<rect x="54" y="526" width="152" height="48" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="130" y="546" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_unloader_1</text>
+<text x="130" y="564" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">warehouse-unloader-1</text>
+<circle cx="130" cy="550" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="210" y="526" width="152" height="48" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="286" y="546" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_unloader_1</text>
+<text x="286" y="564" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">warehouse-unloader-2</text>
+<circle cx="286" cy="550" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="366" y="526" width="152" height="48" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="442" y="546" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_unloader_1</text>
+<text x="442" y="564" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">warehouse-unloader-3</text>
+<circle cx="442" cy="550" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="522" y="526" width="152" height="48" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="598" y="546" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_unloader_1</text>
+<text x="598" y="564" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">warehouse-unloader-4</text>
+<circle cx="598" cy="550" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="678" y="526" width="152" height="48" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="754" y="546" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_unloader_1</text>
+<text x="754" y="564" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">warehouse-unloader-5</text>
+<circle cx="754" cy="550" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="834" y="526" width="152" height="48" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="910" y="546" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_unloader_1</text>
+<text x="910" y="564" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">warehouse-unloader-6</text>
+<circle cx="910" cy="550" r="4" fill="#f7b955" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="731" y="1047" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="754,1093.4 754,1070 730.6,1070" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="679" y="1047" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="678.6" y1="1070" x2="725.4" y2="1070" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="702" y1="1046.6" x2="702" y2="1093.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="702" cy="1070" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="627" y="1047" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="626.6" y1="1070" x2="673.4" y2="1070" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="650" y1="1046.6" x2="650" y2="1093.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="650" cy="1070" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="575" y="1047" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="574.6" y1="1070" x2="621.4" y2="1070" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="598" y1="1046.6" x2="598" y2="1093.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="598" cy="1070" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="523" y="1047" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="569.4,1070 546,1070 522.6,1070" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="471" y="1047" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="517.4,1070 494,1070 470.6,1070" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="419" y="1047" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="418.6" y1="1070" x2="465.4" y2="1070" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="442" y1="1046.6" x2="442" y2="1093.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="442" cy="1070" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="367" y="1047" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="366.6" y1="1070" x2="413.4" y2="1070" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="390" y1="1046.6" x2="390" y2="1093.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="390" cy="1070" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="315" y="1047" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="314.6" y1="1070" x2="361.4" y2="1070" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="338" y1="1046.6" x2="338" y2="1093.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="338" cy="1070" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="263" y="1047" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="309.4,1070 286,1070 286,1093.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="263" y="1359" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="286,1358.6 286,1382 309.4,1382" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="315" y="1359" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="314.6" y1="1382" x2="361.4" y2="1382" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="338" y1="1358.6" x2="338" y2="1405.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="338" cy="1382" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="367" y="1359" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="366.6" y1="1382" x2="413.4" y2="1382" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="390" y1="1358.6" x2="390" y2="1405.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="390" cy="1382" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="419" y="1359" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="418.6" y1="1382" x2="465.4" y2="1382" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="442" y1="1358.6" x2="442" y2="1405.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="442" cy="1382" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="471" y="1359" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="470.6,1382 494,1382 517.4,1382" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="523" y="1359" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="522.6,1382 546,1382 569.4,1382" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="575" y="1359" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="574.6" y1="1382" x2="621.4" y2="1382" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="598" y1="1358.6" x2="598" y2="1405.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="598" cy="1382" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="627" y="1359" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="626.6" y1="1382" x2="673.4" y2="1382" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="650" y1="1358.6" x2="650" y2="1405.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="650" cy="1382" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="679" y="1359" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="678.6" y1="1382" x2="725.4" y2="1382" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="702" y1="1358.6" x2="702" y2="1405.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="702" cy="1382" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="731" y="1359" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="730.6,1382 754,1382 754,1358.6" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="159" y="787" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="182,786.6 182,810 205.4,810" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="211" y="787" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="210.6,810 234,810 257.4,810" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="263" y="787" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="262.6,810 286,810 309.4,810" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="315" y="787" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="314.6" y1="810" x2="361.4" y2="810" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="338" y1="786.6" x2="338" y2="833.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="338" cy="810" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="367" y="787" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="366.6,810 390,810 390,833.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="367" y="839" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="390,838.6 390,862 390,885.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="367" y="891" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="390,890.6 390,914 390,937.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="367" y="943" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="390,942.6 390,966 390,989.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="367" y="995" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="390,994.6 390,1018 390,1041.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="367" y="1099" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="390,1098.6 390,1122 390,1145.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="367" y="1151" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="390,1150.6 390,1174 390,1197.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="367" y="1203" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="390,1202.6 390,1226 390,1249.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="367" y="1255" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="390,1254.6 390,1278 390,1301.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="367" y="1307" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="390,1306.6 390,1330 390,1353.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="367" y="1411" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="390,1410.6 390,1434 390,1457.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="367" y="1463" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="390,1462.6 390,1486 390,1509.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="367" y="1515" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="390,1514.6 390,1538 413.4,1538" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="419" y="1515" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="418.6,1538 442,1538 442,1561.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="419" y="1567" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="418.6" y1="1590" x2="465.4" y2="1590" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="442" y1="1566.6" x2="442" y2="1613.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="442" cy="1590" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="419" y="1619" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="442,1618.6 442,1642 442,1665.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="419" y="1671" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="442,1670.6 442,1694 442,1717.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="419" y="1723" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="442,1722.6 442,1746 442,1769.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="419" y="1775" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="442,1774.6 442,1798 442,1821.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="419" y="1827" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="442,1826.6 442,1850 418.6,1850" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="367" y="1827" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="413.4,1850 390,1850 366.6,1850" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="315" y="1827" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="361.4,1850 338,1850 314.6,1850" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="263" y="1827" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="309.4,1850 286,1850 262.6,1850" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="211" y="1827" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="257.4,1850 234,1850 234,1873.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="211" y="1879" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="234,1878.6 234,1902 234,1925.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="211" y="1931" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="234,1930.6 234,1954 234,1977.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="211" y="1983" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="234,1982.6 234,2006 234,2029.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="211" y="2035" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="234,2034.6 234,2058 234,2081.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="211" y="2087" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="234,2086.6 234,2110 210.6,2110" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="159" y="2087" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="158.6" y1="2110" x2="205.4" y2="2110" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="182" y1="2086.6" x2="182" y2="2133.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="182" cy="2110" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="107" y="2087" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="153.4,2110 130,2110 130,2133.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="107" y="2139" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="130,2138.6 130,2162 130,2185.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="315" y="839" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="338,838.6 338,862 338,885.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="315" y="891" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="338,890.6 338,914 338,937.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="315" y="943" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="338,942.6 338,966 338,989.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="315" y="995" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="338,994.6 338,1018 338,1041.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="315" y="1099" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="338,1098.6 338,1122 338,1145.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="315" y="1151" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="338,1150.6 338,1174 338,1197.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="315" y="1203" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="338,1202.6 338,1226 338,1249.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="315" y="1255" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="338,1254.6 338,1278 338,1301.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="315" y="1307" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="338,1306.6 338,1330 338,1353.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="315" y="1411" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="338,1410.6 338,1434 314.6,1434" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="263" y="1411" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="309.4,1434 286,1434 262.6,1434" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="211" y="1411" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="257.4,1434 234,1434 210.6,1434" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="159" y="1411" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="205.4,1434 182,1434 158.6,1434" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="107" y="1411" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="153.4,1434 130,1434 130,1457.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="107" y="1463" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="130,1462.6 130,1486 130,1509.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="107" y="1515" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="130,1514.6 130,1538 130,1561.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="107" y="1567" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="130,1566.6 130,1590 130,1613.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="107" y="1619" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="130,1618.6 130,1642 130,1665.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="107" y="1671" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="106.6" y1="1694" x2="153.4" y2="1694" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="130" y1="1670.6" x2="130" y2="1717.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="130" cy="1694" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="107" y="1723" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="130,1722.6 130,1746 130,1769.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="107" y="1775" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="130,1774.6 130,1798 130,1821.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="107" y="1827" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="130,1826.6 130,1850 153.4,1850" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="159" y="1827" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="158.6,1850 182,1850 182,1873.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="159" y="1879" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="182,1878.6 182,1902 182,1925.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="159" y="1931" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="182,1930.6 182,1954 182,1977.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="159" y="1983" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="182,1982.6 182,2006 182,2029.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="159" y="2035" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="182,2034.6 182,2058 182,2081.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="159" y="2139" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="182,2138.6 182,2162 182,2185.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="419" y="787" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="442,786.6 442,810 442,833.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="419" y="839" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="442,838.6 442,862 442,885.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="419" y="891" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="442,890.6 442,914 442,937.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="419" y="943" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="442,942.6 442,966 442,989.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="419" y="995" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="442,994.6 442,1018 442,1041.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="419" y="1099" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="442,1098.6 442,1122 442,1145.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="419" y="1151" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="442,1150.6 442,1174 442,1197.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="419" y="1203" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="442,1202.6 442,1226 442,1249.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="419" y="1255" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="442,1254.6 442,1278 442,1301.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="419" y="1307" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="442,1306.6 442,1330 442,1353.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="419" y="1411" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="442,1410.6 442,1434 465.4,1434" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="471" y="1411" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="470.6,1434 494,1434 517.4,1434" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="523" y="1411" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="522.6,1434 546,1434 569.4,1434" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="575" y="1411" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="574.6" y1="1434" x2="621.4" y2="1434" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="598" y1="1410.6" x2="598" y2="1457.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="598" cy="1434" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="627" y="1411" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="626.6" y1="1434" x2="673.4" y2="1434" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="650" y1="1410.6" x2="650" y2="1457.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="650" cy="1434" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="679" y="1411" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="678.6" y1="1434" x2="725.4" y2="1434" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="702" y1="1410.6" x2="702" y2="1457.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="702" cy="1434" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="731" y="1411" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="730.6,1434 754,1434 754,1457.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="731" y="1463" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="730.6" y1="1486" x2="777.4" y2="1486" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="754" y1="1462.6" x2="754" y2="1509.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="754" cy="1486" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="731" y="1515" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="730.6" y1="1538" x2="777.4" y2="1538" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="754" y1="1514.6" x2="754" y2="1561.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="754" cy="1538" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="731" y="1567" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="730.6" y1="1590" x2="777.4" y2="1590" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="754" y1="1566.6" x2="754" y2="1613.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="754" cy="1590" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="731" y="1619" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="730.6" y1="1642" x2="777.4" y2="1642" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="754" y1="1618.6" x2="754" y2="1665.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="754" cy="1642" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="731" y="1671" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="754,1670.6 754,1694 754,1717.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="731" y="1723" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="754,1722.6 754,1746 754,1769.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="731" y="1775" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="754,1774.6 754,1798 754,1821.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="731" y="1827" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="754,1826.6 754,1850 754,1873.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="731" y="1879" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="754,1878.6 754,1902 754,1925.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="731" y="1931" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="730.6" y1="1954" x2="777.4" y2="1954" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="754" y1="1930.6" x2="754" y2="1977.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="754" cy="1954" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="731" y="1983" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="730.6" y1="2006" x2="777.4" y2="2006" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="754" y1="1982.6" x2="754" y2="2029.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="754" cy="2006" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="731" y="2035" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="754,2034.6 754,2058 730.6,2058" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="679" y="2035" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="678.6" y1="2058" x2="725.4" y2="2058" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="702" y1="2034.6" x2="702" y2="2081.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="702" cy="2058" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="627" y="2035" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="626.6" y1="2058" x2="673.4" y2="2058" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="650" y1="2034.6" x2="650" y2="2081.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="650" cy="2058" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="575" y="2035" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="621.4,2058 598,2058 574.6,2058" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="523" y="2035" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="522.6" y1="2058" x2="569.4" y2="2058" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="546" y1="2034.6" x2="546" y2="2081.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="546" cy="2058" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="471" y="2035" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="517.4,2058 494,2058 470.6,2058" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="419" y="2035" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="465.4,2058 442,2058 442,2081.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="419" y="2087" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="442,2086.6 442,2110 442,2133.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="419" y="2139" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="442,2138.6 442,2162 442,2185.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="627" y="787" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="650,786.6 650,810 673.4,810" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="679" y="787" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="678.6,810 702,810 702,833.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="679" y="839" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="678.6" y1="862" x2="725.4" y2="862" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="702" y1="838.6" x2="702" y2="885.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="702" cy="862" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="679" y="891" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="702,890.6 702,914 702,937.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="679" y="943" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="702,942.6 702,966 702,989.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="679" y="995" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="678.6" y1="1018" x2="725.4" y2="1018" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="702" y1="994.6" x2="702" y2="1041.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="702" cy="1018" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="679" y="1099" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="702,1098.6 702,1122 702,1145.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="679" y="1151" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="702,1150.6 702,1174 702,1197.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="679" y="1203" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="702,1202.6 702,1226 702,1249.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="679" y="1255" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="702,1254.6 702,1278 702,1301.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="679" y="1307" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="702,1306.6 702,1330 702,1353.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="679" y="1463" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="678.6" y1="1486" x2="725.4" y2="1486" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="702" y1="1462.6" x2="702" y2="1509.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="702" cy="1486" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="679" y="1515" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="678.6" y1="1538" x2="725.4" y2="1538" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="702" y1="1514.6" x2="702" y2="1561.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="702" cy="1538" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="679" y="1567" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="678.6" y1="1590" x2="725.4" y2="1590" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="702" y1="1566.6" x2="702" y2="1613.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="702" cy="1590" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="679" y="1619" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="678.6" y1="1642" x2="725.4" y2="1642" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="702" y1="1618.6" x2="702" y2="1665.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="702" cy="1642" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="679" y="1671" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="702,1670.6 702,1694 702,1717.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="679" y="1723" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="702,1722.6 702,1746 702,1769.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="679" y="1775" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="702,1774.6 702,1798 702,1821.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="679" y="1827" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="702,1826.6 702,1850 702,1873.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="679" y="1879" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="702,1878.6 702,1902 702,1925.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="679" y="1931" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="678.6" y1="1954" x2="725.4" y2="1954" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="702" y1="1930.6" x2="702" y2="1977.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="702" cy="1954" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="679" y="1983" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="678.6" y1="2006" x2="725.4" y2="2006" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="702" y1="1982.6" x2="702" y2="2029.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="702" cy="2006" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="679" y="2087" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="702,2086.6 702,2110 678.6,2110" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="627" y="2087" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="626.6" y1="2110" x2="673.4" y2="2110" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="650" y1="2086.6" x2="650" y2="2133.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="650" cy="2110" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="575" y="2087" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="621.4,2110 598,2110 598,2133.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="575" y="2139" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="598,2138.6 598,2162 598,2185.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="627" y="1567" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="626.6,1590 650,1590 673.4,1590" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="783" y="1567" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="782.6" y1="1590" x2="829.4" y2="1590" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="806" y1="1566.6" x2="806" y2="1613.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="806" cy="1590" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="835" y="1567" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="834.6" y1="1590" x2="881.4" y2="1590" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="858" y1="1566.6" x2="858" y2="1613.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="858" cy="1590" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="887" y="1567" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="886.6,1590 910,1590 910,1613.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="887" y="1619" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="886.6" y1="1642" x2="933.4" y2="1642" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="910" y1="1618.6" x2="910" y2="1665.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="910" cy="1642" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="887" y="1671" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="910,1670.6 910,1694 910,1717.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="887" y="1723" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="910,1722.6 910,1746 910,1769.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="887" y="1775" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="910,1774.6 910,1798 910,1821.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="887" y="1827" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="910,1826.6 910,1850 910,1873.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="887" y="1879" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="910,1878.6 910,1902 910,1925.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="887" y="1931" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="886.6" y1="1954" x2="933.4" y2="1954" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="910" y1="1930.6" x2="910" y2="1977.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="910" cy="1954" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="887" y="1983" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="910,1982.6 910,2006 886.6,2006" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="835" y="1983" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="834.6" y1="2006" x2="881.4" y2="2006" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="858" y1="1982.6" x2="858" y2="2029.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="858" cy="2006" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="783" y="1983" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="782.6" y1="2006" x2="829.4" y2="2006" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="806" y1="1982.6" x2="806" y2="2029.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="806" cy="2006" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="627" y="1983" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="626.6" y1="2006" x2="673.4" y2="2006" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="650" y1="1982.6" x2="650" y2="2029.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="650" cy="2006" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="575" y="1983" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="621.4,2006 598,2006 574.6,2006" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="523" y="1983" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="522.6" y1="2006" x2="569.4" y2="2006" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="546" y1="1982.6" x2="546" y2="2029.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="546" cy="2006" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="471" y="1983" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="517.4,2006 494,2006 470.6,2006" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="419" y="1983" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="465.4,2006 442,2006 418.6,2006" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="367" y="1983" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="413.4,2006 390,2006 366.6,2006" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="315" y="1983" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="361.4,2006 338,2006 314.6,2006" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="263" y="1983" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="309.4,2006 286,2006 286,2029.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="263" y="2035" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="286,2034.6 286,2058 286,2081.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="263" y="2087" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="286,2086.6 286,2110 286,2133.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="263" y="2139" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="286,2138.6 286,2162 286,2185.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="627" y="1671" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="626.6,1694 650,1694 650,1717.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="627" y="1723" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="650,1722.6 650,1746 650,1769.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="627" y="1775" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="650,1774.6 650,1798 650,1821.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="627" y="1827" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="650,1826.6 650,1850 650,1873.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="627" y="1879" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="650,1878.6 650,1902 650,1925.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="627" y="1931" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="626.6" y1="1954" x2="673.4" y2="1954" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="650" y1="1930.6" x2="650" y2="1977.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="650" cy="1954" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="627" y="2139" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="650,2138.6 650,2162 673.4,2162" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="679" y="2139" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="678.6,2162 702,2162 702,2185.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="315" y="2399" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="338,2398.6 338,2422 361.4,2422" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="367" y="2399" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="366.6,2422 390,2422 413.4,2422" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="419" y="2399" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="418.6,2422 442,2422 465.4,2422" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="471" y="2399" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="470.6,2422 494,2422 517.4,2422" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="523" y="2399" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="522.6,2422 546,2422 569.4,2422" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="575" y="2399" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="574.6,2422 598,2422 621.4,2422" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="627" y="2399" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="626.6" y1="2422" x2="673.4" y2="2422" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="650" y1="2398.6" x2="650" y2="2445.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="650" cy="2422" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="679" y="2399" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="678.6,2422 702,2422 725.4,2422" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="731" y="2399" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="730.6" y1="2422" x2="777.4" y2="2422" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="754" y1="2398.6" x2="754" y2="2445.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="754" cy="2422" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="783" y="2399" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="782.6,2422 806,2422 829.4,2422" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="627" y="1619" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="626.6,1642 650,1642 673.4,1642" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="783" y="1619" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="782.6" y1="1642" x2="829.4" y2="1642" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="806" y1="1618.6" x2="806" y2="1665.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="806" cy="1642" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="835" y="1619" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="834.6" y1="1642" x2="881.4" y2="1642" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="858" y1="1618.6" x2="858" y2="1665.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="858" cy="1642" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="939" y="1619" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="938.6,1642 962,1642 962,1665.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="939" y="1671" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="962,1670.6 962,1694 962,1717.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="939" y="1723" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="962,1722.6 962,1746 962,1769.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="939" y="1775" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="962,1774.6 962,1798 962,1821.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="939" y="1827" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="962,1826.6 962,1850 962,1873.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="939" y="1879" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="962,1878.6 962,1902 962,1925.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="939" y="1931" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="962,1930.6 962,1954 938.6,1954" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="835" y="1931" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="834.6" y1="1954" x2="881.4" y2="1954" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="858" y1="1930.6" x2="858" y2="1977.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="858" cy="1954" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="783" y="1931" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="782.6" y1="1954" x2="829.4" y2="1954" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="806" y1="1930.6" x2="806" y2="1977.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="806" cy="1954" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="575" y="1931" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="621.4,1954 598,1954 574.6,1954" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="523" y="1931" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="569.4,1954 546,1954 546,1977.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="523" y="2087" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="546,2086.6 546,2110 546,2133.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="523" y="2139" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="546,2138.6 546,2162 546,2185.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="55" y="1359" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="78,1358.6 78,1382 78,1405.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="55" y="1411" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="78,1410.6 78,1434 78,1457.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="55" y="1463" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="78,1462.6 78,1486 78,1509.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="55" y="1515" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="78,1514.6 78,1538 78,1561.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="55" y="1567" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="78,1566.6 78,1590 78,1613.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="55" y="1619" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="78,1618.6 78,1642 78,1665.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="55" y="1671" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="78,1670.6 78,1694 101.4,1694" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="627" y="2451" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="650,2450.6 650,2474 673.4,2474" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="679" y="2451" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="678.6,2474 702,2474 725.4,2474" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="731" y="2451" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="730.6" y1="2474" x2="777.4" y2="2474" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="754" y1="2450.6" x2="754" y2="2497.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="754" cy="2474" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="783" y="2451" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="782.6,2474 806,2474 829.4,2474" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="107" y="579" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="130,578.6 130,602 130,625.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="263" y="579" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="286,578.6 286,602 286,625.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="419" y="579" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="442,578.6 442,602 442,625.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="575" y="579" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="598,578.6 598,602 598,625.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="731" y="579" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="754,578.6 754,602 754,625.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="887" y="579" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="910,578.6 910,602 910,625.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="731" y="2503" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="754,2502.6 754,2526 777.4,2526" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="783" y="2503" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="782.6,2526 806,2526 829.4,2526" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="731" y="787" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="754,786.6 754,810 754,833.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="731" y="839" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="730.6" y1="862" x2="777.4" y2="862" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="754" y1="838.6" x2="754" y2="885.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="754" cy="862" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="731" y="891" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="754,890.6 754,914 754,937.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="731" y="943" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="754,942.6 754,966 754,989.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="731" y="995" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="754,994.6 754,1018 730.6,1018" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="627" y="995" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="673.4,1018 650,1018 650,1041.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="627" y="1099" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="650,1098.6 650,1122 650,1145.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="627" y="1151" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="650,1150.6 650,1174 650,1197.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="627" y="1203" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="650,1202.6 650,1226 650,1249.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="627" y="1255" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="650,1254.6 650,1278 650,1301.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="627" y="1307" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="650,1306.6 650,1330 650,1353.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="627" y="1463" width="46" height="46" rx="5" fill="#3b3020" stroke="#f7b955" stroke-width="2"/>
+<line x1="626.6" y1="1486" x2="673.4" y2="1486" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<line x1="650" y1="1462.6" x2="650" y2="1509.4" stroke="#f7b955" stroke-width="7" stroke-linecap="round"/>
+<circle cx="650" cy="1486" r="5" fill="#10151d" stroke="#f7b955" stroke-width="2"/>
+</g>
+<g>
+<rect x="627" y="1515" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="650,1514.6 650,1538 673.4,1538" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="783" y="1515" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="782.6,1538 806,1538 806,1561.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="783" y="1671" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="806,1670.6 806,1694 806,1717.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="783" y="1723" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="806,1722.6 806,1746 806,1769.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="783" y="1775" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="806,1774.6 806,1798 806,1821.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="783" y="1827" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="806,1826.6 806,1850 806,1873.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="783" y="1879" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="806,1878.6 806,1902 806,1925.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="783" y="2035" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="806,2034.6 806,2058 806,2081.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="783" y="2087" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="806,2086.6 806,2110 806,2133.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="783" y="2139" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="806,2138.6 806,2162 806,2185.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="887" y="787" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="910,786.6 910,810 910,833.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="887" y="839" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="910,838.6 910,862 886.6,862" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="835" y="839" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="881.4,862 858,862 834.6,862" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="783" y="839" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="829.4,862 806,862 782.6,862" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="627" y="839" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="673.4,862 650,862 626.6,862" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="575" y="839" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="621.4,862 598,862 598,885.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="575" y="891" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="598,890.6 598,914 598,937.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="575" y="943" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="598,942.6 598,966 598,989.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="575" y="995" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="598,994.6 598,1018 598,1041.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="575" y="1099" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="598,1098.6 598,1122 598,1145.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="575" y="1151" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="598,1150.6 598,1174 598,1197.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="575" y="1203" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="598,1202.6 598,1226 598,1249.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="575" y="1255" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="598,1254.6 598,1278 598,1301.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="575" y="1307" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="598,1306.6 598,1330 598,1353.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="575" y="1463" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="598,1462.6 598,1486 621.4,1486" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="783" y="1463" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="782.6,1486 806,1486 829.4,1486" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="835" y="1463" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="834.6,1486 858,1486 858,1509.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="835" y="1515" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="858,1514.6 858,1538 858,1561.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="835" y="1671" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="858,1670.6 858,1694 858,1717.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="835" y="1723" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="858,1722.6 858,1746 858,1769.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="835" y="1775" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="858,1774.6 858,1798 858,1821.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="835" y="1827" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="858,1826.6 858,1850 858,1873.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="835" y="1879" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="858,1878.6 858,1902 858,1925.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="835" y="2035" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="858,2034.6 858,2058 858,2081.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="835" y="2087" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="858,2086.6 858,2110 881.4,2110" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="887" y="2087" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="886.6,2110 910,2110 910,2133.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="887" y="2139" width="46" height="46" rx="5" fill="#3b3020"/>
+<polyline points="910,2138.6 910,2162 910,2185.4" fill="none" stroke="#f7b955" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-belt)"/>
+</g>
+<g>
+<rect x="366" y="1878" width="100" height="100" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="416" y="1924" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_pow…</text>
+<text x="416" y="1942" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">power-diffuser-1</text>
+</g>
+<g>
+<rect x="210" y="838" width="100" height="100" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="260" y="884" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_pow…</text>
+<text x="260" y="902" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">power-diffuser-2</text>
+</g>
+<g>
+<rect x="782" y="890" width="100" height="100" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="2"/>
+<text x="832" y="936" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_pow…</text>
+<text x="832" y="954" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">power-diffuser-3</text>
+</g>
+</svg>

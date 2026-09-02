@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="3820" height="1600" viewBox="0 0 3820 1600">
+<title>High-capacity Valley battery topology-sequential baseline — material graph</title>
+<defs>
+<marker id="material-arrow" markerWidth="14" markerHeight="14" refX="11" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L0,10 L12,5 z" fill="#f8fafc" stroke="#0891b2" stroke-width="1"/></marker>
+<filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#020617" flood-opacity="0.55"/></filter>
+</defs>
+<rect width="100%" height="100%" fill="#0b1120"/>
+<text x="60" y="32" fill="#f8fafc" font-family="sans-serif" font-size="20" font-weight="700">High-capacity Valley battery topology-sequential baseline</text>
+<text x="60" y="56" fill="#94a3b8" font-family="sans-serif" font-size="13">Geometry-free device material graph · arrows are allocated logistics lanes</text>
+<text x="210" y="80" text-anchor="middle" fill="#64748b" font-family="monospace" font-size="13">LAYER 0</text>
+<text x="580" y="80" text-anchor="middle" fill="#64748b" font-family="monospace" font-size="13">LAYER 1</text>
+<text x="950" y="80" text-anchor="middle" fill="#64748b" font-family="monospace" font-size="13">LAYER 2</text>
+<text x="1320" y="80" text-anchor="middle" fill="#64748b" font-family="monospace" font-size="13">LAYER 3</text>
+<text x="1690" y="80" text-anchor="middle" fill="#64748b" font-family="monospace" font-size="13">LAYER 4</text>
+<text x="2060" y="80" text-anchor="middle" fill="#64748b" font-family="monospace" font-size="13">LAYER 5</text>
+<text x="2430" y="80" text-anchor="middle" fill="#64748b" font-family="monospace" font-size="13">LAYER 6</text>
+<text x="2800" y="80" text-anchor="middle" fill="#64748b" font-family="monospace" font-size="13">LAYER 7</text>
+<text x="3170" y="80" text-anchor="middle" fill="#64748b" font-family="monospace" font-size="13">LAYER 8</text>
+<text x="3540" y="80" text-anchor="middle" fill="#64748b" font-family="monospace" font-size="13">LAYER 9</text>
+<path d="M360,150 C414,150 414,270 372,270" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M385,262 L372,270 L385,278" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="414" y="203" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ plant_moss_3 · 1 lane</text>
+<path d="M730,210 C780,210 738,570 788,570" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M775,562 L788,570 L775,578" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="759" y="383" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ plant_moss_3 · 1 lane</text>
+<path d="M1470,750 C1520,750 1478,750 1528,750" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M1515,742 L1528,750 L1515,758" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="1499" y="743" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ plant_moss_3 · 1 lane</text>
+<path d="M1470,750 C1520,750 1478,870 1528,870" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M1515,862 L1528,870 L1515,878" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="1499" y="803" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ plant_moss_3 · 1 lane</text>
+<path d="M1470,870 C1520,870 1478,870 1528,870" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M1515,862 L1528,870 L1515,878" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="1499" y="863" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ plant_moss_3 · 1 lane</text>
+<path d="M360,270 C414,270 414,150 372,150" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M385,142 L372,150 L385,158" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="414" y="203" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ plant_moss_seed_3 · 1 lane</text>
+<path d="M360,270 C410,270 368,210 418,210" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M405,202 L418,210 L405,218" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="389" y="233" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ plant_moss_seed_3 · 1 lane</text>
+<path d="M1100,570 C1150,570 1108,750 1158,750" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M1145,742 L1158,750 L1145,758" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="1129" y="653" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ plant_moss_seed_3 · 1 lane</text>
+<path d="M1100,570 C1150,570 1108,870 1158,870" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M1145,862 L1158,870 L1145,878" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="1129" y="713" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ plant_moss_seed_3 · 1 lane</text>
+<path d="M2950,750 C3000,750 2958,810 3008,810" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M2995,802 L3008,810 L2995,818" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="2979" y="773" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ iron_enr_cmpt · 1 lane</text>
+<path d="M2950,870 C3000,870 2958,810 3008,810" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M2995,802 L3008,810 L2995,818" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="2979" y="833" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ iron_enr_cmpt · 1 lane</text>
+<path d="M2210,570 C2260,570 2218,750 2268,750" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M2255,742 L2268,750 L2255,758" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="2239" y="653" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ iron_enr_powder · 1 lane</text>
+<path d="M2210,690 C2260,690 2218,870 2268,870" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M2255,862 L2268,870 L2255,878" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="2239" y="773" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ iron_enr_powder · 1 lane</text>
+<path d="M2210,810 C2609,810 2609,810 3008,810" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M2995,802 L3008,810 L2995,818" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="2609" y="803" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ originium_enr_powder · 1 lane</text>
+<path d="M2210,930 C2609,930 2609,810 3008,810" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M2995,802 L3008,810 L2995,818" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="2609" y="863" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ originium_enr_powder · 1 lane</text>
+<path d="M2210,1050 C2609,1050 2609,810 3008,810" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M2995,802 L3008,810 L2995,818" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="2609" y="923" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ originium_enr_powder · 1 lane</text>
+<path d="M3320,810 C3370,810 3328,810 3378,810" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M3365,802 L3378,810 L3365,818" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="3349" y="803" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ proc_battery_3 · 1 lane</text>
+<path d="M2580,750 C2630,750 2588,750 2638,750" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M2625,742 L2638,750 L2625,758" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="2609" y="743" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ iron_enr · 1 lane</text>
+<path d="M2580,870 C2630,870 2588,870 2638,870" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M2625,862 L2638,870 L2625,878" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="2609" y="863" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ iron_enr · 1 lane</text>
+<path d="M730,330 C780,330 738,690 788,690" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M775,682 L788,690 L775,698" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="759" y="503" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ iron_nugget · 1 lane</text>
+<path d="M730,450 C780,450 738,810 788,810" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M775,802 L788,810 L775,818" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="759" y="623" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ iron_nugget · 1 lane</text>
+<path d="M730,570 C780,570 738,930 788,930" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M775,922 L788,930 L775,938" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="759" y="743" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ iron_nugget · 1 lane</text>
+<path d="M730,690 C780,690 738,1050 788,1050" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M775,1042 L788,1050 L775,1058" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="759" y="863" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ iron_nugget · 1 lane</text>
+<path d="M1100,690 C1499,690 1499,570 1898,570" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M1885,562 L1898,570 L1885,578" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="1499" y="623" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ iron_powder · 1 lane</text>
+<path d="M1100,810 C1499,810 1499,570 1898,570" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M1885,562 L1898,570 L1885,578" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="1499" y="683" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ iron_powder · 1 lane</text>
+<path d="M1100,930 C1499,930 1499,690 1898,690" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M1885,682 L1898,690 L1885,698" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="1499" y="803" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ iron_powder · 1 lane</text>
+<path d="M1100,1050 C1499,1050 1499,690 1898,690" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M1885,682 L1898,690 L1885,698" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="1499" y="863" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ iron_powder · 1 lane</text>
+<path d="M1840,750 C1890,750 1848,570 1898,570" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M1885,562 L1898,570 L1885,578" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="1869" y="653" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ plant_moss_powder_3 · 1 lane</text>
+<path d="M1840,750 C1890,750 1848,690 1898,690" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M1885,682 L1898,690 L1885,698" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="1869" y="713" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ plant_moss_powder_3 · 1 lane</text>
+<path d="M1840,750 C1890,750 1848,810 1898,810" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M1885,802 L1898,810 L1885,818" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="1869" y="773" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ plant_moss_powder_3 · 1 lane</text>
+<path d="M1840,870 C1890,870 1848,810 1898,810" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M1885,802 L1898,810 L1885,818" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="1869" y="833" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ plant_moss_powder_3 · 1 lane</text>
+<path d="M1840,870 C1890,870 1848,930 1898,930" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M1885,922 L1898,930 L1885,938" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="1869" y="893" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ plant_moss_powder_3 · 1 lane</text>
+<path d="M1840,870 C1890,870 1848,1050 1898,1050" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M1885,1042 L1898,1050 L1885,1058" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="1869" y="953" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ plant_moss_powder_3 · 1 lane</text>
+<path d="M730,810 C1314,810 1314,810 1898,810" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M1885,802 L1898,810 L1885,818" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="1314" y="803" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ originium_powder · 1 lane</text>
+<path d="M730,930 C1314,930 1314,810 1898,810" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M1885,802 L1898,810 L1885,818" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="1314" y="863" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ originium_powder · 1 lane</text>
+<path d="M730,1050 C1314,1050 1314,930 1898,930" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M1885,922 L1898,930 L1885,938" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="1314" y="983" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ originium_powder · 1 lane</text>
+<path d="M730,1170 C1314,1170 1314,930 1898,930" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M1885,922 L1898,930 L1885,938" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="1314" y="1043" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ originium_powder · 1 lane</text>
+<path d="M730,1290 C1314,1290 1314,1050 1898,1050" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M1885,1042 L1898,1050 L1885,1058" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="1314" y="1163" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ originium_powder · 1 lane</text>
+<path d="M730,1410 C1314,1410 1314,1050 1898,1050" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M1885,1042 L1898,1050 L1885,1058" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="1314" y="1223" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ originium_powder · 1 lane</text>
+<path d="M360,390 C410,390 368,330 418,330" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M405,322 L418,330 L405,338" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="389" y="353" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ iron_ore · 1 lane</text>
+<path d="M360,510 C410,510 368,810 418,810" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M405,802 L418,810 L405,818" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="389" y="653" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ originium_ore · 1 lane</text>
+<path d="M360,630 C410,630 368,450 418,450" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M405,442 L418,450 L405,458" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="389" y="533" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ iron_ore · 1 lane</text>
+<path d="M360,750 C410,750 368,570 418,570" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M405,562 L418,570 L405,578" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="389" y="653" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ iron_ore · 1 lane</text>
+<path d="M360,870 C410,870 368,690 418,690" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M405,682 L418,690 L405,698" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="389" y="773" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ iron_ore · 1 lane</text>
+<path d="M360,990 C410,990 368,930 418,930" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M405,922 L418,930 L405,938" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="389" y="953" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ originium_ore · 1 lane</text>
+<path d="M360,1110 C410,1110 368,1050 418,1050" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M405,1042 L418,1050 L405,1058" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="389" y="1073" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ originium_ore · 1 lane</text>
+<path d="M360,1230 C410,1230 368,1170 418,1170" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M405,1162 L418,1170 L405,1178" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="389" y="1193" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ originium_ore · 1 lane</text>
+<path d="M360,1350 C410,1350 368,1290 418,1290" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M405,1282 L418,1290 L405,1298" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="389" y="1313" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ originium_ore · 1 lane</text>
+<path d="M360,1470 C410,1470 368,1410 418,1410" fill="none" stroke="#67e8f9" stroke-opacity="0.72" stroke-width="3" marker-end="url(#material-arrow)"/>
+<path d="M405,1402 L418,1410 L405,1418" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="389" y="1433" text-anchor="middle" fill="#bae6fd" stroke="#0b1120" stroke-width="4" paint-order="stroke" font-family="monospace" font-size="11">→ originium_ore · 1 lane</text>
+<g filter="url(#shadow)">
+<rect x="60" y="105" width="300" height="90" rx="10" fill="#1e293b" stroke="#fb923c" stroke-width="3"/>
+<text x="74" y="127" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">planter_moss_from_moss_seed_basic</text>
+<text x="74" y="148" fill="#cbd5e1" font-family="monospace" font-size="11">cycle-1-1-1 · C1 · SCC</text>
+<text x="74" y="170" fill="#94a3b8" font-family="monospace" font-size="10">in: plant_moss_seed_3  out: plant_moss_3</text>
+<text x="74" y="186" fill="#64748b" font-family="monospace" font-size="9">item_port_planter_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="60" y="225" width="300" height="90" rx="10" fill="#1e293b" stroke="#fb923c" stroke-width="3"/>
+<text x="74" y="247" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">seedcol_moss_seed_from_moss_basic</text>
+<text x="74" y="268" fill="#cbd5e1" font-family="monospace" font-size="11">cycle-1-2-1 · C1 · SCC</text>
+<text x="74" y="290" fill="#94a3b8" font-family="monospace" font-size="10">in: plant_moss_3  out: plant_moss_seed_3</text>
+<text x="74" y="306" fill="#64748b" font-family="monospace" font-size="9">item_port_seedcol_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="60" y="345" width="300" height="90" rx="10" fill="#164e63" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="74" y="367" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_unloader_1</text>
+<text x="74" y="388" fill="#cbd5e1" font-family="monospace" font-size="11">warehouse-unloader-1 · C2</text>
+<text x="74" y="410" fill="#94a3b8" font-family="monospace" font-size="10">out: iron_ore</text>
+<text x="74" y="426" fill="#64748b" font-family="monospace" font-size="9">item_port_unloader_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="60" y="465" width="300" height="90" rx="10" fill="#164e63" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="74" y="487" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_unloader_1</text>
+<text x="74" y="508" fill="#cbd5e1" font-family="monospace" font-size="11">warehouse-unloader-10 · C3</text>
+<text x="74" y="530" fill="#94a3b8" font-family="monospace" font-size="10">out: originium_ore</text>
+<text x="74" y="546" fill="#64748b" font-family="monospace" font-size="9">item_port_unloader_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="60" y="585" width="300" height="90" rx="10" fill="#164e63" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="74" y="607" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_unloader_1</text>
+<text x="74" y="628" fill="#cbd5e1" font-family="monospace" font-size="11">warehouse-unloader-2 · C4</text>
+<text x="74" y="650" fill="#94a3b8" font-family="monospace" font-size="10">out: iron_ore</text>
+<text x="74" y="666" fill="#64748b" font-family="monospace" font-size="9">item_port_unloader_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="60" y="705" width="300" height="90" rx="10" fill="#164e63" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="74" y="727" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_unloader_1</text>
+<text x="74" y="748" fill="#cbd5e1" font-family="monospace" font-size="11">warehouse-unloader-3 · C5</text>
+<text x="74" y="770" fill="#94a3b8" font-family="monospace" font-size="10">out: iron_ore</text>
+<text x="74" y="786" fill="#64748b" font-family="monospace" font-size="9">item_port_unloader_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="60" y="825" width="300" height="90" rx="10" fill="#164e63" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="74" y="847" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_unloader_1</text>
+<text x="74" y="868" fill="#cbd5e1" font-family="monospace" font-size="11">warehouse-unloader-4 · C6</text>
+<text x="74" y="890" fill="#94a3b8" font-family="monospace" font-size="10">out: iron_ore</text>
+<text x="74" y="906" fill="#64748b" font-family="monospace" font-size="9">item_port_unloader_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="60" y="945" width="300" height="90" rx="10" fill="#164e63" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="74" y="967" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_unloader_1</text>
+<text x="74" y="988" fill="#cbd5e1" font-family="monospace" font-size="11">warehouse-unloader-5 · C7</text>
+<text x="74" y="1010" fill="#94a3b8" font-family="monospace" font-size="10">out: originium_ore</text>
+<text x="74" y="1026" fill="#64748b" font-family="monospace" font-size="9">item_port_unloader_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="60" y="1065" width="300" height="90" rx="10" fill="#164e63" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="74" y="1087" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_unloader_1</text>
+<text x="74" y="1108" fill="#cbd5e1" font-family="monospace" font-size="11">warehouse-unloader-6 · C8</text>
+<text x="74" y="1130" fill="#94a3b8" font-family="monospace" font-size="10">out: originium_ore</text>
+<text x="74" y="1146" fill="#64748b" font-family="monospace" font-size="9">item_port_unloader_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="60" y="1185" width="300" height="90" rx="10" fill="#164e63" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="74" y="1207" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_unloader_1</text>
+<text x="74" y="1228" fill="#cbd5e1" font-family="monospace" font-size="11">warehouse-unloader-7 · C9</text>
+<text x="74" y="1250" fill="#94a3b8" font-family="monospace" font-size="10">out: originium_ore</text>
+<text x="74" y="1266" fill="#64748b" font-family="monospace" font-size="9">item_port_unloader_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="60" y="1305" width="300" height="90" rx="10" fill="#164e63" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="74" y="1327" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_unloader_1</text>
+<text x="74" y="1348" fill="#cbd5e1" font-family="monospace" font-size="11">warehouse-unloader-8 · C10</text>
+<text x="74" y="1370" fill="#94a3b8" font-family="monospace" font-size="10">out: originium_ore</text>
+<text x="74" y="1386" fill="#64748b" font-family="monospace" font-size="9">item_port_unloader_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="60" y="1425" width="300" height="90" rx="10" fill="#164e63" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="74" y="1447" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_unloader_1</text>
+<text x="74" y="1468" fill="#cbd5e1" font-family="monospace" font-size="11">warehouse-unloader-9 · C11</text>
+<text x="74" y="1490" fill="#94a3b8" font-family="monospace" font-size="10">out: originium_ore</text>
+<text x="74" y="1506" fill="#64748b" font-family="monospace" font-size="9">item_port_unloader_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="430" y="165" width="300" height="90" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="444" y="187" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">planter_moss_from_moss_seed_basic</text>
+<text x="444" y="208" fill="#cbd5e1" font-family="monospace" font-size="11">cycle-1-1-2 · C12</text>
+<text x="444" y="230" fill="#94a3b8" font-family="monospace" font-size="10">in: plant_moss_seed_3  out: plant_moss_3</text>
+<text x="444" y="246" fill="#64748b" font-family="monospace" font-size="9">item_port_planter_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="430" y="285" width="300" height="90" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="444" y="307" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">furnace_iron_nugget_from_iron_ore_basic</text>
+<text x="444" y="328" fill="#cbd5e1" font-family="monospace" font-size="11">opt-3-1 · C13</text>
+<text x="444" y="350" fill="#94a3b8" font-family="monospace" font-size="10">in: iron_ore  out: iron_nugget</text>
+<text x="444" y="366" fill="#64748b" font-family="monospace" font-size="9">item_port_furnance_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="430" y="405" width="300" height="90" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="444" y="427" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">furnace_iron_nugget_from_iron_ore_basic</text>
+<text x="444" y="448" fill="#cbd5e1" font-family="monospace" font-size="11">opt-3-2 · C14</text>
+<text x="444" y="470" fill="#94a3b8" font-family="monospace" font-size="10">in: iron_ore  out: iron_nugget</text>
+<text x="444" y="486" fill="#64748b" font-family="monospace" font-size="9">item_port_furnance_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="430" y="525" width="300" height="90" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="444" y="547" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">furnace_iron_nugget_from_iron_ore_basic</text>
+<text x="444" y="568" fill="#cbd5e1" font-family="monospace" font-size="11">opt-3-3 · C15</text>
+<text x="444" y="590" fill="#94a3b8" font-family="monospace" font-size="10">in: iron_ore  out: iron_nugget</text>
+<text x="444" y="606" fill="#64748b" font-family="monospace" font-size="9">item_port_furnance_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="430" y="645" width="300" height="90" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="444" y="667" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">furnace_iron_nugget_from_iron_ore_basic</text>
+<text x="444" y="688" fill="#cbd5e1" font-family="monospace" font-size="11">opt-3-4 · C16</text>
+<text x="444" y="710" fill="#94a3b8" font-family="monospace" font-size="10">in: iron_ore  out: iron_nugget</text>
+<text x="444" y="726" fill="#64748b" font-family="monospace" font-size="9">item_port_furnance_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="430" y="765" width="300" height="90" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="444" y="787" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">crusher_originium_powder_basic</text>
+<text x="444" y="808" fill="#cbd5e1" font-family="monospace" font-size="11">opt-6-1 · C17</text>
+<text x="444" y="830" fill="#94a3b8" font-family="monospace" font-size="10">in: originium_ore  out: originium_powder</text>
+<text x="444" y="846" fill="#64748b" font-family="monospace" font-size="9">item_port_grinder_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="430" y="885" width="300" height="90" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="444" y="907" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">crusher_originium_powder_basic</text>
+<text x="444" y="928" fill="#cbd5e1" font-family="monospace" font-size="11">opt-6-2 · C18</text>
+<text x="444" y="950" fill="#94a3b8" font-family="monospace" font-size="10">in: originium_ore  out: originium_powder</text>
+<text x="444" y="966" fill="#64748b" font-family="monospace" font-size="9">item_port_grinder_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="430" y="1005" width="300" height="90" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="444" y="1027" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">crusher_originium_powder_basic</text>
+<text x="444" y="1048" fill="#cbd5e1" font-family="monospace" font-size="11">opt-6-3 · C19</text>
+<text x="444" y="1070" fill="#94a3b8" font-family="monospace" font-size="10">in: originium_ore  out: originium_powder</text>
+<text x="444" y="1086" fill="#64748b" font-family="monospace" font-size="9">item_port_grinder_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="430" y="1125" width="300" height="90" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="444" y="1147" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">crusher_originium_powder_basic</text>
+<text x="444" y="1168" fill="#cbd5e1" font-family="monospace" font-size="11">opt-6-4 · C20</text>
+<text x="444" y="1190" fill="#94a3b8" font-family="monospace" font-size="10">in: originium_ore  out: originium_powder</text>
+<text x="444" y="1206" fill="#64748b" font-family="monospace" font-size="9">item_port_grinder_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="430" y="1245" width="300" height="90" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="444" y="1267" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">crusher_originium_powder_basic</text>
+<text x="444" y="1288" fill="#cbd5e1" font-family="monospace" font-size="11">opt-6-5 · C21</text>
+<text x="444" y="1310" fill="#94a3b8" font-family="monospace" font-size="10">in: originium_ore  out: originium_powder</text>
+<text x="444" y="1326" fill="#64748b" font-family="monospace" font-size="9">item_port_grinder_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="430" y="1365" width="300" height="90" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="444" y="1387" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">crusher_originium_powder_basic</text>
+<text x="444" y="1408" fill="#cbd5e1" font-family="monospace" font-size="11">opt-6-6 · C22</text>
+<text x="444" y="1430" fill="#94a3b8" font-family="monospace" font-size="10">in: originium_ore  out: originium_powder</text>
+<text x="444" y="1446" fill="#64748b" font-family="monospace" font-size="9">item_port_grinder_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="800" y="525" width="300" height="90" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="814" y="547" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">seedcol_moss_seed_from_moss_basic</text>
+<text x="814" y="568" fill="#cbd5e1" font-family="monospace" font-size="11">cycle-1-2-2 · C23</text>
+<text x="814" y="590" fill="#94a3b8" font-family="monospace" font-size="10">in: plant_moss_3  out: plant_moss_seed_3</text>
+<text x="814" y="606" fill="#64748b" font-family="monospace" font-size="9">item_port_seedcol_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="800" y="645" width="300" height="90" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="814" y="667" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">crusher_iron_powder_from_iron_nugget_basic</text>
+<text x="814" y="688" fill="#cbd5e1" font-family="monospace" font-size="11">opt-4-1 · C24</text>
+<text x="814" y="710" fill="#94a3b8" font-family="monospace" font-size="10">in: iron_nugget  out: iron_powder</text>
+<text x="814" y="726" fill="#64748b" font-family="monospace" font-size="9">item_port_grinder_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="800" y="765" width="300" height="90" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="814" y="787" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">crusher_iron_powder_from_iron_nugget_basic</text>
+<text x="814" y="808" fill="#cbd5e1" font-family="monospace" font-size="11">opt-4-2 · C25</text>
+<text x="814" y="830" fill="#94a3b8" font-family="monospace" font-size="10">in: iron_nugget  out: iron_powder</text>
+<text x="814" y="846" fill="#64748b" font-family="monospace" font-size="9">item_port_grinder_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="800" y="885" width="300" height="90" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="814" y="907" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">crusher_iron_powder_from_iron_nugget_basic</text>
+<text x="814" y="928" fill="#cbd5e1" font-family="monospace" font-size="11">opt-4-3 · C26</text>
+<text x="814" y="950" fill="#94a3b8" font-family="monospace" font-size="10">in: iron_nugget  out: iron_powder</text>
+<text x="814" y="966" fill="#64748b" font-family="monospace" font-size="9">item_port_grinder_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="800" y="1005" width="300" height="90" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="814" y="1027" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">crusher_iron_powder_from_iron_nugget_basic</text>
+<text x="814" y="1048" fill="#cbd5e1" font-family="monospace" font-size="11">opt-4-4 · C27</text>
+<text x="814" y="1070" fill="#94a3b8" font-family="monospace" font-size="10">in: iron_nugget  out: iron_powder</text>
+<text x="814" y="1086" fill="#64748b" font-family="monospace" font-size="9">item_port_grinder_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="1170" y="705" width="300" height="90" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="1184" y="727" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">planter_moss_from_moss_seed_basic</text>
+<text x="1184" y="748" fill="#cbd5e1" font-family="monospace" font-size="11">cycle-1-1-3 · C28</text>
+<text x="1184" y="770" fill="#94a3b8" font-family="monospace" font-size="10">in: plant_moss_seed_3  out: plant_moss_3</text>
+<text x="1184" y="786" fill="#64748b" font-family="monospace" font-size="9">item_port_planter_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="1170" y="825" width="300" height="90" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="1184" y="847" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">planter_moss_from_moss_seed_basic</text>
+<text x="1184" y="868" fill="#cbd5e1" font-family="monospace" font-size="11">cycle-1-1-4 · C29</text>
+<text x="1184" y="890" fill="#94a3b8" font-family="monospace" font-size="10">in: plant_moss_seed_3  out: plant_moss_3</text>
+<text x="1184" y="906" fill="#64748b" font-family="monospace" font-size="9">item_port_planter_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="1540" y="705" width="300" height="90" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="1554" y="727" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">crusher_moss_powder_from_moss_basic</text>
+<text x="1554" y="748" fill="#cbd5e1" font-family="monospace" font-size="11">opt-5-1 · C30</text>
+<text x="1554" y="770" fill="#94a3b8" font-family="monospace" font-size="10">in: plant_moss_3  out: plant_moss_powder_3</text>
+<text x="1554" y="786" fill="#64748b" font-family="monospace" font-size="9">item_port_grinder_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="1540" y="825" width="300" height="90" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="1554" y="847" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">crusher_moss_powder_from_moss_basic</text>
+<text x="1554" y="868" fill="#cbd5e1" font-family="monospace" font-size="11">opt-5-2 · C31</text>
+<text x="1554" y="890" fill="#94a3b8" font-family="monospace" font-size="10">in: plant_moss_3  out: plant_moss_powder_3</text>
+<text x="1554" y="906" fill="#64748b" font-family="monospace" font-size="9">item_port_grinder_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="1910" y="525" width="300" height="90" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="1924" y="547" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">thickener_iron_enr_powder_from_iron_and_m…</text>
+<text x="1924" y="568" fill="#cbd5e1" font-family="monospace" font-size="11">opt-11-1 · C32</text>
+<text x="1924" y="590" fill="#94a3b8" font-family="monospace" font-size="10">in: iron_powder, plant_moss_powder_3  out: iron_enr…</text>
+<text x="1924" y="606" fill="#64748b" font-family="monospace" font-size="9">item_port_thickener_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="1910" y="645" width="300" height="90" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="1924" y="667" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">thickener_iron_enr_powder_from_iron_and_m…</text>
+<text x="1924" y="688" fill="#cbd5e1" font-family="monospace" font-size="11">opt-11-2 · C33</text>
+<text x="1924" y="710" fill="#94a3b8" font-family="monospace" font-size="10">in: iron_powder, plant_moss_powder_3  out: iron_enr…</text>
+<text x="1924" y="726" fill="#64748b" font-family="monospace" font-size="9">item_port_thickener_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="1910" y="765" width="300" height="90" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="1924" y="787" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">thickener_originium_enr_powder_from_origi…</text>
+<text x="1924" y="808" fill="#cbd5e1" font-family="monospace" font-size="11">opt-12-1 · C34</text>
+<text x="1924" y="830" fill="#94a3b8" font-family="monospace" font-size="10">in: originium_powder, plant_moss_powder_3  out: ori…</text>
+<text x="1924" y="846" fill="#64748b" font-family="monospace" font-size="9">item_port_thickener_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="1910" y="885" width="300" height="90" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="1924" y="907" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">thickener_originium_enr_powder_from_origi…</text>
+<text x="1924" y="928" fill="#cbd5e1" font-family="monospace" font-size="11">opt-12-2 · C35</text>
+<text x="1924" y="950" fill="#94a3b8" font-family="monospace" font-size="10">in: originium_powder, plant_moss_powder_3  out: ori…</text>
+<text x="1924" y="966" fill="#64748b" font-family="monospace" font-size="9">item_port_thickener_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="1910" y="1005" width="300" height="90" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="1924" y="1027" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">thickener_originium_enr_powder_from_origi…</text>
+<text x="1924" y="1048" fill="#cbd5e1" font-family="monospace" font-size="11">opt-12-3 · C36</text>
+<text x="1924" y="1070" fill="#94a3b8" font-family="monospace" font-size="10">in: originium_powder, plant_moss_powder_3  out: ori…</text>
+<text x="1924" y="1086" fill="#64748b" font-family="monospace" font-size="9">item_port_thickener_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="2280" y="705" width="300" height="90" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="2294" y="727" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">furnace_iron_enr_from_iron_enr_powder_bas…</text>
+<text x="2294" y="748" fill="#cbd5e1" font-family="monospace" font-size="11">opt-2-1 · C37</text>
+<text x="2294" y="770" fill="#94a3b8" font-family="monospace" font-size="10">in: iron_enr_powder  out: iron_enr</text>
+<text x="2294" y="786" fill="#64748b" font-family="monospace" font-size="9">item_port_furnance_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="2280" y="825" width="300" height="90" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="2294" y="847" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">furnace_iron_enr_from_iron_enr_powder_bas…</text>
+<text x="2294" y="868" fill="#cbd5e1" font-family="monospace" font-size="11">opt-2-2 · C38</text>
+<text x="2294" y="890" fill="#94a3b8" font-family="monospace" font-size="10">in: iron_enr_powder  out: iron_enr</text>
+<text x="2294" y="906" fill="#64748b" font-family="monospace" font-size="9">item_port_furnance_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="2650" y="705" width="300" height="90" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="2664" y="727" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">component_iron_enr_cmpt_from_iron_enr_bas…</text>
+<text x="2664" y="748" fill="#cbd5e1" font-family="monospace" font-size="11">opt-1-1 · C39</text>
+<text x="2664" y="770" fill="#94a3b8" font-family="monospace" font-size="10">in: iron_enr  out: iron_enr_cmpt</text>
+<text x="2664" y="786" fill="#64748b" font-family="monospace" font-size="9">item_port_cmpt_mc_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="2650" y="825" width="300" height="90" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="2664" y="847" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">component_iron_enr_cmpt_from_iron_enr_bas…</text>
+<text x="2664" y="868" fill="#cbd5e1" font-family="monospace" font-size="11">opt-1-2 · C40</text>
+<text x="2664" y="890" fill="#94a3b8" font-family="monospace" font-size="10">in: iron_enr  out: iron_enr_cmpt</text>
+<text x="2664" y="906" fill="#64748b" font-family="monospace" font-size="9">item_port_cmpt_mc_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="3020" y="765" width="300" height="90" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="3034" y="787" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">packaging_battery_from_iron_cmpt_and_orig…</text>
+<text x="3034" y="808" fill="#cbd5e1" font-family="monospace" font-size="11">opt-13-1 · C41</text>
+<text x="3034" y="830" fill="#94a3b8" font-family="monospace" font-size="10">in: iron_enr_cmpt, originium_enr_powder  out: proc_…</text>
+<text x="3034" y="846" fill="#64748b" font-family="monospace" font-size="9">item_port_tools_asm_mc_1</text>
+</g>
+<g filter="url(#shadow)">
+<rect x="3390" y="765" width="300" height="90" rx="10" fill="#4c1d95" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="3404" y="787" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="700">item_port_storager_1</text>
+<text x="3404" y="808" fill="#cbd5e1" font-family="monospace" font-size="11">warehouse-storage-1 · C42</text>
+<text x="3404" y="830" fill="#94a3b8" font-family="monospace" font-size="10">in: proc_battery_3</text>
+<text x="3404" y="846" fill="#64748b" font-family="monospace" font-size="9">item_port_storager_1</text>
+</g>
+</svg>

@@ -405,7 +405,7 @@ function resolveDemand(
   }
 
   if (stack.includes(itemId)) {
-    if (isAllowedProductivePlantCycle(itemId, stack)) {
+    if (isResolvableRecipeCycle(itemId, stack, context)) {
       supply.cycle = remaining;
       return createItemNode({
         itemId,
@@ -875,29 +875,27 @@ function buildWasteTreatmentRecipeNodes(context: SolverContext): ProductionPlann
   return nodes;
 }
 
-function isAllowedProductivePlantCycle(itemId: string, stack: readonly string[]): boolean {
-  if (!isPlantItem(itemId)) {
-    return false;
-  }
-
+function isResolvableRecipeCycle(
+  itemId: string,
+  stack: readonly string[],
+  context: SolverContext,
+): boolean {
   const repeatIndex = stack.lastIndexOf(itemId);
   if (repeatIndex < 0) {
     return false;
   }
 
   const cycleItems = stack.slice(repeatIndex);
-  return cycleItems.length > 0
-    && cycleItems.every(isPlantItem)
-    && cycleItems.some(isPlantSeedItem)
-    && cycleItems.some((candidate) => isPlantItem(candidate) && !isPlantSeedItem(candidate));
-}
-
-function isPlantItem(itemId: string): boolean {
-  return itemId.startsWith("item_plant_");
-}
-
-function isPlantSeedItem(itemId: string): boolean {
-  return itemId.includes("_seed");
+  if (cycleItems.length === 0) return false;
+  return cycleItems.every((cycleItem, index) => {
+    const nextItem = cycleItems[(index + 1) % cycleItems.length]!;
+    const recipe = resolveRecipeForItem(cycleItem, context);
+    return recipe !== undefined
+      && recipe.outputs.some((output) =>
+        output.itemId === cycleItem && output.amount > EPSILON)
+      && recipe.inputs.some((input) =>
+        input.itemId === nextItem && input.amount > EPSILON);
+  });
 }
 
 function createNodeId(prefix: string, context: SolverContext): string {

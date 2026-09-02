@@ -1,0 +1,8 @@
+{
+  "width": 24,
+  "height": 24,
+  "name": "Iron component compact line",
+  "targets": [
+    { "itemId": "item_iron_cmpt", "perMinute": 10 }
+  ]
+}

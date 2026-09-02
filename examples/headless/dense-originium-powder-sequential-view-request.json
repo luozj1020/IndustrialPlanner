@@ -1,0 +1,27 @@
+{
+  "width": 26,
+  "height": 64,
+  "routingClearance": 1,
+  "frontageConstraint": "hard",
+  "name": "Dense originium powder graph-derived sequential baseline view",
+  "targets": [
+    {
+      "itemId": "item_originium_enr_powder",
+      "perMinute": 90
+    }
+  ],
+  "recipeChoices": {
+    "item_originium_enr_powder": "r_thickener_originium_enr_powder_from_originium_and_moss_powder_basic"
+  },
+  "search": {
+    "initialLayout": "topology-sequential",
+    "scope": "local",
+    "iterations": 16,
+    "routingVariants": 7,
+    "refinementCandidates": 3,
+    "cpSat": {
+      "enabled": false
+    },
+    "seed": 20260718
+  }
+}

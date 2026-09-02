@@ -8,6 +8,10 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+.venv-headless/
+__pycache__/
+*.pyc
+.codegraph/
 dist
 dist-ssr
 *.tsbuildinfo
@@ -33,3 +37,6 @@ test-results/
 
 # Deployment config (contains credentials)
 .github/deploy-config.json
+
+/.worktrees/*
+!/.worktrees/.gitkeep

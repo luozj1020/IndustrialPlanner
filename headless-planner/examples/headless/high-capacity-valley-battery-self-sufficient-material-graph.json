@@ -1,0 +1,1269 @@
+{
+  "name": "High-capacity Valley battery topology-sequential baseline",
+  "nodes": [
+    {
+      "id": "cycle-1-1-1",
+      "kind": "production",
+      "definitionId": "item_port_planter_1",
+      "definitionNameKey": "registry.entity.item_port_planter_1.name",
+      "recipeId": "r_planter_moss_from_moss_seed_basic",
+      "componentId": "C1",
+      "layer": 0,
+      "inputItemIds": [
+        "item_plant_moss_seed_3"
+      ],
+      "outputItemIds": [
+        "item_plant_moss_3"
+      ]
+    },
+    {
+      "id": "cycle-1-2-1",
+      "kind": "production",
+      "definitionId": "item_port_seedcol_1",
+      "definitionNameKey": "registry.entity.item_port_seedcol_1.name",
+      "recipeId": "r_seedcol_moss_seed_from_moss_basic",
+      "componentId": "C1",
+      "layer": 0,
+      "inputItemIds": [
+        "item_plant_moss_3"
+      ],
+      "outputItemIds": [
+        "item_plant_moss_seed_3"
+      ]
+    },
+    {
+      "id": "warehouse-unloader-1",
+      "kind": "warehouse-port",
+      "definitionId": "item_port_unloader_1",
+      "definitionNameKey": "registry.entity.item_port_unloader_1.name",
+      "recipeId": null,
+      "componentId": "C2",
+      "layer": 0,
+      "inputItemIds": [],
+      "outputItemIds": [
+        "item_iron_ore"
+      ]
+    },
+    {
+      "id": "warehouse-unloader-10",
+      "kind": "warehouse-port",
+      "definitionId": "item_port_unloader_1",
+      "definitionNameKey": "registry.entity.item_port_unloader_1.name",
+      "recipeId": null,
+      "componentId": "C3",
+      "layer": 0,
+      "inputItemIds": [],
+      "outputItemIds": [
+        "item_originium_ore"
+      ]
+    },
+    {
+      "id": "warehouse-unloader-2",
+      "kind": "warehouse-port",
+      "definitionId": "item_port_unloader_1",
+      "definitionNameKey": "registry.entity.item_port_unloader_1.name",
+      "recipeId": null,
+      "componentId": "C4",
+      "layer": 0,
+      "inputItemIds": [],
+      "outputItemIds": [
+        "item_iron_ore"
+      ]
+    },
+    {
+      "id": "warehouse-unloader-3",
+      "kind": "warehouse-port",
+      "definitionId": "item_port_unloader_1",
+      "definitionNameKey": "registry.entity.item_port_unloader_1.name",
+      "recipeId": null,
+      "componentId": "C5",
+      "layer": 0,
+      "inputItemIds": [],
+      "outputItemIds": [
+        "item_iron_ore"
+      ]
+    },
+    {
+      "id": "warehouse-unloader-4",
+      "kind": "warehouse-port",
+      "definitionId": "item_port_unloader_1",
+      "definitionNameKey": "registry.entity.item_port_unloader_1.name",
+      "recipeId": null,
+      "componentId": "C6",
+      "layer": 0,
+      "inputItemIds": [],
+      "outputItemIds": [
+        "item_iron_ore"
+      ]
+    },
+    {
+      "id": "warehouse-unloader-5",
+      "kind": "warehouse-port",
+      "definitionId": "item_port_unloader_1",
+      "definitionNameKey": "registry.entity.item_port_unloader_1.name",
+      "recipeId": null,
+      "componentId": "C7",
+      "layer": 0,
+      "inputItemIds": [],
+      "outputItemIds": [
+        "item_originium_ore"
+      ]
+    },
+    {
+      "id": "warehouse-unloader-6",
+      "kind": "warehouse-port",
+      "definitionId": "item_port_unloader_1",
+      "definitionNameKey": "registry.entity.item_port_unloader_1.name",
+      "recipeId": null,
+      "componentId": "C8",
+      "layer": 0,
+      "inputItemIds": [],
+      "outputItemIds": [
+        "item_originium_ore"
+      ]
+    },
+    {
+      "id": "warehouse-unloader-7",
+      "kind": "warehouse-port",
+      "definitionId": "item_port_unloader_1",
+      "definitionNameKey": "registry.entity.item_port_unloader_1.name",
+      "recipeId": null,
+      "componentId": "C9",
+      "layer": 0,
+      "inputItemIds": [],
+      "outputItemIds": [
+        "item_originium_ore"
+      ]
+    },
+    {
+      "id": "warehouse-unloader-8",
+      "kind": "warehouse-port",
+      "definitionId": "item_port_unloader_1",
+      "definitionNameKey": "registry.entity.item_port_unloader_1.name",
+      "recipeId": null,
+      "componentId": "C10",
+      "layer": 0,
+      "inputItemIds": [],
+      "outputItemIds": [
+        "item_originium_ore"
+      ]
+    },
+    {
+      "id": "warehouse-unloader-9",
+      "kind": "warehouse-port",
+      "definitionId": "item_port_unloader_1",
+      "definitionNameKey": "registry.entity.item_port_unloader_1.name",
+      "recipeId": null,
+      "componentId": "C11",
+      "layer": 0,
+      "inputItemIds": [],
+      "outputItemIds": [
+        "item_originium_ore"
+      ]
+    },
+    {
+      "id": "cycle-1-1-2",
+      "kind": "production",
+      "definitionId": "item_port_planter_1",
+      "definitionNameKey": "registry.entity.item_port_planter_1.name",
+      "recipeId": "r_planter_moss_from_moss_seed_basic",
+      "componentId": "C12",
+      "layer": 1,
+      "inputItemIds": [
+        "item_plant_moss_seed_3"
+      ],
+      "outputItemIds": [
+        "item_plant_moss_3"
+      ]
+    },
+    {
+      "id": "opt-3-1",
+      "kind": "production",
+      "definitionId": "item_port_furnance_1",
+      "definitionNameKey": "registry.entity.item_port_furnance_1.name",
+      "recipeId": "r_furnace_iron_nugget_from_iron_ore_basic",
+      "componentId": "C13",
+      "layer": 1,
+      "inputItemIds": [
+        "item_iron_ore"
+      ],
+      "outputItemIds": [
+        "item_iron_nugget"
+      ]
+    },
+    {
+      "id": "opt-3-2",
+      "kind": "production",
+      "definitionId": "item_port_furnance_1",
+      "definitionNameKey": "registry.entity.item_port_furnance_1.name",
+      "recipeId": "r_furnace_iron_nugget_from_iron_ore_basic",
+      "componentId": "C14",
+      "layer": 1,
+      "inputItemIds": [
+        "item_iron_ore"
+      ],
+      "outputItemIds": [
+        "item_iron_nugget"
+      ]
+    },
+    {
+      "id": "opt-3-3",
+      "kind": "production",
+      "definitionId": "item_port_furnance_1",
+      "definitionNameKey": "registry.entity.item_port_furnance_1.name",
+      "recipeId": "r_furnace_iron_nugget_from_iron_ore_basic",
+      "componentId": "C15",
+      "layer": 1,
+      "inputItemIds": [
+        "item_iron_ore"
+      ],
+      "outputItemIds": [
+        "item_iron_nugget"
+      ]
+    },
+    {
+      "id": "opt-3-4",
+      "kind": "production",
+      "definitionId": "item_port_furnance_1",
+      "definitionNameKey": "registry.entity.item_port_furnance_1.name",
+      "recipeId": "r_furnace_iron_nugget_from_iron_ore_basic",
+      "componentId": "C16",
+      "layer": 1,
+      "inputItemIds": [
+        "item_iron_ore"
+      ],
+      "outputItemIds": [
+        "item_iron_nugget"
+      ]
+    },
+    {
+      "id": "opt-6-1",
+      "kind": "production",
+      "definitionId": "item_port_grinder_1",
+      "definitionNameKey": "registry.entity.item_port_grinder_1.name",
+      "recipeId": "r_crusher_originium_powder_basic",
+      "componentId": "C17",
+      "layer": 1,
+      "inputItemIds": [
+        "item_originium_ore"
+      ],
+      "outputItemIds": [
+        "item_originium_powder"
+      ]
+    },
+    {
+      "id": "opt-6-2",
+      "kind": "production",
+      "definitionId": "item_port_grinder_1",
+      "definitionNameKey": "registry.entity.item_port_grinder_1.name",
+      "recipeId": "r_crusher_originium_powder_basic",
+      "componentId": "C18",
+      "layer": 1,
+      "inputItemIds": [
+        "item_originium_ore"
+      ],
+      "outputItemIds": [
+        "item_originium_powder"
+      ]
+    },
+    {
+      "id": "opt-6-3",
+      "kind": "production",
+      "definitionId": "item_port_grinder_1",
+      "definitionNameKey": "registry.entity.item_port_grinder_1.name",
+      "recipeId": "r_crusher_originium_powder_basic",
+      "componentId": "C19",
+      "layer": 1,
+      "inputItemIds": [
+        "item_originium_ore"
+      ],
+      "outputItemIds": [
+        "item_originium_powder"
+      ]
+    },
+    {
+      "id": "opt-6-4",
+      "kind": "production",
+      "definitionId": "item_port_grinder_1",
+      "definitionNameKey": "registry.entity.item_port_grinder_1.name",
+      "recipeId": "r_crusher_originium_powder_basic",
+      "componentId": "C20",
+      "layer": 1,
+      "inputItemIds": [
+        "item_originium_ore"
+      ],
+      "outputItemIds": [
+        "item_originium_powder"
+      ]
+    },
+    {
+      "id": "opt-6-5",
+      "kind": "production",
+      "definitionId": "item_port_grinder_1",
+      "definitionNameKey": "registry.entity.item_port_grinder_1.name",
+      "recipeId": "r_crusher_originium_powder_basic",
+      "componentId": "C21",
+      "layer": 1,
+      "inputItemIds": [
+        "item_originium_ore"
+      ],
+      "outputItemIds": [
+        "item_originium_powder"
+      ]
+    },
+    {
+      "id": "opt-6-6",
+      "kind": "production",
+      "definitionId": "item_port_grinder_1",
+      "definitionNameKey": "registry.entity.item_port_grinder_1.name",
+      "recipeId": "r_crusher_originium_powder_basic",
+      "componentId": "C22",
+      "layer": 1,
+      "inputItemIds": [
+        "item_originium_ore"
+      ],
+      "outputItemIds": [
+        "item_originium_powder"
+      ]
+    },
+    {
+      "id": "cycle-1-2-2",
+      "kind": "production",
+      "definitionId": "item_port_seedcol_1",
+      "definitionNameKey": "registry.entity.item_port_seedcol_1.name",
+      "recipeId": "r_seedcol_moss_seed_from_moss_basic",
+      "componentId": "C23",
+      "layer": 2,
+      "inputItemIds": [
+        "item_plant_moss_3"
+      ],
+      "outputItemIds": [
+        "item_plant_moss_seed_3"
+      ]
+    },
+    {
+      "id": "opt-4-1",
+      "kind": "production",
+      "definitionId": "item_port_grinder_1",
+      "definitionNameKey": "registry.entity.item_port_grinder_1.name",
+      "recipeId": "r_crusher_iron_powder_from_iron_nugget_basic",
+      "componentId": "C24",
+      "layer": 2,
+      "inputItemIds": [
+        "item_iron_nugget"
+      ],
+      "outputItemIds": [
+        "item_iron_powder"
+      ]
+    },
+    {
+      "id": "opt-4-2",
+      "kind": "production",
+      "definitionId": "item_port_grinder_1",
+      "definitionNameKey": "registry.entity.item_port_grinder_1.name",
+      "recipeId": "r_crusher_iron_powder_from_iron_nugget_basic",
+      "componentId": "C25",
+      "layer": 2,
+      "inputItemIds": [
+        "item_iron_nugget"
+      ],
+      "outputItemIds": [
+        "item_iron_powder"
+      ]
+    },
+    {
+      "id": "opt-4-3",
+      "kind": "production",
+      "definitionId": "item_port_grinder_1",
+      "definitionNameKey": "registry.entity.item_port_grinder_1.name",
+      "recipeId": "r_crusher_iron_powder_from_iron_nugget_basic",
+      "componentId": "C26",
+      "layer": 2,
+      "inputItemIds": [
+        "item_iron_nugget"
+      ],
+      "outputItemIds": [
+        "item_iron_powder"
+      ]
+    },
+    {
+      "id": "opt-4-4",
+      "kind": "production",
+      "definitionId": "item_port_grinder_1",
+      "definitionNameKey": "registry.entity.item_port_grinder_1.name",
+      "recipeId": "r_crusher_iron_powder_from_iron_nugget_basic",
+      "componentId": "C27",
+      "layer": 2,
+      "inputItemIds": [
+        "item_iron_nugget"
+      ],
+      "outputItemIds": [
+        "item_iron_powder"
+      ]
+    },
+    {
+      "id": "cycle-1-1-3",
+      "kind": "production",
+      "definitionId": "item_port_planter_1",
+      "definitionNameKey": "registry.entity.item_port_planter_1.name",
+      "recipeId": "r_planter_moss_from_moss_seed_basic",
+      "componentId": "C28",
+      "layer": 3,
+      "inputItemIds": [
+        "item_plant_moss_seed_3"
+      ],
+      "outputItemIds": [
+        "item_plant_moss_3"
+      ]
+    },
+    {
+      "id": "cycle-1-1-4",
+      "kind": "production",
+      "definitionId": "item_port_planter_1",
+      "definitionNameKey": "registry.entity.item_port_planter_1.name",
+      "recipeId": "r_planter_moss_from_moss_seed_basic",
+      "componentId": "C29",
+      "layer": 3,
+      "inputItemIds": [
+        "item_plant_moss_seed_3"
+      ],
+      "outputItemIds": [
+        "item_plant_moss_3"
+      ]
+    },
+    {
+      "id": "opt-5-1",
+      "kind": "production",
+      "definitionId": "item_port_grinder_1",
+      "definitionNameKey": "registry.entity.item_port_grinder_1.name",
+      "recipeId": "r_crusher_moss_powder_from_moss_basic",
+      "componentId": "C30",
+      "layer": 4,
+      "inputItemIds": [
+        "item_plant_moss_3"
+      ],
+      "outputItemIds": [
+        "item_plant_moss_powder_3"
+      ]
+    },
+    {
+      "id": "opt-5-2",
+      "kind": "production",
+      "definitionId": "item_port_grinder_1",
+      "definitionNameKey": "registry.entity.item_port_grinder_1.name",
+      "recipeId": "r_crusher_moss_powder_from_moss_basic",
+      "componentId": "C31",
+      "layer": 4,
+      "inputItemIds": [
+        "item_plant_moss_3"
+      ],
+      "outputItemIds": [
+        "item_plant_moss_powder_3"
+      ]
+    },
+    {
+      "id": "opt-11-1",
+      "kind": "production",
+      "definitionId": "item_port_thickener_1",
+      "definitionNameKey": "registry.entity.item_port_thickener_1.name",
+      "recipeId": "r_thickener_iron_enr_powder_from_iron_and_moss_powder_basic",
+      "componentId": "C32",
+      "layer": 5,
+      "inputItemIds": [
+        "item_iron_powder",
+        "item_plant_moss_powder_3"
+      ],
+      "outputItemIds": [
+        "item_iron_enr_powder"
+      ]
+    },
+    {
+      "id": "opt-11-2",
+      "kind": "production",
+      "definitionId": "item_port_thickener_1",
+      "definitionNameKey": "registry.entity.item_port_thickener_1.name",
+      "recipeId": "r_thickener_iron_enr_powder_from_iron_and_moss_powder_basic",
+      "componentId": "C33",
+      "layer": 5,
+      "inputItemIds": [
+        "item_iron_powder",
+        "item_plant_moss_powder_3"
+      ],
+      "outputItemIds": [
+        "item_iron_enr_powder"
+      ]
+    },
+    {
+      "id": "opt-12-1",
+      "kind": "production",
+      "definitionId": "item_port_thickener_1",
+      "definitionNameKey": "registry.entity.item_port_thickener_1.name",
+      "recipeId": "r_thickener_originium_enr_powder_from_originium_and_moss_powder_basic",
+      "componentId": "C34",
+      "layer": 5,
+      "inputItemIds": [
+        "item_originium_powder",
+        "item_plant_moss_powder_3"
+      ],
+      "outputItemIds": [
+        "item_originium_enr_powder"
+      ]
+    },
+    {
+      "id": "opt-12-2",
+      "kind": "production",
+      "definitionId": "item_port_thickener_1",
+      "definitionNameKey": "registry.entity.item_port_thickener_1.name",
+      "recipeId": "r_thickener_originium_enr_powder_from_originium_and_moss_powder_basic",
+      "componentId": "C35",
+      "layer": 5,
+      "inputItemIds": [
+        "item_originium_powder",
+        "item_plant_moss_powder_3"
+      ],
+      "outputItemIds": [
+        "item_originium_enr_powder"
+      ]
+    },
+    {
+      "id": "opt-12-3",
+      "kind": "production",
+      "definitionId": "item_port_thickener_1",
+      "definitionNameKey": "registry.entity.item_port_thickener_1.name",
+      "recipeId": "r_thickener_originium_enr_powder_from_originium_and_moss_powder_basic",
+      "componentId": "C36",
+      "layer": 5,
+      "inputItemIds": [
+        "item_originium_powder",
+        "item_plant_moss_powder_3"
+      ],
+      "outputItemIds": [
+        "item_originium_enr_powder"
+      ]
+    },
+    {
+      "id": "opt-2-1",
+      "kind": "production",
+      "definitionId": "item_port_furnance_1",
+      "definitionNameKey": "registry.entity.item_port_furnance_1.name",
+      "recipeId": "r_furnace_iron_enr_from_iron_enr_powder_basic",
+      "componentId": "C37",
+      "layer": 6,
+      "inputItemIds": [
+        "item_iron_enr_powder"
+      ],
+      "outputItemIds": [
+        "item_iron_enr"
+      ]
+    },
+    {
+      "id": "opt-2-2",
+      "kind": "production",
+      "definitionId": "item_port_furnance_1",
+      "definitionNameKey": "registry.entity.item_port_furnance_1.name",
+      "recipeId": "r_furnace_iron_enr_from_iron_enr_powder_basic",
+      "componentId": "C38",
+      "layer": 6,
+      "inputItemIds": [
+        "item_iron_enr_powder"
+      ],
+      "outputItemIds": [
+        "item_iron_enr"
+      ]
+    },
+    {
+      "id": "opt-1-1",
+      "kind": "production",
+      "definitionId": "item_port_cmpt_mc_1",
+      "definitionNameKey": "registry.entity.item_port_cmpt_mc_1.name",
+      "recipeId": "r_component_iron_enr_cmpt_from_iron_enr_basic",
+      "componentId": "C39",
+      "layer": 7,
+      "inputItemIds": [
+        "item_iron_enr"
+      ],
+      "outputItemIds": [
+        "item_iron_enr_cmpt"
+      ]
+    },
+    {
+      "id": "opt-1-2",
+      "kind": "production",
+      "definitionId": "item_port_cmpt_mc_1",
+      "definitionNameKey": "registry.entity.item_port_cmpt_mc_1.name",
+      "recipeId": "r_component_iron_enr_cmpt_from_iron_enr_basic",
+      "componentId": "C40",
+      "layer": 7,
+      "inputItemIds": [
+        "item_iron_enr"
+      ],
+      "outputItemIds": [
+        "item_iron_enr_cmpt"
+      ]
+    },
+    {
+      "id": "opt-13-1",
+      "kind": "production",
+      "definitionId": "item_port_tools_asm_mc_1",
+      "definitionNameKey": "registry.entity.item_port_tools_asm_mc_1.name",
+      "recipeId": "r_packaging_battery_from_iron_cmpt_and_originium_enr_powder_basic",
+      "componentId": "C41",
+      "layer": 8,
+      "inputItemIds": [
+        "item_iron_enr_cmpt",
+        "item_originium_enr_powder"
+      ],
+      "outputItemIds": [
+        "item_proc_battery_3"
+      ]
+    },
+    {
+      "id": "warehouse-storage-1",
+      "kind": "storage",
+      "definitionId": "item_port_storager_1",
+      "definitionNameKey": "registry.entity.item_port_storager_1.name",
+      "recipeId": null,
+      "componentId": "C42",
+      "layer": 9,
+      "inputItemIds": [
+        "item_proc_battery_3"
+      ],
+      "outputItemIds": []
+    }
+  ],
+  "edges": [
+    {
+      "sourceId": "cycle-1-1-1",
+      "targetId": "cycle-1-2-1",
+      "itemId": "item_plant_moss_3",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "cycle-1-1-2",
+      "targetId": "cycle-1-2-2",
+      "itemId": "item_plant_moss_3",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "cycle-1-1-3",
+      "targetId": "opt-5-1",
+      "itemId": "item_plant_moss_3",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "cycle-1-1-3",
+      "targetId": "opt-5-2",
+      "itemId": "item_plant_moss_3",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "cycle-1-1-4",
+      "targetId": "opt-5-2",
+      "itemId": "item_plant_moss_3",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "cycle-1-2-1",
+      "targetId": "cycle-1-1-1",
+      "itemId": "item_plant_moss_seed_3",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "cycle-1-2-1",
+      "targetId": "cycle-1-1-2",
+      "itemId": "item_plant_moss_seed_3",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "cycle-1-2-2",
+      "targetId": "cycle-1-1-3",
+      "itemId": "item_plant_moss_seed_3",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "cycle-1-2-2",
+      "targetId": "cycle-1-1-4",
+      "itemId": "item_plant_moss_seed_3",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-1-1",
+      "targetId": "opt-13-1",
+      "itemId": "item_iron_enr_cmpt",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-1-2",
+      "targetId": "opt-13-1",
+      "itemId": "item_iron_enr_cmpt",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-11-1",
+      "targetId": "opt-2-1",
+      "itemId": "item_iron_enr_powder",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-11-2",
+      "targetId": "opt-2-2",
+      "itemId": "item_iron_enr_powder",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-12-1",
+      "targetId": "opt-13-1",
+      "itemId": "item_originium_enr_powder",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-12-2",
+      "targetId": "opt-13-1",
+      "itemId": "item_originium_enr_powder",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-12-3",
+      "targetId": "opt-13-1",
+      "itemId": "item_originium_enr_powder",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-13-1",
+      "targetId": "warehouse-storage-1",
+      "itemId": "item_proc_battery_3",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-2-1",
+      "targetId": "opt-1-1",
+      "itemId": "item_iron_enr",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-2-2",
+      "targetId": "opt-1-2",
+      "itemId": "item_iron_enr",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-3-1",
+      "targetId": "opt-4-1",
+      "itemId": "item_iron_nugget",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-3-2",
+      "targetId": "opt-4-2",
+      "itemId": "item_iron_nugget",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-3-3",
+      "targetId": "opt-4-3",
+      "itemId": "item_iron_nugget",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-3-4",
+      "targetId": "opt-4-4",
+      "itemId": "item_iron_nugget",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-4-1",
+      "targetId": "opt-11-1",
+      "itemId": "item_iron_powder",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-4-2",
+      "targetId": "opt-11-1",
+      "itemId": "item_iron_powder",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-4-3",
+      "targetId": "opt-11-2",
+      "itemId": "item_iron_powder",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-4-4",
+      "targetId": "opt-11-2",
+      "itemId": "item_iron_powder",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-5-1",
+      "targetId": "opt-11-1",
+      "itemId": "item_plant_moss_powder_3",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-5-1",
+      "targetId": "opt-11-2",
+      "itemId": "item_plant_moss_powder_3",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-5-1",
+      "targetId": "opt-12-1",
+      "itemId": "item_plant_moss_powder_3",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-5-2",
+      "targetId": "opt-12-1",
+      "itemId": "item_plant_moss_powder_3",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-5-2",
+      "targetId": "opt-12-2",
+      "itemId": "item_plant_moss_powder_3",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-5-2",
+      "targetId": "opt-12-3",
+      "itemId": "item_plant_moss_powder_3",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-6-1",
+      "targetId": "opt-12-1",
+      "itemId": "item_originium_powder",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-6-2",
+      "targetId": "opt-12-1",
+      "itemId": "item_originium_powder",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-6-3",
+      "targetId": "opt-12-2",
+      "itemId": "item_originium_powder",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-6-4",
+      "targetId": "opt-12-2",
+      "itemId": "item_originium_powder",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-6-5",
+      "targetId": "opt-12-3",
+      "itemId": "item_originium_powder",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "opt-6-6",
+      "targetId": "opt-12-3",
+      "itemId": "item_originium_powder",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "warehouse-unloader-1",
+      "targetId": "opt-3-1",
+      "itemId": "item_iron_ore",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "warehouse-unloader-10",
+      "targetId": "opt-6-1",
+      "itemId": "item_originium_ore",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "warehouse-unloader-2",
+      "targetId": "opt-3-2",
+      "itemId": "item_iron_ore",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "warehouse-unloader-3",
+      "targetId": "opt-3-3",
+      "itemId": "item_iron_ore",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "warehouse-unloader-4",
+      "targetId": "opt-3-4",
+      "itemId": "item_iron_ore",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "warehouse-unloader-5",
+      "targetId": "opt-6-2",
+      "itemId": "item_originium_ore",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "warehouse-unloader-6",
+      "targetId": "opt-6-3",
+      "itemId": "item_originium_ore",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "warehouse-unloader-7",
+      "targetId": "opt-6-4",
+      "itemId": "item_originium_ore",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "warehouse-unloader-8",
+      "targetId": "opt-6-5",
+      "itemId": "item_originium_ore",
+      "laneCount": 1
+    },
+    {
+      "sourceId": "warehouse-unloader-9",
+      "targetId": "opt-6-6",
+      "itemId": "item_originium_ore",
+      "laneCount": 1
+    }
+  ],
+  "components": [
+    {
+      "id": "C1",
+      "layer": 0,
+      "deviceIds": [
+        "cycle-1-1-1",
+        "cycle-1-2-1"
+      ],
+      "cyclic": true
+    },
+    {
+      "id": "C2",
+      "layer": 0,
+      "deviceIds": [
+        "warehouse-unloader-1"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C3",
+      "layer": 0,
+      "deviceIds": [
+        "warehouse-unloader-10"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C4",
+      "layer": 0,
+      "deviceIds": [
+        "warehouse-unloader-2"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C5",
+      "layer": 0,
+      "deviceIds": [
+        "warehouse-unloader-3"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C6",
+      "layer": 0,
+      "deviceIds": [
+        "warehouse-unloader-4"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C7",
+      "layer": 0,
+      "deviceIds": [
+        "warehouse-unloader-5"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C8",
+      "layer": 0,
+      "deviceIds": [
+        "warehouse-unloader-6"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C9",
+      "layer": 0,
+      "deviceIds": [
+        "warehouse-unloader-7"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C10",
+      "layer": 0,
+      "deviceIds": [
+        "warehouse-unloader-8"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C11",
+      "layer": 0,
+      "deviceIds": [
+        "warehouse-unloader-9"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C12",
+      "layer": 1,
+      "deviceIds": [
+        "cycle-1-1-2"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C13",
+      "layer": 1,
+      "deviceIds": [
+        "opt-3-1"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C14",
+      "layer": 1,
+      "deviceIds": [
+        "opt-3-2"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C15",
+      "layer": 1,
+      "deviceIds": [
+        "opt-3-3"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C16",
+      "layer": 1,
+      "deviceIds": [
+        "opt-3-4"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C17",
+      "layer": 1,
+      "deviceIds": [
+        "opt-6-1"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C18",
+      "layer": 1,
+      "deviceIds": [
+        "opt-6-2"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C19",
+      "layer": 1,
+      "deviceIds": [
+        "opt-6-3"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C20",
+      "layer": 1,
+      "deviceIds": [
+        "opt-6-4"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C21",
+      "layer": 1,
+      "deviceIds": [
+        "opt-6-5"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C22",
+      "layer": 1,
+      "deviceIds": [
+        "opt-6-6"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C23",
+      "layer": 2,
+      "deviceIds": [
+        "cycle-1-2-2"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C24",
+      "layer": 2,
+      "deviceIds": [
+        "opt-4-1"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C25",
+      "layer": 2,
+      "deviceIds": [
+        "opt-4-2"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C26",
+      "layer": 2,
+      "deviceIds": [
+        "opt-4-3"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C27",
+      "layer": 2,
+      "deviceIds": [
+        "opt-4-4"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C28",
+      "layer": 3,
+      "deviceIds": [
+        "cycle-1-1-3"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C29",
+      "layer": 3,
+      "deviceIds": [
+        "cycle-1-1-4"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C30",
+      "layer": 4,
+      "deviceIds": [
+        "opt-5-1"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C31",
+      "layer": 4,
+      "deviceIds": [
+        "opt-5-2"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C32",
+      "layer": 5,
+      "deviceIds": [
+        "opt-11-1"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C33",
+      "layer": 5,
+      "deviceIds": [
+        "opt-11-2"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C34",
+      "layer": 5,
+      "deviceIds": [
+        "opt-12-1"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C35",
+      "layer": 5,
+      "deviceIds": [
+        "opt-12-2"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C36",
+      "layer": 5,
+      "deviceIds": [
+        "opt-12-3"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C37",
+      "layer": 6,
+      "deviceIds": [
+        "opt-2-1"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C38",
+      "layer": 6,
+      "deviceIds": [
+        "opt-2-2"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C39",
+      "layer": 7,
+      "deviceIds": [
+        "opt-1-1"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C40",
+      "layer": 7,
+      "deviceIds": [
+        "opt-1-2"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C41",
+      "layer": 8,
+      "deviceIds": [
+        "opt-13-1"
+      ],
+      "cyclic": false
+    },
+    {
+      "id": "C42",
+      "layer": 9,
+      "deviceIds": [
+        "warehouse-storage-1"
+      ],
+      "cyclic": false
+    }
+  ]
+}
