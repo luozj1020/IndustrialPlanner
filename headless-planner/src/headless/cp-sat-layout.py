@@ -96,10 +96,10 @@ def solve_variant(data, variant, deadline, forbidden_layouts):
         fixed_end_y_values.append(obstacle_y + obstacle_height)
     model.add_no_overlap_2d(x_intervals, y_intervals)
 
-    # Each previously emitted pose vector becomes a no-good cut:
-    # at least one device must change x, y, or rotation. This turns candidate
-    # variants into distinct mathematical solutions instead of relying on
-    # post-solve signature deduplication.
+    # Each emitted layout or connectivity/capacity-certified pose vector becomes a
+    # no-good cut: at least one listed device must change x, y, or rotation.
+    # The TypeScript master only supplies routing cuts backed by a complete
+    # equipment-only connectivity or complete grid edge-cut capacity proof.
     for cut_index, layout in enumerate(forbidden_layouts):
         same_pose_terms = []
         for placement_index, placement in enumerate(layout):
@@ -153,6 +153,142 @@ def solve_variant(data, variant, deadline, forbidden_layouts):
         }
         for obstacle in data.get("fixedObstacles", [])
     ]
+    # Generalized Logic-based Benders capacity cuts. If every material endpoint
+    # remains at its certified pose, select at least D distinct free adjacencies
+    # from the explicit grid edge cut. Axis-aligned cuts are serialized in this
+    # same form, so arbitrary residual min-cut boundaries need no weaker proxy.
+    for cut_index, cut in enumerate(data.get("capacityCuts", []) or []):
+        if deadline - time.monotonic() <= 0.01:
+            return None, True
+        if int(cut.get("gridWidth", -1)) != limit_width \
+                or int(cut.get("gridHeight", -1)) != limit_height:
+            # A certificate from a cropped routing grid is not valid on a
+            # differently sized master model.
+            continue
+        axis = cut.get("axis")
+        required_capacity = int(cut.get("requiredCapacity", 0))
+        if axis not in ("vertical", "horizontal", "general") or required_capacity <= 0:
+            continue
+        cut_edges = []
+        seen_edges = set()
+        edges_are_valid = True
+        for edge in cut.get("cutEdges", []):
+            try:
+                from_x = int(edge["from"]["x"])
+                from_y = int(edge["from"]["y"])
+                to_x = int(edge["to"]["x"])
+                to_y = int(edge["to"]["y"])
+            except (KeyError, TypeError, ValueError):
+                edges_are_valid = False
+                break
+            if not (0 <= from_x < limit_width and 0 <= from_y < limit_height
+                    and 0 <= to_x < limit_width and 0 <= to_y < limit_height
+                    and abs(from_x - to_x) + abs(from_y - to_y) == 1):
+                edges_are_valid = False
+                break
+            edge_key = tuple(sorted(((from_x, from_y), (to_x, to_y))))
+            if edge_key in seen_edges:
+                edges_are_valid = False
+                break
+            seen_edges.add(edge_key)
+            cut_edges.append(((from_x, from_y), (to_x, to_y)))
+        if not edges_are_valid or not cut_edges:
+            continue
+
+        guard_terms = []
+        guard_is_complete = True
+        for placement_index, placement in enumerate(cut.get("activeWhenPlacements", [])):
+            entry = variables.get(placement["id"])
+            if entry is None:
+                guard_is_complete = False
+                break
+            same_x = model.new_bool_var(
+                f"capacity_cut_{cut_index}_{placement_index}_same_x"
+            )
+            same_y = model.new_bool_var(
+                f"capacity_cut_{cut_index}_{placement_index}_same_y"
+            )
+            same_rotation = model.new_bool_var(
+                f"capacity_cut_{cut_index}_{placement_index}_same_rotation"
+            )
+            model.add(entry["x"] == int(placement["x"])).only_enforce_if(same_x)
+            model.add(entry["x"] != int(placement["x"])).only_enforce_if(same_x.negated())
+            model.add(entry["y"] == int(placement["y"])).only_enforce_if(same_y)
+            model.add(entry["y"] != int(placement["y"])).only_enforce_if(same_y.negated())
+            model.add(entry["rotation"] == int(placement["rotation"])).only_enforce_if(
+                same_rotation
+            )
+            model.add(entry["rotation"] != int(placement["rotation"])).only_enforce_if(
+                same_rotation.negated()
+            )
+            same_pose = model.new_bool_var(
+                f"capacity_cut_{cut_index}_{placement_index}_same_pose"
+            )
+            model.add_bool_and([same_x, same_y, same_rotation]).only_enforce_if(same_pose)
+            model.add_bool_or([
+                same_x.negated(),
+                same_y.negated(),
+                same_rotation.negated(),
+            ]).only_enforce_if(same_pose.negated())
+            guard_terms.append(same_pose)
+        if not guard_is_complete:
+            # Never strengthen a conditional cut by silently dropping a guard.
+            continue
+
+        fixed_blocked_edge_indexes = set()
+        fixed_indexes_are_valid = True
+        for raw_index in cut.get("fixedBlockedEdgeIndexes", []):
+            try:
+                edge_index = int(raw_index)
+            except (TypeError, ValueError):
+                fixed_indexes_are_valid = False
+                break
+            if edge_index < 0 or edge_index >= len(cut_edges):
+                fixed_indexes_are_valid = False
+                break
+            fixed_blocked_edge_indexes.add(edge_index)
+        if not fixed_indexes_are_valid:
+            continue
+        available_slots = []
+        for edge_index, ((from_x, from_y), (to_x, to_y)) in enumerate(cut_edges):
+            if edge_index in fixed_blocked_edge_indexes:
+                continue
+            available = model.new_bool_var(f"capacity_cut_{cut_index}_edge_{edge_index}")
+            for device_index, rectangle in enumerate(variables.values()):
+                add_point_outside_rectangle(
+                    available,
+                    from_x,
+                    from_y,
+                    rectangle,
+                    f"capacity_cut_{cut_index}_edge_{edge_index}_from_device_{device_index}",
+                )
+                add_point_outside_rectangle(
+                    available,
+                    to_x,
+                    to_y,
+                    rectangle,
+                    f"capacity_cut_{cut_index}_edge_{edge_index}_to_device_{device_index}",
+                )
+            for obstacle_index, rectangle in enumerate(fixed_rectangles):
+                add_point_outside_rectangle(
+                    available,
+                    from_x,
+                    from_y,
+                    rectangle,
+                    f"capacity_cut_{cut_index}_edge_{edge_index}_from_fixed_{obstacle_index}",
+                )
+                add_point_outside_rectangle(
+                    available,
+                    to_x,
+                    to_y,
+                    rectangle,
+                    f"capacity_cut_{cut_index}_edge_{edge_index}_to_fixed_{obstacle_index}",
+                )
+            available_slots.append(available)
+        capacity_constraint = model.add(sum(available_slots) >= required_capacity)
+        if guard_terms:
+            capacity_constraint.only_enforce_if(guard_terms)
+
     for device in data["devices"]:
         if deadline - time.monotonic() <= 0.01:
             return None, True

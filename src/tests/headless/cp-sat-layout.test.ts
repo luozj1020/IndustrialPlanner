@@ -147,6 +147,33 @@ describe("CP-SAT bridge observability", () => {
     }]);
   });
 
+  it("serializes conditional explicit grid edge cuts into the mathematical model", () => {
+    process.env["INDUSTRIAL_PLANNER_PYTHON"] = "custom-python";
+    spawnSyncMock.mockReturnValueOnce(processResult({ status: "no-layouts" }));
+    const capacityCut = {
+      axis: "vertical" as const,
+      coordinate: 4,
+      gridWidth: 8,
+      gridHeight: 8,
+      requiredCapacity: 3,
+      cutEdges: Array.from({ length: 8 }, (_, y) => ({
+        from: { x: 3, y },
+        to: { x: 4, y },
+      })),
+      fixedBlockedEdgeIndexes: [0, 7],
+      activeWhenPlacements: [
+        { id: "machine", x: 1, y: 2, rotation: 0 as const, width: 2, height: 3 },
+      ],
+    };
+
+    solveCpSatLayouts({ ...OPTIONS, capacityCuts: [capacityCut] });
+
+    const input = JSON.parse(String(spawnSyncMock.mock.calls[0]?.[2]?.input)) as {
+      capacityCuts?: unknown;
+    };
+    expect(input.capacityCuts).toEqual([capacityCut]);
+  });
+
   it("returns the most informative bounded failure after exhausting interpreters", () => {
     process.env["INDUSTRIAL_PLANNER_PYTHON"] = "custom-python";
     spawnSyncMock

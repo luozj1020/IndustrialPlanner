@@ -18,6 +18,7 @@ import {
   createDeviceBankRoutingNeighborhoods,
   createEdgeStorageMovementCandidates,
   createHotspotTargetPortAssignments,
+  createRouteFailureCapacityCut,
   createSpeculativeAxisCutCompactions,
   createSpeculativeHorizontalCutCompactions,
   createUpstreamRowMovementCandidates,
@@ -2246,7 +2247,7 @@ describe("headless layout optimizer", () => {
     })).toEqual(["hotspot", "terminal"]);
   });
 
-  it("turns routed frontier blockers into a bounded pose no-good cut", () => {
+  it("turns a certified placement conflict into a focused pose no-good cut", () => {
     const producer = device("producer", 1, 2);
     const blocker = device("blocker", 5, 6, 2, 2, "storage");
     expect(createRouteFailurePoseCut({
@@ -2270,6 +2271,17 @@ describe("headless layout optimizer", () => {
         { x: 4, y: 6, ownerDeviceId: "blocker", ownerKind: "production" },
         { x: 4, y: 4, ownerDeviceId: "belt", ownerKind: "logistics" },
       ],
+      capacityConflict: null,
+      placementConflict: {
+        proof: "static-free-space-separator",
+        sourceIsBoundary: false,
+        targetIsBoundary: false,
+        sourceEndpointCount: 1,
+        targetEndpointCount: 1,
+        reachableCellCount: 12,
+        separatorCellCount: 3,
+        poseDeviceIds: ["blocker", "producer"],
+      },
     })).toEqual([
       {
         id: "blocker",
@@ -2288,6 +2300,138 @@ describe("headless layout optimizer", () => {
         height: 2,
       },
     ]);
+  });
+
+  it("turns a certified cut-capacity conflict into a focused pose no-good cut", () => {
+    const producer = device("producer", 1, 2);
+    const blocker = device("blocker", 5, 6, 2, 2, "storage");
+    const packing = {
+      devices: [producer, blocker],
+      usedWidth: 8,
+      usedHeight: 9,
+      equipmentArea: 8,
+    };
+    const evidence = {
+      itemId: "item",
+      sourceDeviceId: "producer",
+      targetDeviceId: "blocker",
+      kind: "belt",
+      attemptedPortPairs: [],
+      reachableCells: [],
+      frontierBlockers: [],
+      placementConflict: null,
+      capacityConflict: {
+        proof: "static-cut-capacity",
+        axis: "vertical",
+        coordinate: 4,
+        gridWidth: 8,
+        gridHeight: 9,
+        demand: 3,
+        capacity: 2,
+        deficit: 1,
+        crossingLaneIds: ["lane-a", "lane-b", "lane-c"],
+        endpointPoseDeviceIds: ["producer"],
+        blockingPoseDeviceIds: ["blocker"],
+        fixedBlockedOffsets: [],
+        poseDeviceIds: ["blocker", "producer"],
+      },
+    } as const;
+    expect(createRouteFailurePoseCut(packing, evidence)).toEqual([
+      { id: "blocker", x: 5, y: 6, rotation: 0, width: 2, height: 2 },
+      { id: "producer", x: 1, y: 2, rotation: 0, width: 2, height: 2 },
+    ]);
+    expect(createRouteFailureCapacityCut(packing, evidence)).toEqual({
+      axis: "vertical",
+      coordinate: 4,
+      gridWidth: 8,
+      gridHeight: 9,
+      requiredCapacity: 3,
+      cutEdges: Array.from({ length: 9 }, (_, y) => ({
+        from: { x: 3, y },
+        to: { x: 4, y },
+      })),
+      fixedBlockedEdgeIndexes: [],
+      activeWhenPlacements: [
+        { id: "producer", x: 1, y: 2, rotation: 0, width: 2, height: 2 },
+      ],
+    });
+  });
+
+  it("preserves an arbitrary certified grid edge cut for CP-SAT", () => {
+    const producer = device("producer", 1, 2);
+    const packing = {
+      devices: [producer],
+      usedWidth: 8,
+      usedHeight: 9,
+      equipmentArea: 4,
+    };
+    const cutEdges = [
+      { from: { x: 2, y: 2 }, to: { x: 2, y: 3 } },
+      { from: { x: 1, y: 3 }, to: { x: 2, y: 3 } },
+      { from: { x: 2, y: 3 }, to: { x: 3, y: 3 } },
+    ] as const;
+    const evidence = {
+      itemId: "item",
+      sourceDeviceId: "producer",
+      targetDeviceId: "fixed-target",
+      kind: "belt",
+      attemptedPortPairs: [],
+      reachableCells: [],
+      frontierBlockers: [],
+      placementConflict: null,
+      capacityConflict: {
+        proof: "static-general-cut-capacity",
+        axis: "general",
+        coordinate: null,
+        gridWidth: 8,
+        gridHeight: 9,
+        demand: 2,
+        capacity: 1,
+        deficit: 1,
+        crossingLaneIds: ["lane-a", "lane-b"],
+        endpointPoseDeviceIds: ["producer"],
+        blockingPoseDeviceIds: [],
+        cutEdges,
+        fixedBlockedEdgeIndexes: [0],
+        poseDeviceIds: ["producer"],
+      },
+    } as const;
+
+    expect(createRouteFailureCapacityCut(packing, evidence)).toEqual({
+      axis: "general",
+      coordinate: null,
+      gridWidth: 8,
+      gridHeight: 9,
+      requiredCapacity: 2,
+      cutEdges,
+      fixedBlockedEdgeIndexes: [0],
+      activeWhenPlacements: [
+        { id: "producer", x: 1, y: 2, rotation: 0, width: 2, height: 2 },
+      ],
+    });
+  });
+
+  it("keeps heuristic route frontiers out of CP-SAT hard cuts", () => {
+    const producer = device("producer", 1, 2);
+    const blocker = device("blocker", 5, 6, 2, 2, "storage");
+    expect(createRouteFailurePoseCut({
+      devices: [producer, blocker],
+      usedWidth: 8,
+      usedHeight: 9,
+      equipmentArea: 8,
+    }, {
+      itemId: "item",
+      sourceDeviceId: "producer",
+      targetDeviceId: "blocker",
+      kind: "belt",
+      attemptedPortPairs: [],
+      reachableCells: [],
+      frontierBlockers: [
+        { x: 4, y: 6, ownerDeviceId: "blocker", ownerKind: "production" },
+      ],
+      placementConflict: null,
+      capacityConflict: null,
+    })).toEqual([]);
   });
 
   it("measures strict unloader frontage while excluding the fixed warehouse bus", () => {

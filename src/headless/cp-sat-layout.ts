@@ -69,6 +69,28 @@ export interface CpSatLayoutPlacement {
   readonly height: number;
 }
 
+export interface CpSatLayoutCapacityCutEdge {
+  readonly from: GridPoint;
+  readonly to: GridPoint;
+}
+
+/**
+ * Conditional grid edge-cut inequality learned from exact routing.
+ * When every endpoint guard remains at its certified pose, the model must keep
+ * at least requiredCapacity crossing adjacencies free on the named cut.
+ */
+export interface CpSatLayoutCapacityCut {
+  /** Diagnostic shape; the mathematical cut is the explicit cutEdges array. */
+  readonly axis: "vertical" | "horizontal" | "general";
+  readonly coordinate: number | null;
+  readonly gridWidth: number;
+  readonly gridHeight: number;
+  readonly requiredCapacity: number;
+  readonly cutEdges: readonly CpSatLayoutCapacityCutEdge[];
+  readonly fixedBlockedEdgeIndexes: readonly number[];
+  readonly activeWhenPlacements: readonly CpSatLayoutPlacement[];
+}
+
 export interface CpSatLayoutResult {
   readonly layouts: readonly CpSatLayoutPlacement[][];
   readonly status: CpSatStatus;
@@ -108,8 +130,10 @@ export function solveCpSatLayouts(options: {
   readonly maxSeconds: number;
   readonly candidateCount: number;
   readonly seed: number;
-  /** A* rejected pose subsets; each cut requires at least one listed device to change pose. */
+  /** Connectivity/capacity-certified subsets; each cut requires one listed device to change pose. */
   readonly forbiddenLayouts?: readonly (readonly CpSatLayoutPlacement[])[];
+  /** Generalized capacity cuts learned from frozen-lane routing failures. */
+  readonly capacityCuts?: readonly CpSatLayoutCapacityCut[];
   /** Optional named weights for CP-SAT proxy terms mapped to objective metric names.
    *  When absent, Python uses backward-compatible defaults matching the pre-slice formula. */
   readonly objectiveWeights?: Readonly<Partial<Record<LayoutObjectiveMetric, number>>>;

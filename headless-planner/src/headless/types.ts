@@ -1,5 +1,5 @@
 import type { BlueprintDocument } from "../domain/document/blueprint-document";
-import type { GridRotation } from "../domain/shared/grid";
+import type { GridPoint, GridRotation } from "../domain/shared/grid";
 import type { SimulationCompileDiagnostic } from "../simulation/types";
 
 /** Metrics that drive lexicographic layout comparison, in priority order. */
@@ -237,6 +237,70 @@ export interface FrontierBlocker {
   readonly ownerKind: "production" | "logistics" | null;
 }
 
+/**
+ * Placement-only proof that a failed lane cannot cross the immutable equipment
+ * obstacle grid. Existing belts/pipes and route-order choices are deliberately
+ * excluded, so this certificate may become a hard CP-SAT pose cut.
+ */
+export interface RoutePlacementConflictCertificate {
+  readonly proof: "no-legal-endpoint" | "static-free-space-separator";
+  readonly sourceIsBoundary: boolean;
+  readonly targetIsBoundary: boolean;
+  readonly sourceEndpointCount: number;
+  readonly targetEndpointCount: number;
+  /** Complete reachable-set size; only the count is serialized. */
+  readonly reachableCellCount: number;
+  /** Complete immutable separator size; only the count is serialized. */
+  readonly separatorCellCount: number;
+  /** Every movable pose that must remain fixed for the proof to stay valid. */
+  readonly poseDeviceIds: readonly string[];
+}
+
+/** One undirected adjacency in a certified grid edge cut. */
+export interface RouteCapacityCutEdge {
+  readonly from: GridPoint;
+  readonly to: GridPoint;
+}
+
+interface RouteCapacityConflictCertificateBase {
+  readonly gridWidth: number;
+  readonly gridHeight: number;
+  readonly demand: number;
+  readonly capacity: number;
+  readonly deficit: number;
+  readonly crossingLaneIds: readonly string[];
+  /** Movable lane endpoints whose unchanged poses keep the cut demand mandatory. */
+  readonly endpointPoseDeviceIds: readonly string[];
+  /** Movable rectangles currently consuming slots on the certified cut. */
+  readonly blockingPoseDeviceIds: readonly string[];
+  /** Every movable endpoint/blocker pose that must remain fixed for the proof to stay valid. */
+  readonly poseDeviceIds: readonly string[];
+}
+
+/**
+ * Placement-only proof that a complete grid edge cut has fewer immutable free
+ * crossing slots than the frozen material graph has mandatory lanes.
+ */
+export type RouteCapacityConflictCertificate = RouteCapacityConflictCertificateBase & (
+  | {
+    readonly proof: "static-cut-capacity";
+    /** The cut lies between coordinate-1 and coordinate on the named axis. */
+    readonly axis: "vertical" | "horizontal";
+    readonly coordinate: number;
+    /** Orthogonal cut offsets blocked by immutable equipment/frontage cells. */
+    readonly fixedBlockedOffsets: readonly number[];
+  }
+  | {
+    readonly proof: "static-general-cut-capacity";
+    readonly axis: "general";
+    readonly coordinate: null;
+    /** Deterministic, complete boundary of the residual min-cut partition. */
+    readonly cutEdges: readonly RouteCapacityCutEdge[];
+    /** Edge indexes guaranteed blocked without fixing a movable device pose. */
+    readonly fixedBlockedEdgeIndexes: readonly number[];
+  }
+);
+
 /** Structured routing failure evidence bounded for determinism and JSON-safety. */
 export interface RouteFailureEvidence {
   readonly itemId: string;
@@ -248,6 +312,10 @@ export interface RouteFailureEvidence {
   readonly reachableCells: readonly { readonly x: number; readonly y: number }[];
   /** Deterministically sorted frontier blocker cells with owner IDs. */
   readonly frontierBlockers: readonly FrontierBlocker[];
+  /** Null when the frozen graph remains connected or lane allocation is mutable. */
+  readonly placementConflict: RoutePlacementConflictCertificate | null;
+  /** Null unless a frozen lane graph provably exceeds a complete static grid edge cut. */
+  readonly capacityConflict: RouteCapacityConflictCertificate | null;
 }
 
 export interface HeadlessOptimizationResult {
@@ -349,6 +417,10 @@ export interface HeadlessOptimizationResult {
     readonly globalRebuildCandidatesRouted: number;
     /** Global-rebuild layouts that improved the winning objective. */
     readonly globalRebuildCandidatesImproved: number;
+    /** Distinct placement-proven routing conflicts learned as CP-SAT pose cuts. */
+    readonly certifiedRouteFailureCutsLearned: number;
+    /** Distinct generalized grid edge-cut capacity inequalities retained by CP-SAT. */
+    readonly certifiedRouteCapacityCutsLearned: number;
     /** Objective-guided partial-rebuild layouts emitted before the cheap funnel. */
     readonly partialRebuildCandidatesGenerated: number;
     /** Partial-rebuild layouts that passed complete A* routing. */

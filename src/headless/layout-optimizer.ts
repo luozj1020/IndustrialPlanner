@@ -43,7 +43,10 @@ import type {
   HeadlessPlacedDevice,
   LayoutObjective,
   ObjectiveVector,
+  RouteCapacityCutEdge,
+  RouteCapacityConflictCertificate,
   RouteFailureEvidence,
+  RoutePlacementConflictCertificate,
   Slot,
   EjectionChainConfig,
   RipUpConfig,
@@ -55,6 +58,7 @@ import { DEFAULT_LAYOUT_OBJECTIVE } from "./types";
 import {
   DEFAULT_CP_SAT_OBJECTIVE_WEIGHTS,
   solveCpSatLayouts,
+  type CpSatLayoutCapacityCut,
   type CpSatLayoutCluster,
   type CpSatLayoutEdge,
   type CpSatLayoutPlacement,
@@ -391,6 +395,674 @@ const MAX_FRONTIER_BLOCKERS = 200;
 const MAX_ATTEMPTED_PORT_PAIRS = 64;
 const MAX_FEASIBLE_ELITE_STATES = 8;
 const MAX_ELITE_REFINEMENT_BASES = 3;
+const MAX_CERTIFIED_ROUTE_FAILURE_CUTS = 64;
+const MAX_CERTIFIED_ROUTE_CAPACITY_CUTS = 8;
+
+/**
+ * Prove a placement-only routing conflict on the relaxed free-space grid.
+ *
+ * The search deliberately ignores committed logistics, reserved sibling ports,
+ * bend rules, and route order. Consequently, a disconnection here is a valid
+ * necessary-condition failure for every detailed routing strategy at the same
+ * certified device poses. Unlike the diagnostic frontier collector below, this
+ * traversal is complete; only aggregate counts and device IDs are serialized.
+ */
+export function proveRoutePlacementConflict(options: {
+  readonly width: number;
+  readonly height: number;
+  readonly blocked: ReadonlySet<string>;
+  readonly productionDevices: readonly HeadlessPlacedDevice[];
+  readonly sourceDeviceId: string | null;
+  readonly targetDeviceId: string | null;
+  /** Null denotes the map boundary. */
+  readonly sourceGridPoints: readonly GridPoint[] | null;
+  /** Null denotes the map boundary. */
+  readonly targetGridPoints: readonly GridPoint[] | null;
+}): RoutePlacementConflictCertificate | null {
+  const normalizePoints = (points: readonly GridPoint[] | null): GridPoint[] => {
+    if (points === null) return [];
+    const unique = new Map<string, GridPoint>();
+    for (const point of points) {
+      if (point.x < 0 || point.y < 0 || point.x >= options.width || point.y >= options.height) continue;
+      unique.set(gridKey(point), { x: point.x, y: point.y });
+    }
+    return [...unique.values()].sort((left, right) =>
+      left.y - right.y || left.x - right.x);
+  };
+  const sourceIsBoundary = options.sourceGridPoints === null;
+  const targetIsBoundary = options.targetGridPoints === null;
+  const sourcePoints = normalizePoints(options.sourceGridPoints);
+  const targetPoints = normalizePoints(options.targetGridPoints);
+  const movableIds = new Set(options.productionDevices
+    .filter((device) => device.kind === "production" || device.kind === "storage")
+    .map((device) => device.id));
+  const certificate = (
+    proof: RoutePlacementConflictCertificate["proof"],
+    reachableCellCount: number,
+    separatorCellCount: number,
+    poseDeviceIds: Iterable<string>,
+  ): RoutePlacementConflictCertificate => ({
+    proof,
+    sourceIsBoundary,
+    targetIsBoundary,
+    sourceEndpointCount: sourcePoints.length,
+    targetEndpointCount: targetPoints.length,
+    reachableCellCount,
+    separatorCellCount,
+    poseDeviceIds: [...new Set(poseDeviceIds)].sort(),
+  });
+
+  const missingEndpointDeviceIds: string[] = [];
+  if (!sourceIsBoundary && sourcePoints.length === 0
+    && options.sourceDeviceId !== null && movableIds.has(options.sourceDeviceId)) {
+    missingEndpointDeviceIds.push(options.sourceDeviceId);
+  }
+  if (!targetIsBoundary && targetPoints.length === 0
+    && options.targetDeviceId !== null && movableIds.has(options.targetDeviceId)) {
+    missingEndpointDeviceIds.push(options.targetDeviceId);
+  }
+  if ((!sourceIsBoundary && sourcePoints.length === 0)
+    || (!targetIsBoundary && targetPoints.length === 0)) {
+    return certificate("no-legal-endpoint", 0, 0, missingEndpointDeviceIds);
+  }
+  // A boundary-to-boundary lane has no movable endpoint whose pose could form a
+  // useful local cut. This case is not emitted by normal production planning.
+  if (sourceIsBoundary && targetIsBoundary) return null;
+
+  // Connectivity is undirected in this relaxed proof. When the source is the
+  // boundary, search from the finite target-port set toward any boundary cell.
+  const startPoints = sourceIsBoundary ? targetPoints : sourcePoints;
+  const goalIsBoundary = targetIsBoundary || sourceIsBoundary;
+  const goalKeys = new Set((sourceIsBoundary ? sourcePoints : targetPoints).map(gridKey));
+  const separatorKeys = new Set<string>();
+  const queue: GridPoint[] = [];
+  const visited = new Set<string>();
+  for (const point of startPoints) {
+    const key = gridKey(point);
+    if (options.blocked.has(key)) {
+      separatorKeys.add(key);
+      continue;
+    }
+    if (!visited.has(key)) {
+      visited.add(key);
+      queue.push(point);
+    }
+  }
+  // A blocked finite goal can become reachable if its owning equipment moves,
+  // so its owner must participate in the pose certificate even when it is not
+  // adjacent to the current reachable component.
+  if (!goalIsBoundary) {
+    for (const point of targetPoints) {
+      const key = gridKey(point);
+      if (options.blocked.has(key)) separatorKeys.add(key);
+    }
+  }
+  const isGoal = (point: GridPoint): boolean => goalIsBoundary
+    ? point.x === 0 || point.y === 0
+      || point.x === options.width - 1 || point.y === options.height - 1
+    : goalKeys.has(gridKey(point));
+  if (queue.some(isGoal)) return null;
+
+  const directions = [
+    { x: 1, y: 0 },
+    { x: 0, y: 1 },
+    { x: -1, y: 0 },
+    { x: 0, y: -1 },
+  ] as const;
+  for (let cursor = 0; cursor < queue.length; cursor += 1) {
+    const point = queue[cursor]!;
+    for (const delta of directions) {
+      const neighbor = { x: point.x + delta.x, y: point.y + delta.y };
+      if (neighbor.x < 0 || neighbor.y < 0
+        || neighbor.x >= options.width || neighbor.y >= options.height) continue;
+      const key = gridKey(neighbor);
+      if (options.blocked.has(key)) {
+        separatorKeys.add(key);
+        continue;
+      }
+      if (visited.has(key)) continue;
+      if (isGoal(neighbor)) return null;
+      visited.add(key);
+      queue.push(neighbor);
+    }
+  }
+
+  const ownerByCell = new Map<string, string>();
+  for (const device of options.productionDevices) {
+    for (let y = device.position.y; y < device.position.y + device.height; y += 1) {
+      for (let x = device.position.x; x < device.position.x + device.width; x += 1) {
+        ownerByCell.set(`${x},${y}`, device.id);
+      }
+    }
+  }
+  const poseDeviceIds = [options.sourceDeviceId, options.targetDeviceId]
+    .filter((id): id is string => id !== null && movableIds.has(id));
+  for (const key of separatorKeys) {
+    const ownerId = ownerByCell.get(key);
+    if (ownerId !== undefined && movableIds.has(ownerId)) poseDeviceIds.push(ownerId);
+  }
+  return certificate(
+    "static-free-space-separator",
+    visited.size,
+    separatorKeys.size,
+    poseDeviceIds,
+  );
+}
+
+interface RouteCapacityProofLane {
+  readonly id: string;
+  readonly sourceDeviceId: string | null;
+  readonly targetDeviceId: string | null;
+  /** Null denotes the map boundary, whose entry side is not fixed. */
+  readonly sourceGridPoints: readonly GridPoint[] | null;
+  /** Null denotes the map boundary, whose exit side is not fixed. */
+  readonly targetGridPoints: readonly GridPoint[] | null;
+}
+
+interface RouteCapacityProofOptions {
+  readonly width: number;
+  readonly height: number;
+  readonly blocked: ReadonlySet<string>;
+  readonly productionDevices: readonly HeadlessPlacedDevice[];
+  readonly lanes: readonly RouteCapacityProofLane[];
+}
+
+interface NormalizedRouteCapacityProofLane extends RouteCapacityProofLane {
+  readonly sourceGridPoints: readonly GridPoint[];
+  readonly targetGridPoints: readonly GridPoint[];
+}
+
+interface RouteCapacityProofContext {
+  readonly movableIds: ReadonlySet<string>;
+  readonly ownerByCell: ReadonlyMap<string, string>;
+  readonly lanes: readonly NormalizedRouteCapacityProofLane[];
+}
+
+function createRouteCapacityProofContext(
+  options: RouteCapacityProofOptions,
+): RouteCapacityProofContext {
+  const movableIds = new Set(options.productionDevices
+    .filter((device) => device.kind === "production" || device.kind === "storage")
+    .map((device) => device.id));
+  const ownerByCell = new Map<string, string>();
+  for (const device of options.productionDevices) {
+    for (let y = device.position.y; y < device.position.y + device.height; y += 1) {
+      for (let x = device.position.x; x < device.position.x + device.width; x += 1) {
+        ownerByCell.set(`${x},${y}`, device.id);
+      }
+    }
+  }
+  const normalizePoints = (points: readonly GridPoint[] | null): GridPoint[] => {
+    if (points === null) return [];
+    const unique = new Map<string, GridPoint>();
+    for (const point of points) {
+      if (point.x < 0 || point.y < 0 || point.x >= options.width || point.y >= options.height) continue;
+      unique.set(gridKey(point), { x: point.x, y: point.y });
+    }
+    return [...unique.values()].sort((left, right) =>
+      left.y - right.y || left.x - right.x);
+  };
+  const lanes = options.lanes.flatMap((lane): NormalizedRouteCapacityProofLane[] => {
+    // A boundary route may enter/leave on either side of the cut, so it cannot
+    // create mandatory cut demand without a separately fixed boundary terminal.
+    if (lane.sourceGridPoints === null || lane.targetGridPoints === null) return [];
+    const sourceGridPoints = normalizePoints(lane.sourceGridPoints);
+    const targetGridPoints = normalizePoints(lane.targetGridPoints);
+    if (sourceGridPoints.length === 0 || targetGridPoints.length === 0) return [];
+    return [{ ...lane, sourceGridPoints, targetGridPoints }];
+  }).sort((left, right) =>
+    left.id.localeCompare(right.id)
+    || left.sourceGridPoints.map(gridKey).join("|").localeCompare(right.sourceGridPoints.map(gridKey).join("|"))
+    || left.targetGridPoints.map(gridKey).join("|").localeCompare(right.targetGridPoints.map(gridKey).join("|")));
+  return { movableIds, ownerByCell, lanes };
+}
+
+function countBigIntBits(input: bigint): number {
+  let value = input;
+  let count = 0;
+  while (value !== 0n) {
+    value &= value - 1n;
+    count += 1;
+  }
+  return count;
+}
+
+/**
+ * Return a minimum-cardinality blocker set for small conflicts and an
+ * inclusion-minimal deterministic set for larger ones. Fixing the returned
+ * poses, plus the fixed blockers, still leaves strictly fewer than demand edges.
+ */
+function minimizeCapacityBlockingPoseIds(options: {
+  readonly cutEdgeCount: number;
+  readonly demand: number;
+  readonly fixedBlockedEdgeIndexes: ReadonlySet<number>;
+  readonly coverageByOwner: ReadonlyMap<string, bigint>;
+  readonly allMovableIds: ReadonlySet<string>;
+}): string[] {
+  const requiredGuaranteedBlocked = Math.max(0, options.cutEdgeCount - options.demand + 1);
+  const requiredMovableCoverage = requiredGuaranteedBlocked - options.fixedBlockedEdgeIndexes.size;
+  if (requiredMovableCoverage <= 0) return [];
+
+  const candidates = [...options.coverageByOwner]
+    .filter(([, mask]) => mask !== 0n)
+    .map(([id, mask]) => ({ id, mask, coverage: countBigIntBits(mask) }))
+    .sort((left, right) => right.coverage - left.coverage || left.id.localeCompare(right.id));
+  const fullCoverage = candidates.reduce((mask, candidate) => mask | candidate.mask, 0n);
+  if (countBigIntBits(fullCoverage) < requiredMovableCoverage) {
+    // Defensive fallback: fixing every movable rectangle preserves the exact
+    // obstacle grid even if an overlapping owner could not be attributed.
+    return [...options.allMovableIds].sort();
+  }
+
+  const EXACT_BLOCKER_LIMIT = 16;
+  if (candidates.length <= EXACT_BLOCKER_LIMIT) {
+    const suffixUnion = Array<bigint>(candidates.length + 1).fill(0n);
+    for (let index = candidates.length - 1; index >= 0; index -= 1) {
+      suffixUnion[index] = suffixUnion[index + 1]! | candidates[index]!.mask;
+    }
+    const selected: number[] = [];
+    const search = (index: number, remaining: number, covered: bigint): string[] | null => {
+      if (countBigIntBits(covered) >= requiredMovableCoverage) {
+        return selected.map((selectedIndex) => candidates[selectedIndex]!.id).sort();
+      }
+      if (remaining <= 0 || candidates.length - index < remaining) return null;
+      if (countBigIntBits(covered | suffixUnion[index]!) < requiredMovableCoverage) return null;
+
+      selected.push(index);
+      const withCandidate = search(index + 1, remaining - 1, covered | candidates[index]!.mask);
+      selected.pop();
+      if (withCandidate !== null) return withCandidate;
+      return search(index + 1, remaining, covered);
+    };
+    const maximumSingleCoverage = Math.max(...candidates.map((candidate) => candidate.coverage));
+    const lowerBound = Math.max(1, Math.ceil(requiredMovableCoverage / maximumSingleCoverage));
+    for (let limit = lowerBound; limit <= candidates.length; limit += 1) {
+      const solution = search(0, limit, 0n);
+      if (solution !== null) return solution;
+    }
+  }
+
+  // Large conflicts use deletion filtering. The result is inclusion-minimal:
+  // after a failed removal, deleting more candidates cannot make it removable.
+  let selected = [...candidates];
+  for (const candidate of [...candidates]
+    .sort((left, right) => left.coverage - right.coverage || left.id.localeCompare(right.id))) {
+    const without = selected.filter((entry) => entry.id !== candidate.id);
+    const coverage = without.reduce((mask, entry) => mask | entry.mask, 0n);
+    if (countBigIntBits(coverage) >= requiredMovableCoverage) selected = without;
+  }
+  return selected.map((candidate) => candidate.id).sort();
+}
+
+function analyzeRouteCapacityCut(options: {
+  readonly cutEdges: readonly RouteCapacityCutEdge[];
+  readonly demand: number;
+  readonly blocked: ReadonlySet<string>;
+  readonly context: RouteCapacityProofContext;
+}): {
+  readonly capacity: number;
+  readonly fixedBlockedEdgeIndexes: readonly number[];
+  readonly blockingPoseDeviceIds: readonly string[];
+} {
+  let capacity = 0;
+  const fixedBlockedEdgeIndexes = new Set<number>();
+  const coverageByOwner = new Map<string, bigint>();
+  for (const [edgeIndex, edge] of options.cutEdges.entries()) {
+    const blockedKeys = [gridKey(edge.from), gridKey(edge.to)]
+      .filter((key) => options.blocked.has(key));
+    if (blockedKeys.length === 0) {
+      capacity += 1;
+      continue;
+    }
+    let hasFixedBlocker = false;
+    const movableOwners = new Set<string>();
+    for (const key of blockedKeys) {
+      const ownerId = options.context.ownerByCell.get(key);
+      if (ownerId !== undefined && options.context.movableIds.has(ownerId)) {
+        movableOwners.add(ownerId);
+      } else {
+        hasFixedBlocker = true;
+      }
+    }
+    if (hasFixedBlocker) {
+      fixedBlockedEdgeIndexes.add(edgeIndex);
+      continue;
+    }
+    for (const ownerId of movableOwners) {
+      coverageByOwner.set(
+        ownerId,
+        (coverageByOwner.get(ownerId) ?? 0n) | (1n << BigInt(edgeIndex)),
+      );
+    }
+  }
+  return {
+    capacity,
+    fixedBlockedEdgeIndexes: [...fixedBlockedEdgeIndexes].sort((left, right) => left - right),
+    blockingPoseDeviceIds: minimizeCapacityBlockingPoseIds({
+      cutEdgeCount: options.cutEdges.length,
+      demand: options.demand,
+      fixedBlockedEdgeIndexes,
+      coverageByOwner,
+      allMovableIds: options.context.movableIds,
+    }),
+  };
+}
+
+function collectCapacityEndpointPoseIds(
+  lanes: readonly NormalizedRouteCapacityProofLane[],
+  movableIds: ReadonlySet<string>,
+): string[] {
+  const endpointPoseIds = new Set<string>();
+  for (const lane of lanes) {
+    for (const deviceId of [lane.sourceDeviceId, lane.targetDeviceId]) {
+      if (deviceId !== null && movableIds.has(deviceId)) endpointPoseIds.add(deviceId);
+    }
+  }
+  return [...endpointPoseIds].sort();
+}
+
+/**
+ * Prove a multi-lane capacity conflict on a complete axis-aligned grid cut.
+ *
+ * A lane contributes to demand only when every legal source endpoint is on one
+ * side and every legal target endpoint is on the other. Capacity is the number
+ * of cut edges whose two incident cells are free of immutable equipment/frontage
+ * obstacles. Every demanded route must use at least one such edge, while two
+ * routes cannot share it. Therefore demand > capacity is a placement-only proof.
+ */
+export function proveRouteCutCapacityConflict(
+  options: RouteCapacityProofOptions,
+): RouteCapacityConflictCertificate | null {
+  type Axis = "vertical" | "horizontal";
+  const context = createRouteCapacityProofContext(options);
+  const sideOf = (
+    points: readonly GridPoint[],
+    axis: Axis,
+    coordinate: number,
+  ): -1 | 1 | null => {
+    const coordinateOf = (point: GridPoint): number =>
+      axis === "vertical" ? point.x : point.y;
+    const side = coordinateOf(points[0]!) < coordinate ? -1 : 1;
+    return points.every((point) =>
+      (coordinateOf(point) < coordinate ? -1 : 1) === side) ? side : null;
+  };
+  const certificates: RouteCapacityConflictCertificate[] = [];
+  const inspectCut = (axis: Axis, coordinate: number): void => {
+    const crossingLanes = context.lanes.filter((lane) => {
+      const sourceSide = sideOf(lane.sourceGridPoints, axis, coordinate);
+      const targetSide = sideOf(lane.targetGridPoints, axis, coordinate);
+      return sourceSide !== null && targetSide !== null && sourceSide !== targetSide;
+    });
+    if (crossingLanes.length === 0) return;
+
+    const orthogonalSpan = axis === "vertical" ? options.height : options.width;
+    const cutEdges = Array.from({ length: orthogonalSpan }, (_, offset): RouteCapacityCutEdge => ({
+      from: axis === "vertical"
+        ? { x: coordinate - 1, y: offset }
+        : { x: offset, y: coordinate - 1 },
+      to: axis === "vertical"
+        ? { x: coordinate, y: offset }
+        : { x: offset, y: coordinate },
+    }));
+    const analysis = analyzeRouteCapacityCut({
+      cutEdges,
+      demand: crossingLanes.length,
+      blocked: options.blocked,
+      context,
+    });
+    if (crossingLanes.length <= analysis.capacity) return;
+
+    const endpointPoseDeviceIds = collectCapacityEndpointPoseIds(crossingLanes, context.movableIds);
+    const poseDeviceIds = new Set([
+      ...endpointPoseDeviceIds,
+      ...analysis.blockingPoseDeviceIds,
+    ]);
+    const crossingLaneIds = crossingLanes.map((lane) => lane.id).sort();
+    certificates.push({
+      proof: "static-cut-capacity",
+      axis,
+      coordinate,
+      gridWidth: options.width,
+      gridHeight: options.height,
+      demand: crossingLanes.length,
+      capacity: analysis.capacity,
+      deficit: crossingLanes.length - analysis.capacity,
+      crossingLaneIds,
+      endpointPoseDeviceIds,
+      blockingPoseDeviceIds: analysis.blockingPoseDeviceIds,
+      fixedBlockedOffsets: analysis.fixedBlockedEdgeIndexes,
+      poseDeviceIds: [...poseDeviceIds].sort(),
+    });
+  };
+  for (let x = 1; x < options.width; x += 1) inspectCut("vertical", x);
+  for (let y = 1; y < options.height; y += 1) inspectCut("horizontal", y);
+
+  return certificates.sort((left, right) =>
+    // Prefer a proof that can drive a master pose cut, then the largest deficit
+    // and the smallest exact pose conjunction.
+    Number(left.poseDeviceIds.length === 0) - Number(right.poseDeviceIds.length === 0)
+    || right.deficit - left.deficit
+    || left.poseDeviceIds.length - right.poseDeviceIds.length
+    || left.capacity - right.capacity
+    || Number(left.axis === "horizontal") - Number(right.axis === "horizontal")
+    || left.coordinate! - right.coordinate!
+    || left.crossingLaneIds.join("\u0000").localeCompare(right.crossingLaneIds.join("\u0000"))
+  )[0] ?? null;
+}
+
+interface ResidualFlowEdge {
+  to: number;
+  reverse: number;
+  capacity: number;
+}
+
+/** Return the cell nodes reachable from a super-source after a unit-edge max-flow. */
+function solveStaticGridMinCut(options: {
+  readonly width: number;
+  readonly height: number;
+  readonly blocked: ReadonlySet<string>;
+  readonly sourceGridPoints: readonly GridPoint[];
+  readonly targetGridPoints: readonly GridPoint[];
+}): readonly boolean[] | null {
+  const cellCount = options.width * options.height;
+  // Keep certificate generation bounded; this is a fallback after cheap axis cuts.
+  if (cellCount <= 0 || cellCount > 4_096) return null;
+  const sourceNode = cellCount;
+  const targetNode = cellCount + 1;
+  const graph = Array.from({ length: cellCount + 2 }, (): ResidualFlowEdge[] => []);
+  const addDirectedEdge = (from: number, to: number, capacity: number): void => {
+    const forward: ResidualFlowEdge = { to, reverse: graph[to]!.length, capacity };
+    const reverse: ResidualFlowEdge = { to: from, reverse: graph[from]!.length, capacity: 0 };
+    graph[from]!.push(forward);
+    graph[to]!.push(reverse);
+  };
+  const nodeOf = (point: GridPoint): number => point.y * options.width + point.x;
+  const finiteEdgeCount = Math.max(
+    0,
+    (options.width - 1) * options.height + (options.height - 1) * options.width,
+  );
+  const infiniteCapacity = finiteEdgeCount + 1;
+  for (let y = 0; y < options.height; y += 1) {
+    for (let x = 0; x < options.width; x += 1) {
+      const from = { x, y };
+      for (const to of [{ x: x + 1, y }, { x, y: y + 1 }]) {
+        if (to.x >= options.width || to.y >= options.height) continue;
+        if (options.blocked.has(gridKey(from)) || options.blocked.has(gridKey(to))) continue;
+        addDirectedEdge(nodeOf(from), nodeOf(to), 1);
+        addDirectedEdge(nodeOf(to), nodeOf(from), 1);
+      }
+    }
+  }
+  for (const point of options.sourceGridPoints) {
+    addDirectedEdge(sourceNode, nodeOf(point), infiniteCapacity);
+  }
+  for (const point of options.targetGridPoints) {
+    addDirectedEdge(nodeOf(point), targetNode, infiniteCapacity);
+  }
+
+  const level = Array<number>(graph.length).fill(-1);
+  const nextEdge = Array<number>(graph.length).fill(0);
+  const buildLevelGraph = (): boolean => {
+    level.fill(-1);
+    level[sourceNode] = 0;
+    const queue = [sourceNode];
+    for (let cursor = 0; cursor < queue.length; cursor += 1) {
+      const node = queue[cursor]!;
+      for (const edge of graph[node]!) {
+        if (edge.capacity <= 0 || level[edge.to]! >= 0) continue;
+        level[edge.to] = level[node]! + 1;
+        queue.push(edge.to);
+      }
+    }
+    return level[targetNode]! >= 0;
+  };
+  const sendFlow = (node: number, available: number): number => {
+    if (node === targetNode) return available;
+    for (; nextEdge[node]! < graph[node]!.length; nextEdge[node]! += 1) {
+      const edge = graph[node]![nextEdge[node]!]!;
+      if (edge.capacity <= 0 || level[edge.to] !== level[node]! + 1) continue;
+      const sent = sendFlow(edge.to, Math.min(available, edge.capacity));
+      if (sent <= 0) continue;
+      edge.capacity -= sent;
+      graph[edge.to]![edge.reverse]!.capacity += sent;
+      return sent;
+    }
+    return 0;
+  };
+  let maximumFlow = 0;
+  while (buildLevelGraph()) {
+    nextEdge.fill(0);
+    for (;;) {
+      const sent = sendFlow(sourceNode, infiniteCapacity);
+      if (sent <= 0) break;
+      maximumFlow += sent;
+      if (maximumFlow >= infiniteCapacity) return null;
+    }
+  }
+
+  const reachable = Array<boolean>(graph.length).fill(false);
+  reachable[sourceNode] = true;
+  const queue = [sourceNode];
+  for (let cursor = 0; cursor < queue.length; cursor += 1) {
+    const node = queue[cursor]!;
+    for (const edge of graph[node]!) {
+      if (edge.capacity <= 0 || reachable[edge.to]) continue;
+      reachable[edge.to] = true;
+      queue.push(edge.to);
+    }
+  }
+  return reachable.slice(0, cellCount);
+}
+
+/**
+ * Prove a frozen-lane capacity conflict on an arbitrary static grid min-cut.
+ * Seed s-t min-cuts are bounded and deterministic; each accepted certificate
+ * is nevertheless complete because its explicit edge boundary partitions every
+ * grid cell and every counted lane has all legal endpoints on opposite sides.
+ */
+export function proveRouteGeneralCutCapacityConflict(options: RouteCapacityProofOptions & {
+  readonly preferredLaneId?: string;
+  readonly maxSeedLanes?: number;
+}): RouteCapacityConflictCertificate | null {
+  const context = createRouteCapacityProofContext(options);
+  const maximumSeeds = Math.max(1, Math.min(16, Math.floor(options.maxSeedLanes ?? 8)));
+  const seenEndpointPartitions = new Set<string>();
+  const seedLanes = [...context.lanes]
+    .sort((left, right) =>
+      Number(right.id === options.preferredLaneId) - Number(left.id === options.preferredLaneId)
+      || left.sourceGridPoints.length + left.targetGridPoints.length
+        - right.sourceGridPoints.length - right.targetGridPoints.length
+      || left.id.localeCompare(right.id))
+    .filter((lane) => {
+      const key = `${lane.sourceGridPoints.map(gridKey).join("|")}=>${lane.targetGridPoints.map(gridKey).join("|")}`;
+      if (seenEndpointPartitions.has(key)) return false;
+      seenEndpointPartitions.add(key);
+      return true;
+    })
+    .slice(0, maximumSeeds);
+  const certificates: RouteCapacityConflictCertificate[] = [];
+  const seenCuts = new Set<string>();
+  const sideOf = (points: readonly GridPoint[], sourceSide: readonly boolean[]): boolean | null => {
+    const first = sourceSide[points[0]!.y * options.width + points[0]!.x]!;
+    return points.every((point) =>
+      sourceSide[point.y * options.width + point.x] === first) ? first : null;
+  };
+
+  for (const seedLane of seedLanes) {
+    const sourceSide = solveStaticGridMinCut({
+      width: options.width,
+      height: options.height,
+      blocked: options.blocked,
+      sourceGridPoints: seedLane.sourceGridPoints,
+      targetGridPoints: seedLane.targetGridPoints,
+    });
+    if (sourceSide === null) continue;
+    const cutEdges: RouteCapacityCutEdge[] = [];
+    for (let y = 0; y < options.height; y += 1) {
+      for (let x = 0; x < options.width; x += 1) {
+        const from = { x, y };
+        const fromSide = sourceSide[y * options.width + x]!;
+        for (const to of [{ x: x + 1, y }, { x, y: y + 1 }]) {
+          if (to.x >= options.width || to.y >= options.height) continue;
+          if (sourceSide[to.y * options.width + to.x] === fromSide) continue;
+          cutEdges.push({ from, to });
+        }
+      }
+    }
+    if (cutEdges.length === 0) continue;
+    const cutKey = cutEdges
+      .map((edge) => `${gridKey(edge.from)}>${gridKey(edge.to)}`)
+      .join("|");
+    if (seenCuts.has(cutKey)) continue;
+    seenCuts.add(cutKey);
+
+    const crossingLanes = context.lanes.filter((lane) => {
+      const source = sideOf(lane.sourceGridPoints, sourceSide);
+      const target = sideOf(lane.targetGridPoints, sourceSide);
+      return source !== null && target !== null && source !== target;
+    });
+    if (crossingLanes.length === 0) continue;
+    const analysis = analyzeRouteCapacityCut({
+      cutEdges,
+      demand: crossingLanes.length,
+      blocked: options.blocked,
+      context,
+    });
+    if (crossingLanes.length <= analysis.capacity) continue;
+
+    const endpointPoseDeviceIds = collectCapacityEndpointPoseIds(crossingLanes, context.movableIds);
+    const poseDeviceIds = new Set([
+      ...endpointPoseDeviceIds,
+      ...analysis.blockingPoseDeviceIds,
+    ]);
+    certificates.push({
+      proof: "static-general-cut-capacity",
+      axis: "general",
+      coordinate: null,
+      gridWidth: options.width,
+      gridHeight: options.height,
+      demand: crossingLanes.length,
+      capacity: analysis.capacity,
+      deficit: crossingLanes.length - analysis.capacity,
+      crossingLaneIds: crossingLanes.map((lane) => lane.id).sort(),
+      endpointPoseDeviceIds,
+      blockingPoseDeviceIds: analysis.blockingPoseDeviceIds,
+      cutEdges,
+      fixedBlockedEdgeIndexes: analysis.fixedBlockedEdgeIndexes,
+      poseDeviceIds: [...poseDeviceIds].sort(),
+    });
+  }
+
+  return certificates.sort((left, right) =>
+    Number(left.poseDeviceIds.length === 0) - Number(right.poseDeviceIds.length === 0)
+    || right.deficit - left.deficit
+    || left.poseDeviceIds.length - right.poseDeviceIds.length
+    || left.capacity - right.capacity
+    || (left.proof === "static-general-cut-capacity" ? left.cutEdges.length : 0)
+      - (right.proof === "static-general-cut-capacity" ? right.cutEdges.length : 0)
+    || left.crossingLaneIds.join("\u0000").localeCompare(right.crossingLaneIds.join("\u0000"))
+  )[0] ?? null;
+}
 
 /**
  * Collects bounded structured routing failure evidence using a deterministic BFS
@@ -1417,7 +2089,8 @@ function selectRoutedLayout(options: {
   let routingError: Error | null = null;
   let routingErrorProgress = -1;
   let bestRouteFailure: { readonly progress: number; readonly evidence: RouteFailureEvidence } | null = null;
-  const globalRebuildFailureCuts = new Map<string, readonly CpSatLayoutPlacement[]>();
+  const certifiedRouteFailureCuts = new Map<string, readonly CpSatLayoutPlacement[]>();
+  const certifiedRouteCapacityCuts = new Map<string, CpSatLayoutCapacityCut>();
   const frontagePackingFailures = new Map<string, {
     readonly packing: PackingResult;
     readonly progress: number;
@@ -1684,6 +2357,10 @@ function selectRoutedLayout(options: {
           // destroying all 22 routes to repair the final one or two.
           enforceFrontageConstraint: false,
           freezeFlowAllocation: topologySequentialOnly,
+          // A cropped terminal search is a heuristic routing region, not proof
+          // that the same placement is infeasible on the full request grid.
+          enablePlacementConflictCertificates:
+            terminalRoutingHeight === options.request.height,
           onRelaxedConnectivityRejected: (count: number) => {
             relaxedConnectivityRejectedPortPairs += count;
           },
@@ -2314,14 +2991,30 @@ function selectRoutedLayout(options: {
               && routeFailureEvidenceKey(error.evidence) < routeFailureEvidenceKey(bestRouteFailure.evidence)))) {
           bestRouteFailure = { progress, evidence: error.evidence };
         }
-        if (isGlobalRebuildCandidate && error instanceof RouteFailureError) {
+        if (error instanceof RouteFailureError) {
           const cut = createRouteFailurePoseCut(packing, error.evidence);
           if (cut.length > 0) {
-            globalRebuildFailureCuts.set(
-              cut.map((placement) =>
-                `${placement.id}@${placement.x},${placement.y},${placement.rotation}`).join("|"),
-              cut,
-            );
+            const cutKey = cut.map((placement) =>
+              `${placement.id}@${placement.x},${placement.y},${placement.rotation}`).join("|");
+            if (certifiedRouteFailureCuts.has(cutKey)
+              || certifiedRouteFailureCuts.size < MAX_CERTIFIED_ROUTE_FAILURE_CUTS) {
+              certifiedRouteFailureCuts.set(cutKey, cut);
+            }
+          }
+          const capacityCut = createRouteFailureCapacityCut(packing, error.evidence);
+          if (capacityCut !== null) {
+            const capacityCutKey = `${capacityCut.axis}@${capacityCut.coordinate ?? "general"}:`
+              + `${capacityCut.gridWidth}x${capacityCut.gridHeight}:`
+              + `${capacityCut.requiredCapacity}:`
+              + capacityCut.activeWhenPlacements.map((placement) =>
+                `${placement.id}@${placement.x},${placement.y},${placement.rotation}`).join("|")
+              + `:${capacityCut.cutEdges.map((edge) =>
+                `${gridKey(edge.from)}>${gridKey(edge.to)}`).join("|")}`
+              + `:${capacityCut.fixedBlockedEdgeIndexes.join(",")}`;
+            if (certifiedRouteCapacityCuts.has(capacityCutKey)
+              || certifiedRouteCapacityCuts.size < MAX_CERTIFIED_ROUTE_CAPACITY_CUTS) {
+              certifiedRouteCapacityCuts.set(capacityCutKey, capacityCut);
+            }
           }
         }
         if (isFrontageCandidate && error instanceof RouteFailureError) {
@@ -2652,7 +3345,8 @@ function selectRoutedLayout(options: {
           candidateCount: cpSat.candidates ?? 4,
           seed: seed + round * 65_537,
           enableGlobalRebuild: round > 0 && baseIndex === 0,
-          forbiddenLayouts: [...globalRebuildFailureCuts.values()],
+          forbiddenLayouts: [...certifiedRouteFailureCuts.values()],
+          capacityCuts: [...certifiedRouteCapacityCuts.values()],
         } : null,
       );
       clusterCandidatesGenerated += neighborSet.clusterGenerated;
@@ -3119,6 +3813,8 @@ function selectRoutedLayout(options: {
         globalRebuildCandidatesGenerated,
         globalRebuildCandidatesRouted,
         globalRebuildCandidatesImproved,
+        certifiedRouteFailureCutsLearned: certifiedRouteFailureCuts.size,
+        certifiedRouteCapacityCutsLearned: certifiedRouteCapacityCuts.size,
         partialRebuildCandidatesGenerated,
         partialRebuildCandidatesRouted,
         partialRebuildCandidatesImproved,
@@ -8744,11 +9440,18 @@ function createRouteFailureBacktrackingNeighbors(options: {
     && options.packing.devices.some((device) => device.id === request.id));
   const requestById = new Map(placeableRequests.map((request) => [request.id, request]));
   const incumbentById = new Map(options.packing.devices.map((device) => [device.id, device]));
+  const certifiedPoseCut = createRouteFailurePoseCut(options.packing, options.evidence);
+  const certifiedCapacityCut = createRouteFailureCapacityCut(options.packing, options.evidence);
   const cpSatMovableIds = new Set([
     options.evidence.sourceDeviceId,
     options.evidence.targetDeviceId,
     ...movableIds.slice(0, 4),
   ].filter((id): id is string => id !== null && requestById.has(id)));
+  if (certifiedPoseCut.length > 0
+    && !certifiedPoseCut.some((placement) => cpSatMovableIds.has(placement.id))) {
+    const certifiedMovable = certifiedPoseCut.find((placement) => requestById.has(placement.id));
+    if (certifiedMovable !== undefined) cpSatMovableIds.add(certifiedMovable.id);
+  }
   const cpSatLimitWidth = verticalFrontage ? options.limitWidth : frontageBounds.maxX;
   const cpSatLimitHeight = verticalFrontage ? frontageBounds.maxY : options.limitHeight;
   const fixedPlaceableInside = placeableRequests.every((request) => {
@@ -8760,7 +9463,9 @@ function createRouteFailureBacktrackingNeighbors(options: {
   });
   let generatedCount = 0;
   if (options.targetedOnly !== true
-    && options.enableCpSat && cpSatMovableIds.size >= 2 && fixedPlaceableInside) {
+    && options.enableCpSat
+    && cpSatMovableIds.size >= (certifiedPoseCut.length > 0 ? 1 : 2)
+    && fixedPlaceableInside) {
     const flowEdges = createCpSatFlowEdges(placeableRequests, options.registry);
     const cpSatResult = solveCpSatLayouts({
       devices: placeableRequests.map((request) => {
@@ -8805,11 +9510,15 @@ function createRouteFailureBacktrackingNeighbors(options: {
       seed: normalizeSearchSeed(hashString(
         `${packingSignature(options.packing)}:${routeFailureEvidenceKey(options.evidence)}`,
       )),
+      ...(certifiedPoseCut.length === 0 ? {} : { forbiddenLayouts: [certifiedPoseCut] }),
+      ...(certifiedCapacityCut === null ? {} : { capacityCuts: [certifiedCapacityCut] }),
       objectiveWeights: DEFAULT_CP_SAT_OBJECTIVE_WEIGHTS,
     });
     if (process.env["INDUSTRIAL_PLANNER_TRACE_ROUTE_FAILURE_LNS"] === "1") {
       console.error(
         `[route-failure-cpsat] movable=${[...cpSatMovableIds].sort().join(",")} `
+        + `cut=${certifiedPoseCut.length} `
+        + `capacityCut=${String(certifiedCapacityCut !== null)} `
         + `status=${cpSatResult.status} layouts=${cpSatResult.layouts.length}`,
       );
     }
@@ -10910,6 +11619,7 @@ function createPackingNeighbors(
     readonly seed: number;
     readonly enableGlobalRebuild: boolean;
     readonly forbiddenLayouts: readonly (readonly CpSatLayoutPlacement[])[];
+    readonly capacityCuts: readonly CpSatLayoutCapacityCut[];
   } | null,
 ): PackingNeighborSet {
   const traceStartedAt = Date.now();
@@ -11199,6 +11909,7 @@ function createPackingNeighbors(
         seed: cpSat.seed,
         routedConnections,
         forbiddenLayouts: cpSat.forbiddenLayouts,
+        capacityCuts: cpSat.capacityCuts,
       });
       globalRebuildGenerated += globalRebuilds.generated;
       partialRebuildGenerated += globalRebuilds.partialGenerated;
@@ -12952,6 +13663,7 @@ function createCpSatGlobalRebuildNeighbors(options: {
   readonly seed: number;
   readonly routedConnections: readonly RoutedConnection[];
   readonly forbiddenLayouts: readonly (readonly CpSatLayoutPlacement[])[];
+  readonly capacityCuts: readonly CpSatLayoutCapacityCut[];
 }): {
   readonly packings: readonly PackingResult[];
   readonly generated: number;
@@ -13069,6 +13781,7 @@ function createCpSatGlobalRebuildNeighbors(options: {
       candidateCount: plan.candidateCount,
       seed: plan.seed,
       forbiddenLayouts: options.forbiddenLayouts,
+      capacityCuts: options.capacityCuts,
       objectiveWeights: DEFAULT_CP_SAT_OBJECTIVE_WEIGHTS,
     });
     generatedCount += cpSatResult.layouts.length;
@@ -13197,9 +13910,9 @@ export function selectObjectivePartialDestroyIds(options: {
 }
 
 /**
- * Convert a routed failure frontier into a bounded CP-SAT no-good cut. The
- * next mathematical rebuild must move at least one failed endpoint/blocker
- * away from the exact rejected pose.
+ * Convert a certified connectivity or cut-capacity conflict into a CP-SAT
+ * no-good cut. Ordinary A* frontier evidence remains useful for reroute/LNS
+ * prioritization but is not strong enough to exclude a pose from the master.
  */
 export function createRouteFailurePoseCut(
   packing: PackingResult,
@@ -13208,11 +13921,15 @@ export function createRouteFailurePoseCut(
   const movableById = new Map(packing.devices
     .filter((device) => device.kind === "production" || device.kind === "storage")
     .map((device) => [device.id, device]));
-  const deviceIds = [...new Set([
-    evidence.sourceDeviceId,
-    evidence.targetDeviceId,
-    ...evidence.frontierBlockers.map((blocker) => blocker.ownerDeviceId),
-  ].filter((id): id is string => id !== null && movableById.has(id)))].sort().slice(0, 8);
+  // Each certificate is independently sufficient. Select the smallest complete
+  // actionable conjunction, but never drop a stale/missing member from one.
+  const deviceIds = [
+    evidence.placementConflict?.poseDeviceIds,
+    evidence.capacityConflict?.poseDeviceIds,
+  ].filter((ids): ids is readonly string[] =>
+    ids !== undefined && ids.length > 0 && ids.every((id) => movableById.has(id)))
+    .sort((left, right) => left.length - right.length || left.join("\u0000").localeCompare(right.join("\u0000")))[0];
+  if (deviceIds === undefined) return [];
   return deviceIds.map((id) => {
     const device = movableById.get(id)!;
     return {
@@ -13224,6 +13941,94 @@ export function createRouteFailurePoseCut(
       height: device.height,
     };
   });
+}
+
+/** Build the generalized conditional capacity inequality carried by a certificate. */
+export function createRouteFailureCapacityCut(
+  packing: PackingResult,
+  evidence: RouteFailureEvidence,
+): CpSatLayoutCapacityCut | null {
+  const certificate = evidence.capacityConflict;
+  if (certificate === null
+    || !Number.isInteger(certificate.gridWidth) || certificate.gridWidth <= 1
+    || !Number.isInteger(certificate.gridHeight) || certificate.gridHeight <= 1
+    || !Number.isInteger(certificate.demand) || certificate.demand <= 0
+    || certificate.demand <= certificate.capacity) return null;
+
+  let cutEdges: RouteCapacityCutEdge[];
+  let fixedBlockedEdgeIndexes: number[];
+  if (certificate.proof === "static-cut-capacity") {
+    const axisSpan = certificate.axis === "vertical"
+      ? certificate.gridWidth
+      : certificate.gridHeight;
+    const orthogonalSpan = certificate.axis === "vertical"
+      ? certificate.gridHeight
+      : certificate.gridWidth;
+    if (!Number.isInteger(certificate.coordinate)
+      || certificate.coordinate <= 0 || certificate.coordinate >= axisSpan
+      || certificate.fixedBlockedOffsets.some((offset) =>
+        !Number.isInteger(offset) || offset < 0 || offset >= orthogonalSpan)) return null;
+    cutEdges = Array.from({ length: orthogonalSpan }, (_, offset) => ({
+      from: certificate.axis === "vertical"
+        ? { x: certificate.coordinate - 1, y: offset }
+        : { x: offset, y: certificate.coordinate - 1 },
+      to: certificate.axis === "vertical"
+        ? { x: certificate.coordinate, y: offset }
+        : { x: offset, y: certificate.coordinate },
+    }));
+    fixedBlockedEdgeIndexes = [...new Set(certificate.fixedBlockedOffsets)]
+      .sort((left, right) => left - right);
+  } else {
+    cutEdges = certificate.cutEdges.map((edge) => ({
+      from: { ...edge.from },
+      to: { ...edge.to },
+    }));
+    fixedBlockedEdgeIndexes = [...new Set(certificate.fixedBlockedEdgeIndexes)]
+      .sort((left, right) => left - right);
+  }
+  const isValidPoint = (point: GridPoint): boolean =>
+    Number.isInteger(point.x) && Number.isInteger(point.y)
+    && point.x >= 0 && point.x < certificate.gridWidth
+    && point.y >= 0 && point.y < certificate.gridHeight;
+  if (cutEdges.length === 0
+    || cutEdges.some((edge) =>
+      !isValidPoint(edge.from) || !isValidPoint(edge.to)
+      || Math.abs(edge.from.x - edge.to.x) + Math.abs(edge.from.y - edge.to.y) !== 1)
+    || fixedBlockedEdgeIndexes.some((index) =>
+      !Number.isInteger(index) || index < 0 || index >= cutEdges.length)) return null;
+  const edgeKeys = cutEdges.map((edge) => {
+    const fromKey = gridKey(edge.from);
+    const toKey = gridKey(edge.to);
+    return fromKey < toKey ? `${fromKey}>${toKey}` : `${toKey}>${fromKey}`;
+  });
+  if (new Set(edgeKeys).size !== edgeKeys.length) return null;
+
+  const movableById = new Map(packing.devices
+    .filter((device) => device.kind === "production" || device.kind === "storage")
+    .map((device) => [device.id, device]));
+  const endpointIds = [...new Set(certificate.endpointPoseDeviceIds)].sort();
+  if (endpointIds.some((id) => !movableById.has(id))) return null;
+  const activeWhenPlacements = endpointIds.map((id): CpSatLayoutPlacement => {
+    const device = movableById.get(id)!;
+    return {
+      id,
+      x: device.position.x,
+      y: device.position.y,
+      rotation: device.rotation,
+      width: device.width,
+      height: device.height,
+    };
+  });
+  return {
+    axis: certificate.axis,
+    coordinate: certificate.coordinate,
+    gridWidth: certificate.gridWidth,
+    gridHeight: certificate.gridHeight,
+    requiredCapacity: certificate.demand,
+    cutEdges,
+    fixedBlockedEdgeIndexes,
+    activeWhenPlacements,
+  };
 }
 
 function createCpSatClusterRepairNeighbors(options: {
@@ -14427,6 +15232,8 @@ function routeMaterialFlow(options: {
   readonly preservationConnectionLimit?: number;
   readonly enforceFrontageConstraint?: boolean;
   readonly freezeFlowAllocation?: boolean;
+  /** Allow hard certificates only when this call uses the authoritative full grid. */
+  readonly enablePlacementConflictCertificates?: boolean;
   /** Observe endpoint pairs rejected by the relaxed equipment-wall funnel. */
   readonly onRelaxedConnectivityRejected?: (count: number) => void;
   /**
@@ -14735,6 +15542,64 @@ function routeMaterialFlow(options: {
         productionDevices: options.productionDevices,
         kind,
       });
+      // Keep proof endpoint sets independent of greedy port allocation. A hard
+      // placement cut additionally requires a frozen producer/consumer lane
+      // graph: if allocation is geometry-dependent, another assignment could
+      // remove the failed connection without changing any certified pose.
+      const placementProofSourceGridPoints = input.sourceDeviceId === null
+        ? null
+        : resolveUnusedPorts(input.sourceDeviceId, "output", kind, new Set())
+          .map((endpoint) => endpoint.outsideGridPoint);
+      const placementProofTargetGridPoints = input.targetDeviceId === null
+        ? null
+        : resolveUnusedPorts(input.targetDeviceId, "input", kind, new Set())
+          .map((endpoint) => endpoint.outsideGridPoint);
+      const mayGenerateHardCertificate = allocationFrozen
+        && options.enablePlacementConflictCertificates === true;
+      const placementConflict = mayGenerateHardCertificate
+        ? proveRoutePlacementConflict({
+            width: options.request.width,
+            height: options.request.height,
+            blocked: connectionBlocked,
+            productionDevices: options.productionDevices,
+            sourceDeviceId: input.sourceDeviceId,
+            targetDeviceId: input.targetDeviceId,
+            sourceGridPoints: placementProofSourceGridPoints,
+            targetGridPoints: placementProofTargetGridPoints,
+          })
+        : null;
+      const capacityConflict = mayGenerateHardCertificate
+        ? (() => {
+            const lanes = identifiedPlannedConnections.map((planned) => {
+              const plannedKind = resolveItemLogisticsKind(planned.itemId, options.registry);
+              return {
+                id: planned.id,
+                sourceDeviceId: planned.sourceDeviceId,
+                targetDeviceId: planned.targetDeviceId,
+                sourceGridPoints: planned.sourceDeviceId === null
+                  ? null
+                  : resolveUnusedPorts(planned.sourceDeviceId, "output", plannedKind, new Set())
+                    .map((endpoint) => endpoint.outsideGridPoint),
+                targetGridPoints: planned.targetDeviceId === null
+                  ? null
+                  : resolveUnusedPorts(planned.targetDeviceId, "input", plannedKind, new Set())
+                    .map((endpoint) => endpoint.outsideGridPoint),
+              };
+            });
+            const proofOptions = {
+              width: options.request.width,
+              height: options.request.height,
+              blocked: connectionBlocked,
+              productionDevices: options.productionDevices,
+              lanes,
+            };
+            return proveRouteCutCapacityConflict(proofOptions)
+              ?? proveRouteGeneralCutCapacityConflict({
+                ...proofOptions,
+                preferredLaneId: input.id,
+              });
+          })()
+        : null;
       const evidence: RouteFailureEvidence = {
         itemId: input.itemId,
         sourceDeviceId: input.sourceDeviceId,
@@ -14742,6 +15607,8 @@ function routeMaterialFlow(options: {
         kind: kind === "belt" ? "belt" : "pipe",
         attemptedPortPairs,
         ...failureEvidence,
+        placementConflict,
+        capacityConflict,
       };
       throw new RouteFailureError(
         evidence,
