@@ -1,4 +1,5 @@
 import { spawnSync } from "node:child_process";
+import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 export const CERTIFIED_AREA_RELAXATION_PROFILE = "certified-area-relaxation-v1" as const;
@@ -83,8 +84,7 @@ export function solveCpSatAreaLowerBound(
     };
   }
 
-  const scriptPath = options.scriptPath
-    ?? fileURLToPath(new URL("./certified-area-relaxation.py", import.meta.url));
+  const scriptPath = options.scriptPath ?? resolveProofScriptPath();
   const input = JSON.stringify({
     constraintProfile: CERTIFIED_AREA_RELAXATION_PROFILE,
     objective: CERTIFIED_AREA_RELAXATION_OBJECTIVE,
@@ -153,6 +153,16 @@ export function solveCpSatAreaLowerBound(
     ...(aggregatePythonVersion === undefined ? {} : { pythonVersion: aggregatePythonVersion }),
     ...(aggregateOrToolsVersion === undefined ? {} : { orToolsVersion: aggregateOrToolsVersion }),
   };
+}
+
+function resolveProofScriptPath(): string {
+  try {
+    return fileURLToPath(new URL("./certified-area-relaxation.py", import.meta.url));
+  } catch {
+    // Vitest/Vite may rewrite import.meta.url to a non-file module URL. The
+    // headless command still runs from the package root in that environment.
+    return resolve(process.cwd(), "src/headless/certified-area-relaxation.py");
+  }
 }
 
 function validateOptions(options: CertifiedAreaRelaxationOptions): void {

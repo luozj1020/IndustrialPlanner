@@ -168,7 +168,7 @@ npm run headless -- render optimized-blueprint.json --output optimized-layout.sv
 
 输入 JSON 的核心字段为 `width`、`height` 和 `targets`；还可指定 `supplies`、
 `infiniteItemIds`、`recipeChoices`、`minimumRecipeDeviceCounts`、`baseId`、`allowRotate`、
-`routingClearance` 与 `search`。`minimumRecipeDeviceCounts` 可把理论负载分摊到更多同配方设备，
+`routingClearance`、`search` 与 `certification`。`minimumRecipeDeviceCounts` 可把理论负载分摊到更多同配方设备，
 用于满足一口一机、减少单端口合流或扇出的可行性要求；它不改变总输入和总输出吞吐。
 `search.iterations` 控制大邻域排列搜索次数，`search.routingVariants` 可取 1–9，
 `search.refinementCandidates` 控制初始快速束和改进阶段的昂贵路由候选，
@@ -182,6 +182,12 @@ npm run headless -- render optimized-blueprint.json --output optimized-layout.sv
 候选数量；它不会把总时限按候选数倍增。报告中的 `cpSatBudgetSeconds`、
 `cpSatAttemptedCandidates`、`cpSatStoppedBy` 和 `cpSatElapsedMs` 可用于核对实际消耗。输出蓝图
 可由本项目现有蓝图导入流程读取，并在 Node 环境通过拓扑编译器校验。
+`certification.boundingArea.maxSeconds` 是与候选搜索完全独立的面积证明预算，默认 2 秒。
+成功结果的 `optimality.boundingArea` 同时报告 mandatory production/storage 设备面积下界、
+proof-only CP-SAT 下界（可用时）和经过拓扑、吞吐、供电、地图及蓝图几何复核的 routed UB。
+组合下界只取各安全来源的最大值；`masterIncumbentArea` 仅是 relaxation witness，绝不作为 UB。
+若 OR-Tools 不可用，仍使用设备面积下界报告严格但更宽的 gap；只有整数 LB 与 routed UB 相等时，
+状态才是 `bounding-area-optimal`。该状态只证明独立 bounding-area 目标，不宣称完整词典序最优。
 `routingClearance` 表示布局外缘预留的物流缓冲。生产设备之间不再强制统一净空，允许直接相邻；
 候选布局必须保留实际配方所需的输入/输出端口，并通过 A* 路由和物理拓扑验证。
 旋转搜索会对正方形和长方形设备完整尝试 `0/90/180/270°`；长方形在 `90/270°`

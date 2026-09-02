@@ -1,6 +1,10 @@
 import type { BlueprintDocument } from "../domain/document/blueprint-document";
 import type { GridPoint, GridRotation } from "../domain/shared/grid";
 import type { SimulationCompileDiagnostic } from "../simulation/types";
+import type {
+  CertifiedAreaRelaxationResult,
+  CertifiedAreaRelaxationStatus,
+} from "./certified-area-relaxation";
 
 /** Metrics that drive lexicographic layout comparison, in priority order. */
 export type LayoutObjectiveMetric =
@@ -173,6 +177,13 @@ export interface HeadlessOptimizationRequest {
       readonly candidates?: number;
     };
   };
+  /** Proof-only budgets, deliberately separate from candidate-search settings. */
+  readonly certification?: {
+    readonly boundingArea?: {
+      /** Wall-clock budget for Certified Area Relaxation v1. Defaults to 2 seconds. */
+      readonly maxSeconds?: number;
+    };
+  };
   readonly sourceConfig?: {
     readonly waterPolicy?: "use-byproduct" | "dump-byproduct";
     readonly acidPolicy?: "use-byproduct" | "dump-byproduct";
@@ -318,6 +329,40 @@ export interface RouteFailureEvidence {
   readonly capacityConflict: RouteCapacityConflictCertificate | null;
 }
 
+export type BoundingAreaOptimalityStatus =
+  | "lower-bound-only"
+  | "bounded"
+  | "bounding-area-optimal"
+  | "bound-unavailable";
+
+/** Certified lower/upper bounds for the standalone charged bounding-area objective. */
+export interface BoundingAreaOptimality {
+  readonly status: BoundingAreaOptimalityStatus;
+  readonly lowerBound?: number;
+  /** Present only when the incumbent passes the complete strict routed-layout check. */
+  readonly upperBound?: number;
+  readonly absoluteGap?: number;
+  readonly relativeGap?: number;
+  readonly strictRoutedUpperBoundVerified: boolean;
+  /** Individually valid bounds combined with max(), never by addition. */
+  readonly lowerBoundSources: {
+    readonly mandatoryDeviceArea?: number;
+    readonly cpSatArea?: number;
+  };
+  readonly proof: {
+    readonly constraintProfile: CertifiedAreaRelaxationResult["constraintProfile"];
+    readonly objective: CertifiedAreaRelaxationResult["objective"];
+    readonly solverStatus: CertifiedAreaRelaxationStatus;
+    readonly rawBestObjectiveBound?: number;
+    readonly certifiedIntegerLowerBound?: number;
+    /** Placement-only witness from the relaxation; never a routed upper bound. */
+    readonly masterIncumbentArea?: number;
+    readonly pythonVersion?: string;
+    readonly orToolsVersion?: string;
+    readonly elapsedMs?: number;
+  };
+}
+
 export interface HeadlessOptimizationResult {
   readonly blueprint: BlueprintDocument;
   readonly layout: {
@@ -385,6 +430,9 @@ export interface HeadlessOptimizationResult {
     readonly powerCoverageVerified: boolean;
     /** Bounded structured routing failure evidence captured during A* pathfinding. Empty when no failures occurred. */
     readonly routeFailureDiagnostics: readonly RouteFailureEvidence[];
+  };
+  readonly optimality: {
+    readonly boundingArea: BoundingAreaOptimality;
   };
   readonly search: {
     readonly algorithm: "deterministic-lns-a-star" | "hybrid-cp-sat-lns-a-star";

@@ -165,6 +165,11 @@ npm run headless -- render <blueprint.json> [--output layout.svg]
       "candidates": 5              // 总预算内最多尝试的候选数
     }
   },
+  "certification": {             // 与候选搜索隔离的证明预算
+    "boundingArea": {
+      "maxSeconds": 2            // Certified Area Relaxation v1（秒）
+    }
+  },
   "sourceConfig": {               // 资源策略
     "waterPolicy": "use-byproduct",
     "acidPolicy": "use-byproduct",
@@ -208,6 +213,11 @@ npm run headless -- render <blueprint.json> [--output layout.svg]
 | `validation.productionConnectivityVerified` | 产线连通性验证 |
 | `validation.productionThroughputVerified` | 产线吞吐量验证 |
 | `validation.powerCoverageVerified` | 电力覆盖验证 |
+| `optimality.boundingArea.status` | `bounded` / `bounding-area-optimal` 等面积证明状态 |
+| `optimality.boundingArea.lowerBound` / `upperBound` | 安全 relaxation LB / 完整 routed incumbent UB |
+| `optimality.boundingArea.absoluteGap` / `relativeGap` | 面积绝对 gap / 相对 gap |
+| `optimality.boundingArea.lowerBoundSources` | mandatory 设备面积与 proof-only CP-SAT 下界来源 |
+| `optimality.boundingArea.proof` | Certified Area Relaxation v1 状态及 solver 元数据；其 `masterIncumbentArea` 不是 UB |
 | `search.initialLayout` / `scope` | 实际使用的初始构造模式 / 优化作用域 |
 | `search.initialCandidatesGenerated` / `initialCandidatesSelected` | 廉价初始候选数 / 进入完整 A* 的候选数 |
 | `search.warehouseCandidatesGenerated` / `warehouseCandidatesSelected` | 仓库专项候选漏斗统计 |
@@ -821,6 +831,12 @@ CP-SAT 状态会在优化报告的 `search.cpSatStatus` 字段中报告：
 
 同时可通过 `search.cpSatBudgetSeconds`、`cpSatAttemptedCandidates`、`cpSatStoppedBy`
 （`completed` / `total-budget`）和 `cpSatElapsedMs` 判断候选批次是否真正受预算约束。
+
+面积证明使用独立的 `certified-area-relaxation.py`，不会继承候选模型的端口、cluster、LNS freeze、
+proxy objective 或 learned cuts。`certification.boundingArea.maxSeconds` 默认 2 秒；OR-Tools 缺失或
+证明超时后，报告仍以 mandatory production/storage 矩形面积之和作为严格下界。只有该下界与通过
+拓扑、连通、吞吐、供电、地图边界、无重叠及蓝图一致性复核的 routed 面积完全相等时，才报告
+`bounding-area-optimal`；这不等同于完整词典序目标已经最优。
 
 ## 运行测试
 

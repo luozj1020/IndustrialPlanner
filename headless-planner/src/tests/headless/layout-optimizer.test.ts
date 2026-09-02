@@ -641,6 +641,15 @@ describe("headless layout optimizer", () => {
     expect(first.production.unresolvedPerMinute).toBe(0);
     expect(first.validation.errorCount).toBe(0);
     expect(first.validation.productionConnectivityVerified).toBe(true);
+    expect(first.optimality.boundingArea.strictRoutedUpperBoundVerified).toBe(true);
+    expect(first.optimality.boundingArea.upperBound).toBe(first.layout.boundingArea);
+    expect(first.optimality.boundingArea.lowerBound).toBeLessThanOrEqual(first.layout.boundingArea);
+    expect(["bounded", "bounding-area-optimal"]).toContain(
+      first.optimality.boundingArea.status,
+    );
+    expect(first.optimality.boundingArea.proof.constraintProfile).toBe(
+      "certified-area-relaxation-v1",
+    );
     expect(first.layout.beltCellCount).toBeGreaterThan(0);
     expect(first.layout.pipeCellCount).toBe(0);
     expect(first.layout.usedWidth).toBeLessThanOrEqual(request.width);
@@ -1248,6 +1257,15 @@ describe("headless layout optimizer", () => {
       targets: [{ itemId: "item_iron_nugget", perMinute: 30 }],
       frontageConstraint: "strict" as "hard",
     }, createRegistryContract())).toThrow(/frontageConstraint/);
+  });
+
+  it("validates the independent bounding-area proof budget", () => {
+    expect(() => optimizeHeadlessLayout({
+      width: 24,
+      height: 24,
+      targets: [{ itemId: "item_iron_nugget", perMinute: 30 }],
+      certification: { boundingArea: { maxSeconds: 0 } },
+    }, createRegistryContract())).toThrow(/certification\.boundingArea\.maxSeconds/);
   });
 
   it("routes internal production flow before boundary belts", () => {

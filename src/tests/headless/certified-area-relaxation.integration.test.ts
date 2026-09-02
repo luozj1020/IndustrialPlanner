@@ -8,6 +8,8 @@ import {
   solveCpSatAreaLowerBound,
   type CertifiedAreaRelaxationDevice,
 } from "@/headless/certified-area-relaxation";
+import { optimizeHeadlessLayout } from "@/headless/layout-optimizer";
+import { createRegistryContract } from "@/registry";
 
 const ortoolsPython = findOrToolsPython();
 const previousPython = process.env["INDUSTRIAL_PLANNER_PYTHON"];
@@ -113,6 +115,29 @@ describe.skipIf(ortoolsPython === undefined)("certified area relaxation exact or
     expect(result.certifiedIntegerLowerBound!).toBeLessThanOrEqual(exactFullArea);
     expect(exactFullArea).toBeLessThanOrEqual(routedUpperBound);
   }, 30_000);
+
+  it("feeds the proof bound into a strict routed HeadlessOptimizationResult", () => {
+    const result = optimizeHeadlessLayout({
+      width: 32,
+      height: 32,
+      targets: [{ itemId: "item_iron_nugget", perMinute: 60 }],
+      search: { iterations: 0, routingVariants: 1, seed: 42 },
+      certification: { boundingArea: { maxSeconds: 2 } },
+    }, createRegistryContract());
+    const area = result.optimality.boundingArea;
+
+    expect(["optimal", "feasible"]).toContain(area.proof.solverStatus);
+    expect(area.proof.certifiedIntegerLowerBound).toBeDefined();
+    expect(area.lowerBoundSources.cpSatArea).toBe(area.proof.certifiedIntegerLowerBound);
+    expect(area.lowerBound).toBe(Math.max(
+      area.lowerBoundSources.mandatoryDeviceArea!,
+      area.lowerBoundSources.cpSatArea!,
+    ));
+    expect(area.strictRoutedUpperBoundVerified).toBe(true);
+    expect(area.upperBound).toBe(result.layout.boundingArea);
+    expect(area.lowerBound).toBeLessThanOrEqual(area.upperBound!);
+    expect(area.proof.masterIncumbentArea).not.toBe(area.upperBound);
+  }, 60_000);
 });
 
 function findOrToolsPython(): string | undefined {

@@ -64,6 +64,13 @@ import {
   type CpSatLayoutPlacement,
   type CpSatLayoutPortRequirement,
 } from "./cp-sat-layout";
+import { solveCpSatAreaLowerBound } from "./certified-area-relaxation";
+import {
+  createBoundingAreaOptimalityReport,
+  DEFAULT_CERTIFIED_AREA_MAX_SECONDS,
+  isStrictRoutedBoundingAreaUpperBound,
+  measureMandatoryDeviceAreaLowerBound,
+} from "./bounding-area-optimality";
 
 /**
  * Fixed contract for recipe-agnostic local compaction.
@@ -1272,8 +1279,7 @@ export function optimizeHeadlessLayout(
   }
   const requiredInputsPhysicallyConnected = deviceRequests.every((device) =>
     (incomingConnectionCountByEntityId.get(device.id) ?? 0) >= device.inputs.size);
-  const connectivityVerified = routing.connections.length > 0
-    && errors.length === 0
+  const connectivityVerified = errors.length === 0
     && Object.keys(topology.physicalConnections).length >= expectedPhysicalConnections
     && requiredInputsPhysicallyConnected;
   const throughputVerified = deviceRequests.every((device) =>
@@ -1288,6 +1294,69 @@ export function optimizeHeadlessLayout(
   const powerCoverageVerified = deviceRequests
     .filter((device) => device.definition.requiresPower)
     .every((device) => poweredEntityIds.has(device.id));
+  const validation: HeadlessOptimizationResult["validation"] = {
+    topologyId: topology.topologyId,
+    deviceCount: topology.ordering.deviceOrder.length - 1,
+    errorCount: errors.length,
+    warningCount: topology.diagnostics.filter((item) => item.severity === "warning").length,
+    diagnostics: topology.diagnostics,
+    routedConnectionCount: routing.connections.length,
+    internalConnectionCount: routing.internalConnectionCount,
+    boundaryConnectionCount: routing.boundaryConnectionCount,
+    materialConnections: routing.connections.map((connection) => ({
+      itemId: connection.itemId,
+      kind: connection.kind,
+      perMinute: connection.perMinute,
+      sourceDeviceId: connection.sourceDeviceId,
+      targetDeviceId: connection.targetDeviceId,
+    })),
+    productionConnectivityVerified: connectivityVerified,
+    productionThroughputVerified: throughputVerified,
+    powerCoverageVerified,
+    routeFailureDiagnostics,
+  };
+  const mandatoryAreaDevices = deviceRequests
+    .filter((device) => device.kind === "production" || device.kind === "storage")
+    .map((device) => ({
+      id: device.id,
+      width: device.definition.footprint.width,
+      height: device.definition.footprint.height,
+    }));
+  const areaProof = solveCpSatAreaLowerBound({
+    devices: mandatoryAreaDevices,
+    limitWidth: request.width,
+    limitHeight: request.height,
+    allowRotate: request.allowRotate ?? true,
+    maxSeconds: request.certification?.boundingArea?.maxSeconds
+      ?? DEFAULT_CERTIFIED_AREA_MAX_SECONDS,
+  });
+  const effectiveFrontageConstraint = request.frontageConstraint === "hard"
+    || (request.search?.initialLayout === "topology-sequential"
+      && request.frontageConstraint !== "soft")
+    ? "hard"
+    : "soft";
+  const strictRoutedUpperBoundVerified = isStrictRoutedBoundingAreaUpperBound({
+    blueprint,
+    registry,
+    devices: allDevices,
+    routedConnections: routing.connections,
+    areaExcludedDeviceIds: routing.areaExcludedDeviceIds,
+    limitWidth: request.width,
+    limitHeight: request.height,
+    boundingArea,
+    topologyErrorCount: validation.errorCount,
+    productionConnectivityVerified: validation.productionConnectivityVerified,
+    productionThroughputVerified: validation.productionThroughputVerified,
+    powerCoverageVerified: validation.powerCoverageVerified,
+    frontageConstraint: effectiveFrontageConstraint,
+    frontageOverflowCellCount,
+  });
+  const boundingAreaOptimality = createBoundingAreaOptimalityReport({
+    mandatoryDeviceAreaLowerBound: measureMandatoryDeviceAreaLowerBound(mandatoryAreaDevices),
+    proof: areaProof,
+    strictRoutedUpperBoundVerified,
+    routedBoundingArea: boundingArea,
+  });
 
   return {
     blueprint,
@@ -1329,26 +1398,9 @@ export function optimizeHeadlessLayout(
       deviceCount: allDevices.filter((device) => device.kind === "production").length,
       unresolvedPerMinute: plan.unresolvedPerMinute,
     },
-    validation: {
-      topologyId: topology.topologyId,
-      deviceCount: topology.ordering.deviceOrder.length - 1,
-      errorCount: errors.length,
-      warningCount: topology.diagnostics.filter((item) => item.severity === "warning").length,
-      diagnostics: topology.diagnostics,
-      routedConnectionCount: routing.connections.length,
-      internalConnectionCount: routing.internalConnectionCount,
-      boundaryConnectionCount: routing.boundaryConnectionCount,
-      materialConnections: routing.connections.map((connection) => ({
-        itemId: connection.itemId,
-        kind: connection.kind,
-        perMinute: connection.perMinute,
-        sourceDeviceId: connection.sourceDeviceId,
-        targetDeviceId: connection.targetDeviceId,
-      })),
-      productionConnectivityVerified: connectivityVerified,
-      productionThroughputVerified: throughputVerified,
-      powerCoverageVerified,
-      routeFailureDiagnostics,
+    validation,
+    optimality: {
+      boundingArea: boundingAreaOptimality,
     },
     search,
   };
@@ -1903,7 +1955,10 @@ function selectRoutedLayout(options: {
   const hardFrontageRequired = options.request.frontageConstraint === "hard"
     || (topologySequentialOnly && options.request.frontageConstraint !== "soft");
   const seed = normalizeSearchSeed(
-    options.request.search?.seed ?? hashString(JSON.stringify(options.request)),
+    options.request.search?.seed ?? hashString(JSON.stringify({
+      ...options.request,
+      certification: undefined,
+    })),
   );
   // Build the graph-derived warehouse neighborhood before the broad heuristic
   // pool. This candidate is deterministic and cheap, and should not inherit the
@@ -18276,6 +18331,17 @@ function validateRequest(request: HeadlessOptimizationRequest): void {
   ) {
     throw new Error(`search.cpSat.candidates must be an integer from 1 to 12, received ${request.search.cpSat.candidates}`);
   }
+  if (
+    request.certification?.boundingArea?.maxSeconds !== undefined
+    && (!Number.isFinite(request.certification.boundingArea.maxSeconds)
+      || request.certification.boundingArea.maxSeconds <= 0
+      || request.certification.boundingArea.maxSeconds > 30)
+  ) {
+    throw new Error(
+      "certification.boundingArea.maxSeconds must be in (0, 30], received "
+        + request.certification.boundingArea.maxSeconds,
+    );
+  }
   for (const target of request.targets) {
     if (target.itemId.trim() === "" || !Number.isFinite(target.perMinute) || target.perMinute <= 0) {
       throw new Error(`Invalid production target: ${JSON.stringify(target)}`);
@@ -18786,7 +18852,10 @@ function createStableBlueprintId(
   request: HeadlessOptimizationRequest,
   devices: readonly HeadlessPlacedDevice[],
 ): string {
-  const source = JSON.stringify({ request, devices });
+  const source = JSON.stringify({
+    request: { ...request, certification: undefined },
+    devices,
+  });
   let hash = 2166136261;
   for (let index = 0; index < source.length; index += 1) {
     hash ^= source.charCodeAt(index);
