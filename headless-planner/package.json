@@ -7,7 +7,9 @@
   "scripts": {
     "typecheck": "tsc -b",
     "test": "vitest run",
-    "headless": "tsx src/headless/cli.ts"
+    "headless": "tsx src/headless/cli.ts",
+    "benchmark:certified-area": "tsx src/headless/cli.ts benchmark-area benchmarks/certified-area/representative-suite.json",
+    "benchmark:certified-area:long": "tsx src/headless/cli.ts benchmark-area benchmarks/certified-area/long-running-suite.json"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",

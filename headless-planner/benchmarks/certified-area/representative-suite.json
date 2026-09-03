@@ -1,0 +1,22 @@
+{
+  "budgetsSeconds": [0.5, 2, 10],
+  "gapBudgetSeconds": 2,
+  "cases": [
+    {
+      "name": "iron-nugget",
+      "request": "../../examples/headless/iron-nugget.json"
+    },
+    {
+      "name": "simple-chain",
+      "request": "../../examples/headless/iron-component.json"
+    },
+    {
+      "name": "dense-scc-fanout",
+      "request": "../../examples/headless/dense-originium-powder.json"
+    },
+    {
+      "name": "medium-battery-fan-in",
+      "request": "../../examples/headless/medium-valley-battery-topology-global-request.json"
+    }
+  ]
+}

@@ -122,6 +122,19 @@ npm run headless -- optimize <request.json> [--output blueprint.json] [--report 
 | `--report` | 优化报告路径 | 不生成 |
 | `--svg` | 布局 SVG 路径 | 不生成 |
 
+### benchmark-area
+
+```bash
+INDUSTRIAL_PLANNER_PYTHON=../.venv-headless/bin/python npm run benchmark:certified-area
+```
+
+默认 suite 对真实请求先生成并严格验证 routed UB，再分别以 0.5、2、10 秒运行 Certified Area
+Relaxation v2。Markdown 表显示 mandatory device LB、各预算的 CP-SAT LB 与 2 秒 gap；完整 JSON
+可用 `npm run headless -- benchmark-area <suite.json> --output benchmark.json --format json` 导出。
+v2 仅包含 mandatory rectangles、bounds、rotation、`NoOverlap2D`，以及最优值保持的平移/同构矩形
+对称消除和显式 packing 不等式；不导入 topology layer 或 learned routing cuts。29 台生产设备的
+high-capacity 实例单独由 `npm run benchmark:certified-area:long` 运行，避免主 suite 被 UB 路由耗时主导。
+
 ### render
 
 ```
@@ -167,7 +180,7 @@ npm run headless -- render <blueprint.json> [--output layout.svg]
   },
   "certification": {             // 与候选搜索隔离的证明预算
     "boundingArea": {
-      "maxSeconds": 2            // Certified Area Relaxation v1（秒）
+      "maxSeconds": 2            // Certified Area Relaxation v2（秒）
     }
   },
   "sourceConfig": {               // 资源策略
@@ -217,7 +230,7 @@ npm run headless -- render <blueprint.json> [--output layout.svg]
 | `optimality.boundingArea.lowerBound` / `upperBound` | 安全 relaxation LB / 完整 routed incumbent UB |
 | `optimality.boundingArea.absoluteGap` / `relativeGap` | 面积绝对 gap / 相对 gap |
 | `optimality.boundingArea.lowerBoundSources` | mandatory 设备面积与 proof-only CP-SAT 下界来源 |
-| `optimality.boundingArea.proof` | Certified Area Relaxation v1 状态及 solver 元数据；其 `masterIncumbentArea` 不是 UB |
+| `optimality.boundingArea.proof` | Certified Area Relaxation v2 状态及 solver 元数据；其 `masterIncumbentArea` 不是 UB |
 | `search.initialLayout` / `scope` | 实际使用的初始构造模式 / 优化作用域 |
 | `search.initialCandidatesGenerated` / `initialCandidatesSelected` | 廉价初始候选数 / 进入完整 A* 的候选数 |
 | `search.warehouseCandidatesGenerated` / `warehouseCandidatesSelected` | 仓库专项候选漏斗统计 |

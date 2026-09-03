@@ -180,7 +180,7 @@ export interface HeadlessOptimizationRequest {
   /** Proof-only budgets, deliberately separate from candidate-search settings. */
   readonly certification?: {
     readonly boundingArea?: {
-      /** Wall-clock budget for Certified Area Relaxation v1. Defaults to 2 seconds. */
+      /** Wall-clock budget for Certified Area Relaxation v2. Defaults to 2 seconds. */
       readonly maxSeconds?: number;
     };
   };

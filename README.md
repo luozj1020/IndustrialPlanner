@@ -188,6 +188,22 @@ proof-only CP-SAT 下界（可用时）和经过拓扑、吞吐、供电、地�
 组合下界只取各安全来源的最大值；`masterIncumbentArea` 仅是 relaxation witness，绝不作为 UB。
 若 OR-Tools 不可用，仍使用设备面积下界报告严格但更宽的 gap；只有整数 LB 与 routed UB 相等时，
 状态才是 `bounding-area-optimal`。该状态只证明独立 bounding-area 目标，不宣称完整词典序最优。
+Certified Area Relaxation v2 只加入不改变最优值的 proof-only 强化：固定最左/最上设备坐标为 0、
+按 `(y,x)` 排序完全同构矩形、消除重复的 180/270 度几何朝向，并显式加入设备面积及最小边长
+不等式。它仍不包含 topology layer、搜索冻结状态或 learned routing cuts。
+
+可以在同一组真实 routed 实例上分别测量 0.5/2/10 秒的 CP-SAT 下界。benchmark 会先重新运行
+完整优化与 strict UB 验证，再从 mandatory production/storage 几何构造 proof case；因此表中的
+placement master incumbent 不会被误当作 UB：
+
+```bash
+INDUSTRIAL_PLANNER_PYTHON=.venv-headless/bin/python npm run benchmark:certified-area
+```
+
+默认 suite 位于 `benchmarks/certified-area/representative-suite.json`。也可直接执行
+`headless benchmark-area <suite.json> --output benchmark.json --format markdown|json`；JSON 报告
+保留每个预算的 solver status、raw/exact LB、relaxation witness、耗时及严格 gap。29 台生产设备的
+high-capacity 实例因 routed UB 搜索耗时较长，单独放在 `npm run benchmark:certified-area:long`。
 `routingClearance` 表示布局外缘预留的物流缓冲。生产设备之间不再强制统一净空，允许直接相邻；
 候选布局必须保留实际配方所需的输入/输出端口，并通过 A* 路由和物理拓扑验证。
 旋转搜索会对正方形和长方形设备完整尝试 `0/90/180/270°`；长方形在 `90/270°`

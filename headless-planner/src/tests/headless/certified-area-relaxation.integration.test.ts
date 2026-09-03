@@ -57,6 +57,18 @@ describe.skipIf(ortoolsPython === undefined)("certified area relaxation exact or
       allowRotate: true,
       expected: 12,
     },
+    {
+      devices: [
+        { id: "z", width: 2, height: 1 },
+        { id: "a", width: 2, height: 1 },
+        { id: "m", width: 2, height: 1 },
+        { id: "b", width: 2, height: 1 },
+      ],
+      limitWidth: 4,
+      limitHeight: 2,
+      allowRotate: true,
+      expected: 8,
+    },
   ] as const)("matches exhaustive placement optimum $expected", (testCase) => {
     const oracle = exactAreaOracle(testCase);
     expect(oracle).toBe(testCase.expected);

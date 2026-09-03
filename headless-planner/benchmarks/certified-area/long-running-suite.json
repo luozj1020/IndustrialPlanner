@@ -1,0 +1,10 @@
+{
+  "budgetsSeconds": [0.5, 2, 10],
+  "gapBudgetSeconds": 2,
+  "cases": [
+    {
+      "name": "high-capacity-battery",
+      "request": "../../examples/headless/high-capacity-valley-battery-request.json"
+    }
+  ]
+}

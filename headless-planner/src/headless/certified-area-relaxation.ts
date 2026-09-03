@@ -2,7 +2,7 @@ import { spawnSync } from "node:child_process";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-export const CERTIFIED_AREA_RELAXATION_PROFILE = "certified-area-relaxation-v1" as const;
+export const CERTIFIED_AREA_RELAXATION_PROFILE = "certified-area-relaxation-v2" as const;
 export const CERTIFIED_AREA_RELAXATION_OBJECTIVE =
   "horizontal-span-times-origin-anchored-height" as const;
 
@@ -64,7 +64,9 @@ const FAILURE_PRIORITY: Readonly<Record<
  *
  * The serialized DTO is deliberately reconstructed field-by-field. Search-only
  * properties attached by an untyped caller therefore cannot cross the proof
- * boundary into the Python model. The minimized relaxation is
+ * boundary into the Python model. V2 adds only optimum-preserving translation,
+ * rectangle-permutation, and duplicate-orientation symmetry breaking plus
+ * implied packing inequalities. The minimized relaxation remains
  * (max(endX) - min(x)) * max(endY), so every full feasible layout maps to a
  * feasible master assignment whose objective does not exceed its charged area.
  */
