@@ -30,7 +30,7 @@ export const DEFAULT_CERTIFIED_AREA_BENCHMARK_BUDGETS = [0.5, 2, 10] as const;
 export const CERTIFIED_AREA_BENCHMARK_INSTANCE_PROFILE =
   "certified-area-benchmark-instance-v1" as const;
 export const CERTIFIED_AREA_BEST_KNOWN_ARTIFACT_PROFILE =
-  "strict-routed-bounding-area-v1" as const;
+  "strict-routed-bounding-area-v2" as const;
 
 export interface CertifiedAreaGameRuleAttribution {
   /** Raw occupied rectangle area before the game's area-exclusion rules. */
@@ -38,8 +38,15 @@ export interface CertifiedAreaGameRuleAttribution {
   /** Occupied area that contributes to the charged bounding-area objective. */
   readonly chargedFootprintAreaByKind: Readonly<Partial<Record<HeadlessPlacedDevice["kind"], number>>>;
   readonly chargedFootprintArea: number;
-  /** Bounding area not explained by charged entity rectangles; not a certified lower bound. */
+  /** Full objective remainder, split below into origin anchoring and in-span remainder. */
   readonly chargedBoundingRemainderArea: number;
+  readonly chargedBoundsWidth: number;
+  readonly chargedBoundsSpanHeight: number;
+  readonly chargedMinimumY: number;
+  /** Width times the charged entities' offset from the map origin. */
+  readonly originAnchoringArea: number;
+  /** Empty or uncharged area inside the charged entities' own horizontal/vertical span. */
+  readonly interiorBoundingRemainderArea: number;
   readonly areaExcludedBeltArea: number;
   readonly warehouseBusArea: number;
   readonly materialLaneCountByKind: Readonly<Partial<Record<"belt" | "pipe", number>>>;
@@ -323,7 +330,7 @@ export function formatCertifiedAreaBenchmarkMarkdown(
     `full gap @ ${formatBudget(report.gapBudgetSeconds)}s`,
     "UB regression",
     "charged mix",
-    "box remainder",
+    "remainder (origin+interior)",
   ];
   const separator = header.map(() => "---:");
   separator[0] = "---";
@@ -344,9 +351,7 @@ export function formatCertifiedAreaBenchmarkMarkdown(
         : `${formatOptionalInteger(gapSample.absoluteGap)} (${(gapSample.relativeGap * 100).toFixed(2)}%)`,
       formatOptionalInteger(benchmarkCase.currentRoutedUpperBoundRegression),
       formatChargedMix(benchmarkCase.benchmarkAreaAttribution),
-      formatOptionalInteger(
-        benchmarkCase.benchmarkAreaAttribution?.chargedBoundingRemainderArea,
-      ),
+      formatAttributionRemainder(benchmarkCase.benchmarkAreaAttribution),
     ];
   });
   return [header, separator, ...rows]
@@ -449,18 +454,10 @@ export function certifyArchivedAreaBestKnownArtifact(options: {
       ? [connection.id]
       : [];
   }));
-  const areaExcludedDeviceIds = new Set(options.result.layout.devices.flatMap((device) => {
-    if (device.kind !== "belt") return [];
-    const connectionIds = options.result.blueprint.entities[device.id]?.tags.flatMap((tag) =>
-      tag.startsWith("connection:") ? [tag.slice("connection:".length)] : []) ?? [];
-    return connectionIds.length > 0
-      && connectionIds.every((connectionId) => eligibleExcludedConnections.has(connectionId))
-      ? [device.id]
-      : [];
-  }));
-  if (areaExcludedDeviceIds.size !== options.result.layout.areaExcludedBeltCellCount) {
-    throw new Error("Best-known report area-excluded belt count is inconsistent");
-  }
+  const areaExcludedDeviceIds = identifyAreaExcludedDeviceIds(
+    options.result,
+    eligibleExcludedConnections,
+  );
   const effectiveFrontageConstraint = options.request.frontageConstraint === "hard"
     || (options.request.search?.initialLayout === "topology-sequential"
       && options.request.frontageConstraint !== "soft")
@@ -536,7 +533,7 @@ export function parseCertifiedAreaBestKnownArtifact(
 }
 
 export function createCertifiedAreaGameRuleAttribution(
-  result: Pick<HeadlessOptimizationResult, "layout" | "validation">,
+  result: Pick<HeadlessOptimizationResult, "blueprint" | "layout" | "validation">,
 ): CertifiedAreaGameRuleAttribution {
   const rawFootprintAreaByKind: Partial<Record<HeadlessPlacedDevice["kind"], number>> = {};
   for (const device of result.layout.devices) {
@@ -554,8 +551,43 @@ export function createCertifiedAreaGameRuleAttribution(
   chargedFootprintAreaByKind["warehouse-bus"] = 0;
   const chargedFootprintArea = Object.values(chargedFootprintAreaByKind)
     .reduce((sum, area) => sum + (area ?? 0), 0);
+  const routedConnections = identifyArchivedMaterialConnections(
+    result.validation.materialConnections,
+  );
+  const deviceById = new Map(result.layout.devices.map((device) => [device.id, device] as const));
+  const eligibleExcludedConnections = new Set(routedConnections.flatMap((connection) => {
+    const source = connection.sourceDeviceId === null
+      ? undefined : deviceById.get(connection.sourceDeviceId);
+    const target = connection.targetDeviceId === null
+      ? undefined : deviceById.get(connection.targetDeviceId);
+    return source?.definitionId === "item_port_unloader_1" && target?.kind === "production"
+      ? [connection.id]
+      : [];
+  }));
+  const areaExcludedDeviceIds = identifyAreaExcludedDeviceIds(
+    result,
+    eligibleExcludedConnections,
+  );
+  const chargedDevices = result.layout.devices.filter((device) =>
+    device.kind !== "warehouse-bus" && !areaExcludedDeviceIds.has(device.id));
+  const minimumX = chargedDevices.length === 0
+    ? 0 : Math.min(...chargedDevices.map((device) => device.position.x));
+  const minimumY = chargedDevices.length === 0
+    ? 0 : Math.min(...chargedDevices.map((device) => device.position.y));
+  const maximumX = chargedDevices.length === 0
+    ? 0 : Math.max(...chargedDevices.map((device) => device.position.x + device.width));
+  const maximumY = chargedDevices.length === 0
+    ? 0 : Math.max(...chargedDevices.map((device) => device.position.y + device.height));
+  const chargedBoundsWidth = maximumX - minimumX;
+  const chargedBoundsSpanHeight = maximumY - minimumY;
+  const originAnchoringArea = chargedBoundsWidth * minimumY;
+  const interiorBoundingRemainderArea = chargedBoundsWidth * chargedBoundsSpanHeight
+    - chargedFootprintArea;
   const chargedBoundingRemainderArea = result.layout.boundingArea - chargedFootprintArea;
-  if (chargedBoundingRemainderArea < 0) {
+  if (chargedBoundingRemainderArea < 0
+    || interiorBoundingRemainderArea < 0
+    || originAnchoringArea + interiorBoundingRemainderArea
+      !== chargedBoundingRemainderArea) {
     throw new Error("Charged entity footprints exceed the routed bounding area");
   }
   const materialLaneCountByKind: Partial<Record<"belt" | "pipe", number>> = {};
@@ -567,6 +599,11 @@ export function createCertifiedAreaGameRuleAttribution(
     chargedFootprintAreaByKind,
     chargedFootprintArea,
     chargedBoundingRemainderArea,
+    chargedBoundsWidth,
+    chargedBoundsSpanHeight,
+    chargedMinimumY: minimumY,
+    originAnchoringArea,
+    interiorBoundingRemainderArea,
     areaExcludedBeltArea,
     warehouseBusArea,
     materialLaneCountByKind,
@@ -652,6 +689,25 @@ function identifyArchivedMaterialConnections(
   });
 }
 
+function identifyAreaExcludedDeviceIds(
+  result: Pick<HeadlessOptimizationResult, "blueprint" | "layout">,
+  eligibleExcludedConnections: ReadonlySet<string>,
+): Set<string> {
+  const ids = new Set(result.layout.devices.flatMap((device) => {
+    if (device.kind !== "belt") return [];
+    const connectionIds = result.blueprint.entities[device.id]?.tags.flatMap((tag) =>
+      tag.startsWith("connection:") ? [tag.slice("connection:".length)] : []) ?? [];
+    return connectionIds.length > 0
+      && connectionIds.every((connectionId) => eligibleExcludedConnections.has(connectionId))
+      ? [device.id]
+      : [];
+  }));
+  if (ids.size !== result.layout.areaExcludedBeltCellCount) {
+    throw new Error("Area-excluded belt tags do not match the reported cell count");
+  }
+  return ids;
+}
+
 function materialEdgeKey(edge: {
   readonly sourceId?: string;
   readonly targetId?: string;
@@ -692,6 +748,11 @@ function parseAreaAttribution(value: unknown): CertifiedAreaGameRuleAttribution 
   const numericFields = [
     "chargedFootprintArea",
     "chargedBoundingRemainderArea",
+    "chargedBoundsWidth",
+    "chargedBoundsSpanHeight",
+    "chargedMinimumY",
+    "originAnchoringArea",
+    "interiorBoundingRemainderArea",
     "areaExcludedBeltArea",
     "warehouseBusArea",
     "connectedPortEndpointCount",
@@ -705,6 +766,11 @@ function parseAreaAttribution(value: unknown): CertifiedAreaGameRuleAttribution 
     chargedFootprintAreaByKind,
     chargedFootprintArea: value["chargedFootprintArea"] as number,
     chargedBoundingRemainderArea: value["chargedBoundingRemainderArea"] as number,
+    chargedBoundsWidth: value["chargedBoundsWidth"] as number,
+    chargedBoundsSpanHeight: value["chargedBoundsSpanHeight"] as number,
+    chargedMinimumY: value["chargedMinimumY"] as number,
+    originAnchoringArea: value["originAnchoringArea"] as number,
+    interiorBoundingRemainderArea: value["interiorBoundingRemainderArea"] as number,
     areaExcludedBeltArea: value["areaExcludedBeltArea"] as number,
     warehouseBusArea: value["warehouseBusArea"] as number,
     materialLaneCountByKind,
@@ -773,6 +839,15 @@ function formatChargedMix(attribution: CertifiedAreaGameRuleAttribution | undefi
     entry[1] !== undefined && entry[1] > 0)
     .map(([label, area]) => `${label}${area}`)
     .join("/") || "—";
+}
+
+function formatAttributionRemainder(
+  attribution: CertifiedAreaGameRuleAttribution | undefined,
+): string {
+  return attribution === undefined
+    ? "—"
+    : `${attribution.chargedBoundingRemainderArea} (`
+      + `${attribution.originAnchoringArea}+${attribution.interiorBoundingRemainderArea})`;
 }
 
 function minimumDefined(

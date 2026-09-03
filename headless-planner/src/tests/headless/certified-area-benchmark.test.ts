@@ -42,6 +42,11 @@ const ATTRIBUTION = {
   chargedFootprintAreaByKind: { production: 8, belt: 1 },
   chargedFootprintArea: 9,
   chargedBoundingRemainderArea: 1,
+  chargedBoundsWidth: 5,
+  chargedBoundsSpanHeight: 2,
+  chargedMinimumY: 0,
+  originAnchoringArea: 0,
+  interiorBoundingRemainderArea: 1,
   areaExcludedBeltArea: 1,
   warehouseBusArea: 0,
   materialLaneCountByKind: { belt: 1 },
@@ -123,7 +128,7 @@ describe("certified area benchmark", () => {
   it("uses a matched validated best-known UB and exposes current search regression", () => {
     const bestKnown = {
       schemaVersion: 1,
-      validationProfile: "strict-routed-bounding-area-v1",
+      validationProfile: "strict-routed-bounding-area-v2",
       instanceHash: TEST_CASE.instanceHash,
       strictRoutedUpperBound: 10,
       blueprintId: "best-blueprint",
@@ -211,29 +216,41 @@ describe("certified area benchmark", () => {
     const attribution = createCertifiedAreaGameRuleAttribution({
       layout: {
         devices: [
-          { id: "p", kind: "production", width: 2, height: 2 },
-          { id: "w", kind: "warehouse-port", width: 1, height: 3 },
-          { id: "b1", kind: "belt", width: 1, height: 1 },
-          { id: "b2", kind: "belt", width: 1, height: 1 },
-          { id: "bus", kind: "warehouse-bus", width: 4, height: 4 },
-          { id: "power", kind: "power", width: 2, height: 2 },
+          { id: "p", definitionId: "machine", kind: "production", position: { x: 0, y: 1 }, width: 2, height: 2 },
+          { id: "w", definitionId: "item_port_unloader_1", kind: "warehouse-port", position: { x: 0, y: 3 }, width: 1, height: 3 },
+          { id: "b1", definitionId: "belt", kind: "belt", position: { x: 2, y: 0 }, width: 1, height: 1 },
+          { id: "b2", definitionId: "belt", kind: "belt", position: { x: 3, y: 1 }, width: 1, height: 1 },
+          { id: "bus", definitionId: "bus", kind: "warehouse-bus", position: { x: 4, y: 0 }, width: 4, height: 4 },
+          { id: "power", definitionId: "power", kind: "power", position: { x: 1, y: 4 }, width: 2, height: 2 },
         ],
         areaExcludedBeltCellCount: 1,
-        boundingArea: 20,
+        boundingArea: 24,
         minimumPowerDeviceCount: 1,
       },
       validation: {
         materialConnections: [{
+          itemId: "item",
           kind: "belt",
           sourceDeviceId: "w",
           targetDeviceId: "p",
         }],
       },
+      blueprint: {
+        entities: {
+          b1: { tags: ["connection:item:w->p:1"] },
+          b2: { tags: ["connection:other"] },
+        },
+      },
     } as never);
 
     expect(attribution).toMatchObject({
       chargedFootprintArea: 12,
-      chargedBoundingRemainderArea: 8,
+      chargedBoundingRemainderArea: 12,
+      chargedBoundsWidth: 4,
+      chargedBoundsSpanHeight: 5,
+      chargedMinimumY: 1,
+      originAnchoringArea: 4,
+      interiorBoundingRemainderArea: 8,
       areaExcludedBeltArea: 1,
       warehouseBusArea: 16,
       materialLaneCountByKind: { belt: 1 },
