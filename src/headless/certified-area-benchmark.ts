@@ -119,6 +119,25 @@ export interface CertifiedAreaBenchmarkCaseResult {
   readonly mandatoryDeviceArea: number;
   readonly mandatoryRectangleAreaByCategory: ReturnType<typeof measureCertifiedAreaByCategory>;
   readonly samples: readonly CertifiedAreaBenchmarkSample[];
+  /** Exact incumbent-gap identity for diagnosis only; none of its terms are new lower bounds. */
+  readonly incumbentGapAttribution?: CertifiedAreaIncumbentGapAttribution;
+}
+
+export interface CertifiedAreaIncumbentGapAttribution {
+  readonly budgetSeconds: number;
+  readonly lowerBound: number;
+  readonly upperBound: number;
+  /** Lower-bound lift proved by packing beyond the raw mandatory rectangle sum. */
+  readonly relaxationPackingLift: number;
+  /** Charged footprint absent from v3a, split by game entity kind. */
+  readonly additionalChargedFootprintAreaByKind?: Readonly<
+    Partial<Record<HeadlessPlacedDevice["kind"], number>>
+  >;
+  readonly additionalChargedFootprintArea: number;
+  readonly originAnchoringArea: number;
+  readonly interiorBoundingRemainderArea: number;
+  /** Must equal upperBound - lowerBound. */
+  readonly reconstructedAbsoluteGap: number;
 }
 
 export interface CertifiedAreaBenchmarkReport {
@@ -235,6 +254,14 @@ export function benchmarkCertifiedAreaBounds(
         proof,
       };
     });
+    const gapSample = samples.find((sample) => sample.maxSeconds === gapBudgetSeconds)!;
+    const incumbentGapAttribution = createCertifiedAreaIncumbentGapAttribution({
+      budgetSeconds: gapBudgetSeconds,
+      sample: gapSample,
+      mandatoryDeviceArea,
+      mandatoryRectangleAreaByCategory,
+      areaAttribution: benchmarkAreaAttribution,
+    });
     return {
       name: benchmarkCase.name,
       instanceHash: benchmarkCase.instanceHash,
@@ -262,6 +289,7 @@ export function benchmarkCertifiedAreaBounds(
       mandatoryDeviceArea,
       mandatoryRectangleAreaByCategory,
       samples,
+      ...(incumbentGapAttribution === undefined ? {} : { incumbentGapAttribution }),
     };
   });
 
@@ -331,6 +359,7 @@ export function formatCertifiedAreaBenchmarkMarkdown(
     "UB regression",
     "charged mix",
     "remainder (origin+interior)",
+    `gap identity @ ${formatBudget(report.gapBudgetSeconds)}s`,
   ];
   const separator = header.map(() => "---:");
   separator[0] = "---";
@@ -352,11 +381,91 @@ export function formatCertifiedAreaBenchmarkMarkdown(
       formatOptionalInteger(benchmarkCase.currentRoutedUpperBoundRegression),
       formatChargedMix(benchmarkCase.benchmarkAreaAttribution),
       formatAttributionRemainder(benchmarkCase.benchmarkAreaAttribution),
+      formatIncumbentGapAttribution(benchmarkCase.incumbentGapAttribution),
     ];
   });
   return [header, separator, ...rows]
     .map((row) => `| ${row.join(" | ")} |`)
     .join("\n");
+}
+
+export function createCertifiedAreaIncumbentGapAttribution(options: {
+  readonly budgetSeconds: number;
+  readonly sample: CertifiedAreaBenchmarkSample;
+  readonly mandatoryDeviceArea: number;
+  readonly mandatoryRectangleAreaByCategory: ReturnType<typeof measureCertifiedAreaByCategory>;
+  readonly areaAttribution?: CertifiedAreaGameRuleAttribution;
+}): CertifiedAreaIncumbentGapAttribution | undefined {
+  const attribution = options.areaAttribution;
+  const upperBound = options.sample.upperBound;
+  if (attribution === undefined || upperBound === undefined) return undefined;
+  const mandatoryCategoryTotal = Object.values(options.mandatoryRectangleAreaByCategory)
+    .reduce((sum, area) => sum + (area ?? 0), 0);
+  if (mandatoryCategoryTotal > options.mandatoryDeviceArea) {
+    throw new Error("Mandatory area categories exceed the benchmark lower bound");
+  }
+  const mandatoryAreaByKind: Partial<Record<HeadlessPlacedDevice["kind"], number>> = {
+    production: options.mandatoryRectangleAreaByCategory.production ?? 0,
+    storage: options.mandatoryRectangleAreaByCategory.storage ?? 0,
+    "warehouse-port": options.mandatoryRectangleAreaByCategory["warehouse-port"] ?? 0,
+    power: options.mandatoryRectangleAreaByCategory["minimum-power"] ?? 0,
+  };
+  const additionalChargedFootprintAreaByKind = mandatoryCategoryTotal
+    === options.mandatoryDeviceArea
+    ? {} as Partial<Record<HeadlessPlacedDevice["kind"], number>>
+    : undefined;
+  if (additionalChargedFootprintAreaByKind !== undefined) {
+    const chargedKinds: readonly HeadlessPlacedDevice["kind"][] = [
+      "production",
+      "storage",
+      "warehouse-port",
+      "belt",
+      "pipe",
+      "power",
+    ];
+    for (const kind of chargedKinds) {
+      const additional = (attribution.chargedFootprintAreaByKind[kind] ?? 0)
+        - (mandatoryAreaByKind[kind] ?? 0);
+      if (additional < 0) {
+        throw new Error(`Mandatory ${kind} area exceeds the strict incumbent footprint`);
+      }
+      if (additional > 0) additionalChargedFootprintAreaByKind[kind] = additional;
+    }
+  }
+  const additionalChargedFootprintArea = attribution.chargedFootprintArea
+    - options.mandatoryDeviceArea;
+  if (additionalChargedFootprintArea < 0) {
+    throw new Error("Mandatory device area exceeds the strict incumbent footprint");
+  }
+  if (additionalChargedFootprintAreaByKind !== undefined
+    && Object.values(additionalChargedFootprintAreaByKind)
+      .reduce((sum, area) => sum + (area ?? 0), 0) !== additionalChargedFootprintArea) {
+    throw new Error("Additional charged footprint attribution does not reconcile");
+  }
+  const relaxationPackingLift = options.sample.lowerBound - options.mandatoryDeviceArea;
+  if (relaxationPackingLift < 0) {
+    throw new Error("Combined certified bound is below the mandatory device-area bound");
+  }
+  const reconstructedAbsoluteGap = additionalChargedFootprintArea
+    + attribution.originAnchoringArea
+    + attribution.interiorBoundingRemainderArea
+    - relaxationPackingLift;
+  if (options.sample.absoluteGap !== reconstructedAbsoluteGap
+    || upperBound - options.sample.lowerBound !== reconstructedAbsoluteGap) {
+    throw new Error("Incumbent game-rule gap attribution does not reconcile with LB/UB");
+  }
+  return {
+    budgetSeconds: options.budgetSeconds,
+    lowerBound: options.sample.lowerBound,
+    upperBound,
+    relaxationPackingLift,
+    ...(additionalChargedFootprintAreaByKind === undefined
+      ? {} : { additionalChargedFootprintAreaByKind }),
+    additionalChargedFootprintArea,
+    originAnchoringArea: attribution.originAnchoringArea,
+    interiorBoundingRemainderArea: attribution.interiorBoundingRemainderArea,
+    reconstructedAbsoluteGap,
+  };
 }
 
 export function createCertifiedAreaBenchmarkInstanceHash(options: {
@@ -520,6 +629,18 @@ export function parseCertifiedAreaBestKnownArtifact(
     throw new Error("Invalid or mismatched best-known area artifact");
   }
   const areaAttribution = parseAreaAttribution(value["areaAttribution"]);
+  if (areaAttribution.chargedFootprintArea + areaAttribution.chargedBoundingRemainderArea
+      !== value["strictRoutedUpperBound"]
+    || areaAttribution.originAnchoringArea
+      + areaAttribution.interiorBoundingRemainderArea
+      !== areaAttribution.chargedBoundingRemainderArea
+    || areaAttribution.chargedBoundsWidth * areaAttribution.chargedMinimumY
+      !== areaAttribution.originAnchoringArea
+    || areaAttribution.chargedBoundsWidth * areaAttribution.chargedBoundsSpanHeight
+      - areaAttribution.chargedFootprintArea
+      !== areaAttribution.interiorBoundingRemainderArea) {
+    throw new Error("Best-known area attribution does not reconcile with its strict UB");
+  }
   return {
     schemaVersion: 1,
     validationProfile: CERTIFIED_AREA_BEST_KNOWN_ARTIFACT_PROFILE,
@@ -825,8 +946,14 @@ function formatMandatoryMix(
 }
 
 function formatChargedMix(attribution: CertifiedAreaGameRuleAttribution | undefined): string {
-  if (attribution === undefined) return "—";
-  const areas = attribution.chargedFootprintAreaByKind;
+  return attribution === undefined
+    ? "—"
+    : formatChargedAreaMix(attribution.chargedFootprintAreaByKind);
+}
+
+function formatChargedAreaMix(
+  areas: Readonly<Partial<Record<HeadlessPlacedDevice["kind"], number>>>,
+): string {
   const entries: ReadonlyArray<readonly [string, number | undefined]> = [
     ["P", areas.production],
     ["S", areas.storage],
@@ -848,6 +975,21 @@ function formatAttributionRemainder(
     ? "—"
     : `${attribution.chargedBoundingRemainderArea} (`
       + `${attribution.originAnchoringArea}+${attribution.interiorBoundingRemainderArea})`;
+}
+
+function formatIncumbentGapAttribution(
+  attribution: CertifiedAreaIncumbentGapAttribution | undefined,
+): string {
+  if (attribution === undefined) return "—";
+  const mix = attribution.additionalChargedFootprintAreaByKind === undefined
+    ? "?"
+    : formatChargedAreaMix(attribution.additionalChargedFootprintAreaByKind);
+  return `${attribution.additionalChargedFootprintArea}`
+    + `[${mix}]`
+    + `+${attribution.originAnchoringArea}`
+    + `+${attribution.interiorBoundingRemainderArea}`
+    + `−${attribution.relaxationPackingLift}`
+    + `=${attribution.reconstructedAbsoluteGap}`;
 }
 
 function minimumDefined(

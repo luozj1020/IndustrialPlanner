@@ -5,12 +5,12 @@ Each proof budget is an independent solve. `master gap` is the gap between the
 placement-only incumbent and CP-SAT best bound; `full gap` uses the smaller of
 the current routed UB and an instance-hash-matched best-known strict UB.
 
-| case | current / best UB | mandatory rectangles | CP-SAT LB @ 0.5 / 2 / 10s | master gap @ 2s | full gap @ 2s | charged / origin / interior |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| iron-nugget | 66 / — | 37 | 39 / 39 / 39 | 0 | 27 (40.91%) | 39 / 12 / 15 |
-| simple-chain | 42 / — | 34 | 36 / 36 / 36 | 0 | 6 (14.29%) | 37 / 0 / 5 |
-| dense-scc-fanout | 484 / — | 241 | 241 / 241 / 242 | 5 | 243 (50.21%) | 318 / 0 / 166 |
-| medium-battery-fan-in | 345 / 330 | 115 | 0 / 117 / 117 | 0 | 213 (64.55%) | 148 / 120 / 62 |
+| case | current / best UB | mandatory rectangles | CP-SAT LB @ 0.5 / 2 / 10s | master gap @ 2s | full gap @ 2s | charged / origin / interior | gap identity @ 2s |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| iron-nugget | 66 / — | 37 | 39 / 39 / 39 | 0 | 27 (40.91%) | 39 / 12 / 15 | 2[B2]+12+15−2=27 |
+| simple-chain | 42 / — | 34 | 36 / 36 / 36 | 0 | 6 (14.29%) | 37 / 0 / 5 | 3[B3]+0+5−2=6 |
+| dense-scc-fanout | 484 / — | 241 | 241 / 241 / 242 | 5 | 243 (50.21%) | 318 / 0 / 166 | 77[B65/E12]+0+166−0=243 |
+| medium-battery-fan-in | 345 / 330 | 115 | 117 / 117 / 117 | 0 | 213 (64.55%) | 148 / 120 / 62 | 33[B33]+120+62−2=213 |
 
 The medium best-known artifact is regenerated from the tracked 330-cell full
 report by `certify-area-best-known`; it is not an unchecked handwritten UB.
@@ -38,6 +38,22 @@ dominates medium and contributes to iron-nugget, while dense-scc-fanout's entire
 166-cell remainder is inside the charged span. Any next certified constraint
 therefore needs a game-rule-specific proof and per-case screening; this table is
 not evidence for importing a generic facility-layout clearance rule.
+
+The final column is checked as an exact identity:
+
+```text
+full gap = additional charged footprint + origin + interior - packing lift
+```
+
+`B` denotes charged belt cells absent from v3a and `E` denotes additional power
+diffuser area beyond the one globally mandatory diffuser already in v3a. This
+makes the mechanism split more concrete: medium is dominated by the
+warehouse-shell origin offset, while dense has 65 charged belt cells, 12 cells
+of additional power equipment, and a still larger 166-cell in-span remainder.
+The latter remains an interaction bucket until a narrower game-rule
+counterfactual distinguishes routing capacity, port geometry, and power
+coverage; it is not evidence that any one of those constraints is globally
+necessary in the current form.
 
 Run the suite with:
 

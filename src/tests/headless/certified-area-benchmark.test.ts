@@ -28,8 +28,8 @@ const TEST_CASE = {
   name: "identical-rectangles",
   instanceHash: "fnv1a32:test0001",
   devices: [
-    { id: "a", width: 2, height: 2 },
-    { id: "b", width: 2, height: 2 },
+    { id: "a", width: 2, height: 2, category: "production" },
+    { id: "b", width: 2, height: 2, category: "production" },
   ],
   limitWidth: 8,
   limitHeight: 8,
@@ -154,6 +154,17 @@ describe("certified area benchmark", () => {
       benchmarkUpperBound: 10,
       currentRoutedUpperBoundRegression: 2,
       bestKnownArtifact: "best-report.json",
+      incumbentGapAttribution: {
+        budgetSeconds: 2,
+        lowerBound: 8,
+        upperBound: 10,
+        relaxationPackingLift: 0,
+        additionalChargedFootprintAreaByKind: { belt: 1 },
+        additionalChargedFootprintArea: 1,
+        originAnchoringArea: 0,
+        interiorBoundingRemainderArea: 1,
+        reconstructedAbsoluteGap: 2,
+      },
     });
     expect(report.cases[0]!.samples[0]).toMatchObject({
       upperBound: 10,
@@ -171,6 +182,12 @@ describe("certified area benchmark", () => {
       .toEqual(bestKnown);
     expect(() => parseCertifiedAreaBestKnownArtifact(bestKnown, "fnv1a32:other"))
       .toThrow(/Invalid or mismatched/);
+    expect(() => parseCertifiedAreaBestKnownArtifact({
+      ...bestKnown,
+      strictRoutedUpperBound: 11,
+    }, TEST_CASE.instanceHash)).toThrow(/does not reconcile/);
+    expect(formatCertifiedAreaBenchmarkMarkdown(report))
+      .toContain("1[B1]+0+1−0=2");
   });
 
   it("re-certifies the tracked 330-cell medium best-known artifact", () => {
