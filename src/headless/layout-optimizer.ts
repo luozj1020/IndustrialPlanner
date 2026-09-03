@@ -65,6 +65,7 @@ import {
   type CpSatLayoutPortRequirement,
 } from "./cp-sat-layout";
 import { solveCpSatAreaLowerBound } from "./certified-area-relaxation";
+import { createCertifiedAreaMandatoryDevices } from "./certified-area-mandatory-devices";
 import {
   createBoundingAreaOptimalityReport,
   DEFAULT_CERTIFIED_AREA_MAX_SECONDS,
@@ -1315,13 +1316,16 @@ export function optimizeHeadlessLayout(
     powerCoverageVerified,
     routeFailureDiagnostics,
   };
-  const mandatoryAreaDevices = deviceRequests
-    .filter((device) => device.kind === "production" || device.kind === "storage")
-    .map((device) => ({
-      id: device.id,
-      width: device.definition.footprint.width,
-      height: device.definition.footprint.height,
-    }));
+  const mandatoryAreaDevices = createCertifiedAreaMandatoryDevices({
+    entities: deviceRequests.flatMap((device) => device.kind === "warehouse-bus"
+      ? []
+      : [{
+          id: device.id,
+          kind: device.kind,
+          definitionId: device.definition.id,
+        }]),
+    entityDefinitions: registry.entityDefinitions,
+  });
   const areaProof = solveCpSatAreaLowerBound({
     devices: mandatoryAreaDevices,
     limitWidth: request.width,

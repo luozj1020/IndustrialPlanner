@@ -8,14 +8,20 @@ import type { BlueprintDocument } from "../domain/document/blueprint-document";
 import { buildHeadlessMaterialGraph, optimizeHeadlessLayout } from "./layout-optimizer";
 import {
   benchmarkCertifiedAreaBounds,
+  certifyArchivedAreaBestKnownArtifact,
+  createCertifiedAreaBenchmarkInstanceHash,
+  createCertifiedAreaBestKnownArtifact,
   createCertifiedAreaBenchmarkCaseFromResult,
   DEFAULT_CERTIFIED_AREA_BENCHMARK_BUDGETS,
   formatCertifiedAreaBenchmarkMarkdown,
+  parseCertifiedAreaBestKnownArtifact,
   type CertifiedAreaBenchmarkCase,
+  type CertifiedAreaBestKnownArtifact,
 } from "./certified-area-benchmark";
+import { createCertifiedAreaMandatoryDevices } from "./certified-area-mandatory-devices";
 import { renderMaterialGraphSvg } from "./material-graph-svg";
 import { renderBlueprintSvg } from "./svg-renderer";
-import type { HeadlessOptimizationRequest } from "./types";
+import type { HeadlessOptimizationRequest, HeadlessOptimizationResult } from "./types";
 
 async function main(): Promise<void> {
   const [command, ...args] = process.argv.slice(2);
@@ -49,7 +55,10 @@ async function main(): Promise<void> {
   if (command === "benchmark-area") {
     const inputPath = args[0];
     if (inputPath === undefined) {
-      throw new Error("Usage: benchmark-area <suite.json> [--output benchmark.json] [--format markdown|json]");
+      throw new Error(
+        "Usage: benchmark-area <suite.json> [--output benchmark.json] "
+          + "[--format markdown|json] [--update-best-known]",
+      );
     }
     const suitePath = resolve(inputPath);
     const suite = parseAreaBenchmarkSuite(JSON.parse(
@@ -69,9 +78,8 @@ async function main(): Promise<void> {
       );
     }
     const bootstrapProofSeconds = Math.min(...budgetsSeconds);
+    const updateBestKnown = args.includes("--update-best-known");
     const benchmarkCases: CertifiedAreaBenchmarkCase[] = [];
-    const definitionById = new Map(registry.entityDefinitions.map((definition) =>
-      [definition.id, definition] as const));
     for (const benchmarkCase of suite.cases) {
       const requestPath = resolve(dirname(suitePath), benchmarkCase.request);
       process.stderr.write(`benchmark-area: optimizing ${benchmarkCase.name}\n`);
@@ -79,24 +87,34 @@ async function main(): Promise<void> {
         await readFile(requestPath, "utf8"),
       ) as HeadlessOptimizationRequest;
       const graph = buildHeadlessMaterialGraph(request, registry);
+      const mandatoryDevices = createCertifiedAreaMandatoryDevices({
+        entities: graph.nodes.map(({ id, kind, definitionId }) => ({ id, kind, definitionId })),
+        entityDefinitions: registry.entityDefinitions,
+      });
+      const instanceHash = createCertifiedAreaBenchmarkInstanceHash({
+        request,
+        graph,
+        devices: mandatoryDevices,
+        registry,
+      });
+      const bestKnownArtifactPath = benchmarkCase.bestKnownArtifact === undefined
+        ? undefined
+        : resolve(dirname(suitePath), benchmarkCase.bestKnownArtifact);
+      let validatedBestKnown: CertifiedAreaBestKnownArtifact | undefined;
+      if (bestKnownArtifactPath !== undefined) {
+        validatedBestKnown = parseCertifiedAreaBestKnownArtifact(
+          JSON.parse(await readFile(bestKnownArtifactPath, "utf8")) as unknown,
+          instanceHash,
+        );
+      }
       const lowerBoundOnlyCase: CertifiedAreaBenchmarkCase = {
         name: benchmarkCase.name,
-        devices: graph.nodes
-          .filter((node) => node.kind === "production" || node.kind === "storage")
-          .map((node) => {
-            const definition = definitionById.get(node.definitionId);
-            if (definition === undefined) {
-              throw new Error(`Benchmark case ${benchmarkCase.name} is missing definition ${node.definitionId}`);
-            }
-            return {
-              id: node.id,
-              width: definition.footprint.width,
-              height: definition.footprint.height,
-            };
-          }),
+        instanceHash,
+        devices: mandatoryDevices,
         limitWidth: request.width,
         limitHeight: request.height,
         allowRotate: request.allowRotate ?? true,
+        ...(validatedBestKnown === undefined ? {} : { validatedBestKnown }),
       };
       const routedIncumbentStartedAt = Date.now();
       try {
@@ -110,11 +128,35 @@ async function main(): Promise<void> {
             },
           },
         }, registry);
+        if (updateBestKnown) {
+          if (bestKnownArtifactPath === undefined) {
+            throw new Error(
+              `Benchmark case ${benchmarkCase.name} needs bestKnownArtifact to update its UB`,
+            );
+          }
+          const currentArtifact = createCertifiedAreaBestKnownArtifact({
+            instanceHash,
+            result,
+            sourceArtifact: `benchmark-area:${benchmarkCase.request}`,
+          });
+          if (validatedBestKnown === undefined
+            || currentArtifact.strictRoutedUpperBound
+              < validatedBestKnown.strictRoutedUpperBound) {
+            await writeFile(
+              bestKnownArtifactPath,
+              `${JSON.stringify(currentArtifact, null, 2)}\n`,
+              "utf8",
+            );
+            validatedBestKnown = currentArtifact;
+          }
+        }
         benchmarkCases.push(createCertifiedAreaBenchmarkCaseFromResult({
           name: benchmarkCase.name,
+          instanceHash,
           result,
           registry,
           allowRotate: request.allowRotate ?? true,
+          ...(validatedBestKnown === undefined ? {} : { validatedBestKnown }),
           routedIncumbentElapsedMs: Date.now() - routedIncumbentStartedAt,
         }));
       } catch (error: unknown) {
@@ -143,6 +185,51 @@ async function main(): Promise<void> {
     } else {
       process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
     }
+    return;
+  }
+
+  if (command === "certify-area-best-known") {
+    const requestPath = args[0];
+    const reportPath = args[1];
+    if (requestPath === undefined || reportPath === undefined) {
+      throw new Error(
+        "Usage: certify-area-best-known <request.json> <report.json> "
+          + "[--output artifact.json]",
+      );
+    }
+    const resolvedRequestPath = resolve(requestPath);
+    const resolvedReportPath = resolve(reportPath);
+    const request = JSON.parse(
+      await readFile(resolvedRequestPath, "utf8"),
+    ) as HeadlessOptimizationRequest;
+    const result = JSON.parse(
+      await readFile(resolvedReportPath, "utf8"),
+    ) as HeadlessOptimizationResult;
+    const graph = buildHeadlessMaterialGraph(request, registry);
+    const mandatoryDevices = createCertifiedAreaMandatoryDevices({
+      entities: graph.nodes.map(({ id, kind, definitionId }) => ({ id, kind, definitionId })),
+      entityDefinitions: registry.entityDefinitions,
+    });
+    const instanceHash = createCertifiedAreaBenchmarkInstanceHash({
+      request,
+      graph,
+      devices: mandatoryDevices,
+      registry,
+    });
+    const outputPath = resolve(
+      readOption(args, "--output")
+        ?? replaceJsonExtension(reportPath, "-area-best-known.json"),
+    );
+    const artifact = certifyArchivedAreaBestKnownArtifact({
+      instanceHash,
+      result,
+      expectedGraph: graph,
+      request,
+      registry,
+      sourceArtifact: reportPath,
+    });
+    await writeFile(outputPath, `${JSON.stringify(artifact, null, 2)}\n`, "utf8");
+    process.stdout.write(`${JSON.stringify({ output: outputPath, ...artifact }, null, 2)}\n`);
     return;
   }
 
@@ -243,6 +330,7 @@ async function main(): Promise<void> {
     "  graph <request.json> [--output material-graph.svg] [--json material-graph.json]",
     "  optimize <request.json> [--output blueprint.json] [--report report.json] [--svg layout.svg]",
     "  benchmark-area <suite.json> [--output benchmark.json] [--format markdown|json]",
+    "  certify-area-best-known <request.json> <report.json> [--output artifact.json]",
     "  render <blueprint.json> [--output layout.svg]",
     "",
   ].join("\n"));
@@ -270,6 +358,7 @@ interface AreaBenchmarkSuite {
   readonly cases: readonly {
     readonly name: string;
     readonly request: string;
+    readonly bestKnownArtifact?: string;
   }[];
 }
 
@@ -293,13 +382,21 @@ function parseAreaBenchmarkSuite(value: unknown): AreaBenchmarkSuite {
     }
     const entry = rawCase as Record<string, unknown>;
     const unexpectedCaseKeys = Object.keys(entry).filter((key) =>
-      key !== "name" && key !== "request");
+      key !== "name" && key !== "request" && key !== "bestKnownArtifact");
     if (unexpectedCaseKeys.length > 0
       || typeof entry["name"] !== "string" || entry["name"].length === 0
-      || typeof entry["request"] !== "string" || entry["request"].length === 0) {
+      || typeof entry["request"] !== "string" || entry["request"].length === 0
+      || (entry["bestKnownArtifact"] !== undefined
+        && (typeof entry["bestKnownArtifact"] !== "string"
+          || entry["bestKnownArtifact"].length === 0))) {
       throw new Error(`Invalid area benchmark suite case at index ${index}`);
     }
-    return { name: entry["name"], request: entry["request"] };
+    return {
+      name: entry["name"],
+      request: entry["request"],
+      ...(entry["bestKnownArtifact"] === undefined
+        ? {} : { bestKnownArtifact: entry["bestKnownArtifact"] as string }),
+    };
   });
   if (new Set(cases.map((entry) => entry.name)).size !== cases.length) {
     throw new Error("Area benchmark suite case names must be unique");

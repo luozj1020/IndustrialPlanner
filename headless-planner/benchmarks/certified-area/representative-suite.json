@@ -16,7 +16,8 @@
     },
     {
       "name": "medium-battery-fan-in",
-      "request": "../../examples/headless/medium-valley-battery-topology-global-request.json"
+      "request": "../../examples/headless/medium-valley-battery-topology-global-request.json",
+      "bestKnownArtifact": "medium-valley-battery-topology-global-best-known.json"
     }
   ]
 }

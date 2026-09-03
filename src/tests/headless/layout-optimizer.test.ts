@@ -1616,7 +1616,7 @@ describe("headless layout optimizer", () => {
       first.optimality.boundingArea.status,
     );
     expect(first.optimality.boundingArea.proof.constraintProfile).toBe(
-      "certified-area-relaxation-v2",
+      "certified-area-relaxation-v3a",
     );
     expect(first.layout.beltCellCount).toBeGreaterThan(0);
     expect(first.layout.pipeCellCount).toBe(0);

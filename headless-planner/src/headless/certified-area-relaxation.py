@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Certified Area Relaxation v2: sound packing constraints and proof-only symmetry breaking."""
+"""Certified Area Relaxation v3a: globally mandatory charged-rectangle packing."""
 
 import json
 import math
@@ -7,7 +7,7 @@ import platform
 import sys
 import time
 
-PROFILE = "certified-area-relaxation-v2"
+PROFILE = "certified-area-relaxation-v3a"
 OBJECTIVE = "horizontal-span-times-origin-anchored-height"
 
 
@@ -161,7 +161,12 @@ def solve(devices, limit_width, limit_height, allow_rotate, max_seconds):
             model.new_interval_var(y, height, end_y, f"y_interval_{device_id}")
         )
         variables.append({"x": x, "y": y, "end_x": end_x, "end_y": end_y})
-        interchangeable_devices.setdefault((base_width, base_height), []).append(
+        interchangeable_key = (
+            (min(base_width, base_height), max(base_width, base_height))
+            if allow_rotate
+            else (base_width, base_height)
+        )
+        interchangeable_devices.setdefault(interchangeable_key, []).append(
             {
                 "id": device_id,
                 "x": x,

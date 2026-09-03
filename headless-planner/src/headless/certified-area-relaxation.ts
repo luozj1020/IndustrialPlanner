@@ -2,15 +2,23 @@ import { spawnSync } from "node:child_process";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-export const CERTIFIED_AREA_RELAXATION_PROFILE = "certified-area-relaxation-v2" as const;
+export const CERTIFIED_AREA_RELAXATION_PROFILE = "certified-area-relaxation-v3a" as const;
 export const CERTIFIED_AREA_RELAXATION_OBJECTIVE =
   "horizontal-span-times-origin-anchored-height" as const;
 
 /** A globally mandatory, area-counted rectangle from the full problem. */
+export type CertifiedAreaMandatoryRectangleKind =
+  | "production"
+  | "storage"
+  | "warehouse-port"
+  | "minimum-power";
+
 export interface CertifiedAreaRelaxationDevice {
   readonly id: string;
   readonly width: number;
   readonly height: number;
+  /** TS-side proof provenance; deliberately omitted from the Python DTO. */
+  readonly category?: CertifiedAreaMandatoryRectangleKind;
 }
 
 export type CertifiedAreaRelaxationStatus =
@@ -64,7 +72,8 @@ const FAILURE_PRIORITY: Readonly<Record<
  *
  * The serialized DTO is deliberately reconstructed field-by-field. Search-only
  * properties attached by an untyped caller therefore cannot cross the proof
- * boundary into the Python model. V2 adds only optimum-preserving translation,
+ * boundary into the Python model. V3a adds only globally mandatory charged
+ * rectangles; the model itself retains optimum-preserving translation,
  * rectangle-permutation, and duplicate-orientation symmetry breaking plus
  * implied packing inequalities. The minimized relaxation remains
  * (max(endX) - min(x)) * max(endY), so every full feasible layout maps to a

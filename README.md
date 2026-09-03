@@ -183,17 +183,21 @@ npm run headless -- render optimized-blueprint.json --output optimized-layout.sv
 `cpSatAttemptedCandidates`、`cpSatStoppedBy` 和 `cpSatElapsedMs` 可用于核对实际消耗。输出蓝图
 可由本项目现有蓝图导入流程读取，并在 Node 环境通过拓扑编译器校验。
 `certification.boundingArea.maxSeconds` 是与候选搜索完全独立的面积证明预算，默认 2 秒。
-成功结果的 `optimality.boundingArea` 同时报告 mandatory production/storage 设备面积下界、
+成功结果的 `optimality.boundingArea` 同时报告全局必需计费矩形面积下界、
 proof-only CP-SAT 下界（可用时）和经过拓扑、吞吐、供电、地图及蓝图几何复核的 routed UB。
+Certified Area Relaxation v3a 的矩形集合包含冻结生产图必然存在的生产设备、协议存储箱、取货口；
+存在用电设备时还包含至少一个可移动供电桩。它不固定这些实体的 incumbent 位置，也不假定实际
+最少供电桩数量，因此仍是完整游戏布局问题的安全松弛。
 组合下界只取各安全来源的最大值；`masterIncumbentArea` 仅是 relaxation witness，绝不作为 UB。
 若 OR-Tools 不可用，仍使用设备面积下界报告严格但更宽的 gap；只有整数 LB 与 routed UB 相等时，
 状态才是 `bounding-area-optimal`。该状态只证明独立 bounding-area 目标，不宣称完整词典序最优。
-Certified Area Relaxation v2 只加入不改变最优值的 proof-only 强化：固定最左/最上设备坐标为 0、
+该 relaxation 保留 v2 的 proof-only 强化：固定最左/最上设备坐标为 0、
 按 `(y,x)` 排序完全同构矩形、消除重复的 180/270 度几何朝向，并显式加入设备面积及最小边长
-不等式。它仍不包含 topology layer、搜索冻结状态或 learned routing cuts。
+不等式。它仍不包含端口可达性、传送带/管道路由、topology layer、搜索冻结状态或 learned
+routing cuts；这些游戏规则只有形成全局必要条件后才能进入 proof model。
 
 可以在同一组真实 routed 实例上分别测量 0.5/2/10 秒的 CP-SAT 下界。benchmark 会先重新运行
-完整优化与 strict UB 验证，再从 mandatory production/storage 几何构造 proof case；因此表中的
+完整优化与 strict UB 验证，再从全局必需计费矩形构造 proof case；因此表中的
 placement master incumbent 不会被误当作 UB：
 
 ```bash
@@ -202,7 +206,18 @@ INDUSTRIAL_PLANNER_PYTHON=.venv-headless/bin/python npm run benchmark:certified-
 
 默认 suite 位于 `benchmarks/certified-area/representative-suite.json`。也可直接执行
 `headless benchmark-area <suite.json> --output benchmark.json --format markdown|json`；JSON 报告
-保留每个预算的 solver status、raw/exact LB、relaxation witness、耗时及严格 gap。29 台生产设备的
+保留每个预算的 solver status、raw/exact LB、relaxation witness、master internal gap、耗时及
+完整游戏布局 gap。表格区分本次 routed UB、同实例哈希的历史 best-known strict UB 和两者较小值，
+因此也能显式报告 incumbent search regression。best-known artifact 必须先由当前 strict validator
+从完整报告生成：
+
+```bash
+npm run headless -- certify-area-best-known request.json report.json --output best-known.json
+```
+
+benchmark 还把 routed incumbent 的计费实体面积按生产设备、存储、取货口、belt/pipe、供电拆分，
+并单列 charged bounding remainder。该分解只用于判断纯矩形 relaxation 与完整游戏规则可行域的
+差距来源，不会被当作新的 lower bound。29 台生产设备的
 high-capacity 实例因 routed UB 搜索耗时较长，单独放在 `npm run benchmark:certified-area:long`。
 `routingClearance` 表示布局外缘预留的物流缓冲。生产设备之间不再强制统一净空，允许直接相邻；
 候选布局必须保留实际配方所需的输入/输出端口，并通过 A* 路由和物理拓扑验证。

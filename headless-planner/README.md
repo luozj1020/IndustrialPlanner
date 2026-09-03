@@ -180,7 +180,7 @@ npm run headless -- render <blueprint.json> [--output layout.svg]
   },
   "certification": {             // 与候选搜索隔离的证明预算
     "boundingArea": {
-      "maxSeconds": 2            // Certified Area Relaxation v2（秒）
+      "maxSeconds": 2            // Certified Area Relaxation v3a（秒）
     }
   },
   "sourceConfig": {               // 资源策略
@@ -230,7 +230,7 @@ npm run headless -- render <blueprint.json> [--output layout.svg]
 | `optimality.boundingArea.lowerBound` / `upperBound` | 安全 relaxation LB / 完整 routed incumbent UB |
 | `optimality.boundingArea.absoluteGap` / `relativeGap` | 面积绝对 gap / 相对 gap |
 | `optimality.boundingArea.lowerBoundSources` | mandatory 设备面积与 proof-only CP-SAT 下界来源 |
-| `optimality.boundingArea.proof` | Certified Area Relaxation v2 状态及 solver 元数据；其 `masterIncumbentArea` 不是 UB |
+| `optimality.boundingArea.proof` | Certified Area Relaxation v3a 状态及 solver 元数据；其 `masterIncumbentArea` 不是 UB |
 | `search.initialLayout` / `scope` | 实际使用的初始构造模式 / 优化作用域 |
 | `search.initialCandidatesGenerated` / `initialCandidatesSelected` | 廉价初始候选数 / 进入完整 A* 的候选数 |
 | `search.warehouseCandidatesGenerated` / `warehouseCandidatesSelected` | 仓库专项候选漏斗统计 |
@@ -846,10 +846,20 @@ CP-SAT 状态会在优化报告的 `search.cpSatStatus` 字段中报告：
 （`completed` / `total-budget`）和 `cpSatElapsedMs` 判断候选批次是否真正受预算约束。
 
 面积证明使用独立的 `certified-area-relaxation.py`，不会继承候选模型的端口、cluster、LNS freeze、
-proxy objective 或 learned cuts。`certification.boundingArea.maxSeconds` 默认 2 秒；OR-Tools 缺失或
-证明超时后，报告仍以 mandatory production/storage 矩形面积之和作为严格下界。只有该下界与通过
+proxy objective 或 learned cuts。v3a 纳入冻结生产图中必然存在且计费的生产设备、协议存储箱、
+取货口；存在用电设备时还纳入至少一个位置自由的供电桩。它仍不包含端口可达性或物流路由。
+`certification.boundingArea.maxSeconds` 默认 2 秒；OR-Tools 缺失或证明超时后，报告仍以这些全局
+必需计费矩形面积之和作为严格下界。只有该下界与通过
 拓扑、连通、吞吐、供电、地图边界、无重叠及蓝图一致性复核的 routed 面积完全相等时，才报告
 `bounding-area-optimal`；这不等同于完整词典序目标已经最优。
+
+`benchmark-area` 同时报告每个预算的 solver status、master incumbent/internal gap，以及本次 UB、
+同实例哈希的 best-known strict UB 和完整游戏布局 gap。其实体面积分解只用于诊断游戏机制带来的
+松弛，不会被提升成证明。历史报告需先通过：
+
+```bash
+npm run headless -- certify-area-best-known request.json report.json --output best-known.json
+```
 
 ## 运行测试
 

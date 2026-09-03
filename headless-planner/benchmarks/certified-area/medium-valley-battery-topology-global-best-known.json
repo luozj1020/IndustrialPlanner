@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "validationProfile": "strict-routed-bounding-area-v1",
+  "instanceHash": "fnv1a32:c8ff94e5",
+  "strictRoutedUpperBound": 330,
+  "blueprintId": "headless-97d921a8",
+  "topologyId": "fnv1a32:ae53d2a9",
+  "sourceArtifact": "examples/headless/medium-valley-battery-topology-global-report.json",
+  "areaAttribution": {
+    "rawFootprintAreaByKind": {
+      "production": 87,
+      "storage": 9,
+      "warehouse-bus": 112,
+      "warehouse-port": 15,
+      "belt": 38,
+      "power": 4
+    },
+    "chargedFootprintAreaByKind": {
+      "production": 87,
+      "storage": 9,
+      "warehouse-bus": 0,
+      "warehouse-port": 15,
+      "belt": 33,
+      "power": 4
+    },
+    "chargedFootprintArea": 148,
+    "chargedBoundingRemainderArea": 182,
+    "areaExcludedBeltArea": 5,
+    "warehouseBusArea": 112,
+    "materialLaneCountByKind": {
+      "belt": 13
+    },
+    "connectedPortEndpointCount": 26,
+    "minimumPowerDeviceCount": 1
+  }
+}
