@@ -5,12 +5,12 @@ Each proof budget is an independent solve. `master gap` is the gap between the
 placement-only incumbent and CP-SAT best bound; `full gap` uses the smaller of
 the current routed UB and an instance-hash-matched best-known strict UB.
 
-| case | current / best UB | mandatory rectangles | CP-SAT LB @ 0.5 / 2 / 10s | master gap @ 2s | full gap @ 2s | charged / origin / interior | gap identity @ 2s |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| iron-nugget | 66 / — | 37 | 39 / 39 / 39 | 0 | 27 (40.91%) | 39 / 12 / 15 | 2[B2]+12+15−2=27 |
-| simple-chain | 42 / — | 34 | 36 / 36 / 36 | 0 | 6 (14.29%) | 37 / 0 / 5 | 3[B3]+0+5−2=6 |
-| dense-scc-fanout | 484 / — | 241 | 241 / 241 / 242 | 5 | 243 (50.21%) | 318 / 0 / 166 | 77[B65/E12]+0+166−0=243 |
-| medium-battery-fan-in | 345 / 330 | 115 | 117 / 117 / 117 | 0 | 213 (64.55%) | 148 / 120 / 62 | 33[B33]+120+62−2=213 |
+| case | current / best UB | mandatory rectangles | CP-SAT LB @ 0.5 / 2 / 10s | master gap @ 2s | full gap @ 2s | charged / origin / interior | envelope core+power+logistics | gap identity @ 2s |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| iron-nugget | 66 / — | 37 | 39 / 39 / 39 | 0 | 27 (40.91%) | 39 / 12 / 15 | 66+0+0 | 2[B2]+12+15−2=27 |
+| simple-chain | 42 / — | 34 | 36 / 36 / 36 | 0 | 6 (14.29%) | 37 / 0 / 5 | 42+0+0 | 3[B3]+0+5−2=6 |
+| dense-scc-fanout | 484 / — | 241 | 241 / 242 / 242 | 0 | 242 (50.00%) | 318 / 0 / 166 | 441+0+43 | 77[B65/E12]+0+166−1=242 |
+| medium-battery-fan-in | 345 / 330 | 115 | 117 / 117 / 117 | 0 | 213 (64.55%) | 148 / 120 / 62 | 330+0+0 | 33[B33]+120+62−2=213 |
 
 The medium best-known artifact is regenerated from the tracked 330-cell full
 report by `certify-area-best-known`; it is not an unchecked handwritten UB.
@@ -23,8 +23,9 @@ This data separates two effects:
   cannot reduce its 213-cell full gap; stronger globally valid game-rule
   constraints are required. A 0.5-second solve can expire before CP-SAT emits a
   useful bound, in which case the 115-cell mandatory-area fallback remains valid.
-- Dense still has a 5-cell master proof gap at two seconds and closes at 242 by
-  ten seconds, but most of its full gap is also relaxation weakness.
+- Dense closes its 242-cell placement master within two seconds in this run.
+  Earlier time-bounded runs left only a small internal master gap, while the
+  roughly 50% full gap consistently remains relaxation weakness.
 - Simple-chain is already within six cells, making it a useful tiny case for
   screening a proposed strengthening before applying it to larger instances.
 
@@ -54,6 +55,15 @@ The latter remains an interaction bucket until a narrower game-rule
 counterfactual distinguishes routing capacity, port geometry, and power
 coverage; it is not evidence that any one of those constraints is globally
 necessary in the current form.
+
+`envelope core+power+logistics` is a second incumbent-only counterfactual. It
+deletes charged entity classes without moving anything and measures the
+origin-anchored box after each addition. Iron-nugget, simple-chain, and medium
+already have their full UB envelope using only production/storage/warehouse-port
+entities; the placed power and logistics fit inside it. Dense is different:
+its core envelope is 441, power adds zero, and charged logistics extend it by 43
+to 484. This does not prove logistics caused the underlying core placement, but
+it rules out treating every charged belt cell as direct bounding-box expansion.
 
 Run the suite with:
 

@@ -47,6 +47,10 @@ const ATTRIBUTION = {
   chargedMinimumY: 0,
   originAnchoringArea: 0,
   interiorBoundingRemainderArea: 1,
+  coreDeviceBoundingArea: 8,
+  powerInclusiveBoundingArea: 8,
+  powerEnvelopeExpansionArea: 0,
+  logisticsEnvelopeExpansionArea: 2,
   areaExcludedBeltArea: 1,
   warehouseBusArea: 0,
   materialLaneCountByKind: { belt: 1 },
@@ -128,7 +132,7 @@ describe("certified area benchmark", () => {
   it("uses a matched validated best-known UB and exposes current search regression", () => {
     const bestKnown = {
       schemaVersion: 1,
-      validationProfile: "strict-routed-bounding-area-v2",
+      validationProfile: "strict-routed-bounding-area-v3",
       instanceHash: TEST_CASE.instanceHash,
       strictRoutedUpperBound: 10,
       blueprintId: "best-blueprint",
@@ -188,6 +192,8 @@ describe("certified area benchmark", () => {
     }, TEST_CASE.instanceHash)).toThrow(/does not reconcile/);
     expect(formatCertifiedAreaBenchmarkMarkdown(report))
       .toContain("1[B1]+0+1−0=2");
+    expect(formatCertifiedAreaBenchmarkMarkdown(report))
+      .toContain("8+0+2");
   });
 
   it("re-certifies the tracked 330-cell medium best-known artifact", () => {
@@ -268,6 +274,10 @@ describe("certified area benchmark", () => {
       chargedMinimumY: 1,
       originAnchoringArea: 4,
       interiorBoundingRemainderArea: 8,
+      coreDeviceBoundingArea: 12,
+      powerInclusiveBoundingArea: 18,
+      powerEnvelopeExpansionArea: 6,
+      logisticsEnvelopeExpansionArea: 6,
       areaExcludedBeltArea: 1,
       warehouseBusArea: 16,
       materialLaneCountByKind: { belt: 1 },

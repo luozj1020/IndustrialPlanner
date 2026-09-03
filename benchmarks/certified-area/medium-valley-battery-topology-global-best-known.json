@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "validationProfile": "strict-routed-bounding-area-v2",
+  "validationProfile": "strict-routed-bounding-area-v3",
   "instanceHash": "fnv1a32:c8ff94e5",
   "strictRoutedUpperBound": 330,
   "blueprintId": "headless-97d921a8",
@@ -30,6 +30,10 @@
     "chargedMinimumY": 8,
     "originAnchoringArea": 120,
     "interiorBoundingRemainderArea": 62,
+    "coreDeviceBoundingArea": 330,
+    "powerInclusiveBoundingArea": 330,
+    "powerEnvelopeExpansionArea": 0,
+    "logisticsEnvelopeExpansionArea": 0,
     "areaExcludedBeltArea": 5,
     "warehouseBusArea": 112,
     "materialLaneCountByKind": {

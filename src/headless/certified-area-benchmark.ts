@@ -30,7 +30,7 @@ export const DEFAULT_CERTIFIED_AREA_BENCHMARK_BUDGETS = [0.5, 2, 10] as const;
 export const CERTIFIED_AREA_BENCHMARK_INSTANCE_PROFILE =
   "certified-area-benchmark-instance-v1" as const;
 export const CERTIFIED_AREA_BEST_KNOWN_ARTIFACT_PROFILE =
-  "strict-routed-bounding-area-v2" as const;
+  "strict-routed-bounding-area-v3" as const;
 
 export interface CertifiedAreaGameRuleAttribution {
   /** Raw occupied rectangle area before the game's area-exclusion rules. */
@@ -47,6 +47,13 @@ export interface CertifiedAreaGameRuleAttribution {
   readonly originAnchoringArea: number;
   /** Empty or uncharged area inside the charged entities' own horizontal/vertical span. */
   readonly interiorBoundingRemainderArea: number;
+  /** Origin-anchored envelope of production, storage, and warehouse ports only. */
+  readonly coreDeviceBoundingArea: number;
+  /** Core envelope after adding every placed power diffuser. */
+  readonly powerInclusiveBoundingArea: number;
+  readonly powerEnvelopeExpansionArea: number;
+  /** Remaining envelope expansion after adding charged belts and pipes. */
+  readonly logisticsEnvelopeExpansionArea: number;
   readonly areaExcludedBeltArea: number;
   readonly warehouseBusArea: number;
   readonly materialLaneCountByKind: Readonly<Partial<Record<"belt" | "pipe", number>>>;
@@ -359,6 +366,7 @@ export function formatCertifiedAreaBenchmarkMarkdown(
     "UB regression",
     "charged mix",
     "remainder (origin+interior)",
+    "envelope (core+power+logistics)",
     `gap identity @ ${formatBudget(report.gapBudgetSeconds)}s`,
   ];
   const separator = header.map(() => "---:");
@@ -381,6 +389,7 @@ export function formatCertifiedAreaBenchmarkMarkdown(
       formatOptionalInteger(benchmarkCase.currentRoutedUpperBoundRegression),
       formatChargedMix(benchmarkCase.benchmarkAreaAttribution),
       formatAttributionRemainder(benchmarkCase.benchmarkAreaAttribution),
+      formatEnvelopeAttribution(benchmarkCase.benchmarkAreaAttribution),
       formatIncumbentGapAttribution(benchmarkCase.incumbentGapAttribution),
     ];
   });
@@ -638,7 +647,12 @@ export function parseCertifiedAreaBestKnownArtifact(
       !== areaAttribution.originAnchoringArea
     || areaAttribution.chargedBoundsWidth * areaAttribution.chargedBoundsSpanHeight
       - areaAttribution.chargedFootprintArea
-      !== areaAttribution.interiorBoundingRemainderArea) {
+      !== areaAttribution.interiorBoundingRemainderArea
+    || areaAttribution.coreDeviceBoundingArea + areaAttribution.powerEnvelopeExpansionArea
+      !== areaAttribution.powerInclusiveBoundingArea
+    || areaAttribution.powerInclusiveBoundingArea
+      + areaAttribution.logisticsEnvelopeExpansionArea
+      !== value["strictRoutedUpperBound"]) {
     throw new Error("Best-known area attribution does not reconcile with its strict UB");
   }
   return {
@@ -691,6 +705,12 @@ export function createCertifiedAreaGameRuleAttribution(
   );
   const chargedDevices = result.layout.devices.filter((device) =>
     device.kind !== "warehouse-bus" && !areaExcludedDeviceIds.has(device.id));
+  const coreDevices = chargedDevices.filter((device) =>
+    device.kind === "production"
+    || device.kind === "storage"
+    || device.kind === "warehouse-port");
+  const powerInclusiveDevices = chargedDevices.filter((device) =>
+    device.kind !== "belt" && device.kind !== "pipe");
   const minimumX = chargedDevices.length === 0
     ? 0 : Math.min(...chargedDevices.map((device) => device.position.x));
   const minimumY = chargedDevices.length === 0
@@ -704,12 +724,20 @@ export function createCertifiedAreaGameRuleAttribution(
   const originAnchoringArea = chargedBoundsWidth * minimumY;
   const interiorBoundingRemainderArea = chargedBoundsWidth * chargedBoundsSpanHeight
     - chargedFootprintArea;
+  const coreDeviceBoundingArea = measureOriginAnchoredBoundingArea(coreDevices);
+  const powerInclusiveBoundingArea = measureOriginAnchoredBoundingArea(powerInclusiveDevices);
+  const powerEnvelopeExpansionArea = powerInclusiveBoundingArea - coreDeviceBoundingArea;
+  const logisticsEnvelopeExpansionArea = result.layout.boundingArea - powerInclusiveBoundingArea;
   const chargedBoundingRemainderArea = result.layout.boundingArea - chargedFootprintArea;
   if (chargedBoundingRemainderArea < 0
     || interiorBoundingRemainderArea < 0
+    || powerEnvelopeExpansionArea < 0
+    || logisticsEnvelopeExpansionArea < 0
     || originAnchoringArea + interiorBoundingRemainderArea
-      !== chargedBoundingRemainderArea) {
-    throw new Error("Charged entity footprints exceed the routed bounding area");
+      !== chargedBoundingRemainderArea
+    || coreDeviceBoundingArea + powerEnvelopeExpansionArea
+      + logisticsEnvelopeExpansionArea !== result.layout.boundingArea) {
+    throw new Error("Game-rule area attribution does not reconcile with the routed bounding area");
   }
   const materialLaneCountByKind: Partial<Record<"belt" | "pipe", number>> = {};
   for (const connection of result.validation.materialConnections) {
@@ -725,6 +753,10 @@ export function createCertifiedAreaGameRuleAttribution(
     chargedMinimumY: minimumY,
     originAnchoringArea,
     interiorBoundingRemainderArea,
+    coreDeviceBoundingArea,
+    powerInclusiveBoundingArea,
+    powerEnvelopeExpansionArea,
+    logisticsEnvelopeExpansionArea,
     areaExcludedBeltArea,
     warehouseBusArea,
     materialLaneCountByKind,
@@ -810,6 +842,16 @@ function identifyArchivedMaterialConnections(
   });
 }
 
+function measureOriginAnchoredBoundingArea(
+  devices: readonly HeadlessPlacedDevice[],
+): number {
+  if (devices.length === 0) return 0;
+  const minimumX = Math.min(...devices.map((device) => device.position.x));
+  const maximumX = Math.max(...devices.map((device) => device.position.x + device.width));
+  const maximumY = Math.max(...devices.map((device) => device.position.y + device.height));
+  return (maximumX - minimumX) * maximumY;
+}
+
 function identifyAreaExcludedDeviceIds(
   result: Pick<HeadlessOptimizationResult, "blueprint" | "layout">,
   eligibleExcludedConnections: ReadonlySet<string>,
@@ -874,6 +916,10 @@ function parseAreaAttribution(value: unknown): CertifiedAreaGameRuleAttribution 
     "chargedMinimumY",
     "originAnchoringArea",
     "interiorBoundingRemainderArea",
+    "coreDeviceBoundingArea",
+    "powerInclusiveBoundingArea",
+    "powerEnvelopeExpansionArea",
+    "logisticsEnvelopeExpansionArea",
     "areaExcludedBeltArea",
     "warehouseBusArea",
     "connectedPortEndpointCount",
@@ -892,6 +938,10 @@ function parseAreaAttribution(value: unknown): CertifiedAreaGameRuleAttribution 
     chargedMinimumY: value["chargedMinimumY"] as number,
     originAnchoringArea: value["originAnchoringArea"] as number,
     interiorBoundingRemainderArea: value["interiorBoundingRemainderArea"] as number,
+    coreDeviceBoundingArea: value["coreDeviceBoundingArea"] as number,
+    powerInclusiveBoundingArea: value["powerInclusiveBoundingArea"] as number,
+    powerEnvelopeExpansionArea: value["powerEnvelopeExpansionArea"] as number,
+    logisticsEnvelopeExpansionArea: value["logisticsEnvelopeExpansionArea"] as number,
     areaExcludedBeltArea: value["areaExcludedBeltArea"] as number,
     warehouseBusArea: value["warehouseBusArea"] as number,
     materialLaneCountByKind,
@@ -990,6 +1040,16 @@ function formatIncumbentGapAttribution(
     + `+${attribution.interiorBoundingRemainderArea}`
     + `−${attribution.relaxationPackingLift}`
     + `=${attribution.reconstructedAbsoluteGap}`;
+}
+
+function formatEnvelopeAttribution(
+  attribution: CertifiedAreaGameRuleAttribution | undefined,
+): string {
+  return attribution === undefined
+    ? "—"
+    : `${attribution.coreDeviceBoundingArea}`
+      + `+${attribution.powerEnvelopeExpansionArea}`
+      + `+${attribution.logisticsEnvelopeExpansionArea}`;
 }
 
 function minimumDefined(
