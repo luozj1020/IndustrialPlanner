@@ -51,6 +51,33 @@ describe("certified bounding-area reporting", () => {
     expect(report.upperBound).not.toBe(report.proof.masterIncumbentArea);
   });
 
+  it("adds only the certified logistics cell floor to the disjoint mandatory rectangles", () => {
+    const report = createBoundingAreaOptimalityReport({
+      mandatoryDeviceAreaLowerBound: 12,
+      certifiedLogisticsFootprint: {
+        constraintProfile: "certified-logistics-footprint-v1",
+        inputLaneLowerBoundByKind: { belt: 8, pipe: 0 },
+        maximumAreaExcludedLaneCountByKind: { belt: 0, pipe: 0 },
+        chargedLaneLowerBoundByKind: { belt: 8, pipe: 0 },
+        chargedCellLowerBoundByKind: { belt: 4, pipe: 0 },
+        chargedCellLowerBound: 4,
+      },
+      proof: proof({ certifiedIntegerLowerBound: 14 }),
+      strictRoutedUpperBoundVerified: true,
+      routedBoundingArea: 20,
+    });
+
+    expect(report).toMatchObject({
+      lowerBound: 16,
+      lowerBoundSources: {
+        mandatoryDeviceArea: 12,
+        mandatoryDeviceAndLogisticsArea: 16,
+        cpSatArea: 14,
+      },
+      certifiedLogisticsFootprint: { chargedCellLowerBound: 4 },
+    });
+  });
+
   it("reports static fallback, lower-bound-only, and unavailable states mechanically", () => {
     const fallback = createBoundingAreaOptimalityReport({
       mandatoryDeviceAreaLowerBound: 12,
@@ -112,6 +139,21 @@ describe("certified bounding-area reporting", () => {
       strictRoutedUpperBoundVerified: true,
       routedBoundingArea: 20,
     })).toThrow(/relaxation is infeasible/);
+
+    expect(() => createBoundingAreaOptimalityReport({
+      mandatoryDeviceAreaLowerBound: 10,
+      certifiedLogisticsFootprint: {
+        constraintProfile: "certified-logistics-footprint-v1",
+        inputLaneLowerBoundByKind: { belt: 2, pipe: 0 },
+        maximumAreaExcludedLaneCountByKind: { belt: 0, pipe: 0 },
+        chargedLaneLowerBoundByKind: { belt: 2, pipe: 0 },
+        chargedCellLowerBoundByKind: { belt: 2, pipe: 0 },
+        chargedCellLowerBound: 2,
+      },
+      proof: proof(),
+      strictRoutedUpperBoundVerified: false,
+      routedBoundingArea: 20,
+    })).toThrow(/does not reconcile/);
   });
 
   it("uses only the sum of mandatory rectangle areas for the static bound", () => {

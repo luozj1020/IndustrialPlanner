@@ -8,7 +8,13 @@ import {
   solveCpSatAreaLowerBound,
   type CertifiedAreaRelaxationDevice,
 } from "@/headless/certified-area-relaxation";
+import {
+  createBoundingAreaOptimalityReport,
+  measureMandatoryDeviceAreaLowerBound,
+} from "@/headless/bounding-area-optimality";
+import { measureCertifiedLogisticsFootprintLowerBound } from "@/headless/certified-logistics-footprint";
 import { optimizeHeadlessLayout } from "@/headless/layout-optimizer";
+import type { HeadlessMaterialGraph } from "@/headless/types";
 import { createRegistryContract } from "@/registry";
 
 const ortoolsPython = findOrToolsPython();
@@ -126,6 +132,30 @@ describe.skipIf(ortoolsPython === undefined)("certified area relaxation exact or
     expect(result.certifiedIntegerLowerBound).toBe(2);
     expect(result.certifiedIntegerLowerBound!).toBeLessThanOrEqual(exactFullArea);
     expect(exactFullArea).toBeLessThanOrEqual(routedUpperBound);
+
+    const logisticsProof = measureCertifiedLogisticsFootprintLowerBound({
+      graph: {
+        nodes: [
+          materialNode("source", [], ["solid"]),
+          materialNode("target", ["solid"], []),
+        ],
+        edges: [{ sourceId: "source", targetId: "target", itemId: "solid", laneCount: 1 }],
+      },
+      resolveItemDomain: () => "solid",
+    });
+    const proofChain = createBoundingAreaOptimalityReport({
+      mandatoryDeviceAreaLowerBound: measureMandatoryDeviceAreaLowerBound(devices),
+      certifiedLogisticsFootprint: logisticsProof,
+      proof: result,
+      strictRoutedUpperBoundVerified: true,
+      routedBoundingArea: routedUpperBound,
+    });
+    expect(proofChain.lowerBoundSources).toMatchObject({
+      mandatoryDeviceArea: 2,
+      mandatoryDeviceAndLogisticsArea: 3,
+      cpSatArea: 2,
+    });
+    expect(proofChain.status).toBe("bounding-area-optimal");
   }, 30_000);
 
   it("feeds the proof bound into a strict routed HeadlessOptimizationResult", () => {
@@ -143,8 +173,10 @@ describe.skipIf(ortoolsPython === undefined)("certified area relaxation exact or
     expect(area.lowerBoundSources.cpSatArea).toBe(area.proof.certifiedIntegerLowerBound);
     expect(area.lowerBound).toBe(Math.max(
       area.lowerBoundSources.mandatoryDeviceArea!,
+      area.lowerBoundSources.mandatoryDeviceAndLogisticsArea!,
       area.lowerBoundSources.cpSatArea!,
     ));
+    expect(area.certifiedLogisticsFootprint?.chargedCellLowerBound).toBeGreaterThan(0);
     expect(area.strictRoutedUpperBoundVerified).toBe(true);
     expect(area.upperBound).toBe(result.layout.boundingArea);
     expect(area.lowerBound).toBeLessThanOrEqual(area.upperBound!);
@@ -279,4 +311,22 @@ function inBounds(
 
 function gridKey(point: { readonly x: number; readonly y: number }): string {
   return `${point.x},${point.y}`;
+}
+
+function materialNode(
+  id: string,
+  inputItemIds: readonly string[],
+  outputItemIds: readonly string[],
+): HeadlessMaterialGraph["nodes"][number] {
+  return {
+    id,
+    kind: "production",
+    definitionId: "machine",
+    definitionNameKey: "machine",
+    recipeId: `recipe:${id}`,
+    componentId: `component:${id}`,
+    layer: 0,
+    inputItemIds,
+    outputItemIds,
+  };
 }

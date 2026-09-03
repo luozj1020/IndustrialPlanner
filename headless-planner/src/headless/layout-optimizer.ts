@@ -66,6 +66,7 @@ import {
 } from "./cp-sat-layout";
 import { solveCpSatAreaLowerBound } from "./certified-area-relaxation";
 import { createCertifiedAreaMandatoryDevices } from "./certified-area-mandatory-devices";
+import { measureCertifiedLogisticsFootprintLowerBound } from "./certified-logistics-footprint";
 import {
   createBoundingAreaOptimalityReport,
   DEFAULT_CERTIFIED_AREA_MAX_SECONDS,
@@ -1316,15 +1317,21 @@ export function optimizeHeadlessLayout(
     powerCoverageVerified,
     routeFailureDiagnostics,
   };
+  // Rebuild the geometry-free graph from the request, independently of the
+  // winning placement and route paths. Certified static bounds must not learn
+  // facts from the incumbent they are intended to bound.
+  const certifiedMaterialGraph = buildHeadlessMaterialGraph(request, registry);
   const mandatoryAreaDevices = createCertifiedAreaMandatoryDevices({
-    entities: deviceRequests.flatMap((device) => device.kind === "warehouse-bus"
-      ? []
-      : [{
-          id: device.id,
-          kind: device.kind,
-          definitionId: device.definition.id,
-        }]),
+    entities: certifiedMaterialGraph.nodes.map(({ id, kind, definitionId }) => ({
+      id,
+      kind,
+      definitionId,
+    })),
     entityDefinitions: registry.entityDefinitions,
+  });
+  const certifiedLogisticsFootprint = measureCertifiedLogisticsFootprintLowerBound({
+    graph: certifiedMaterialGraph,
+    resolveItemDomain: (itemId) => registry.queries.resolveItemDomain(itemId),
   });
   const areaProof = solveCpSatAreaLowerBound({
     devices: mandatoryAreaDevices,
@@ -1357,6 +1364,7 @@ export function optimizeHeadlessLayout(
   });
   const boundingAreaOptimality = createBoundingAreaOptimalityReport({
     mandatoryDeviceAreaLowerBound: measureMandatoryDeviceAreaLowerBound(mandatoryAreaDevices),
+    certifiedLogisticsFootprint,
     proof: areaProof,
     strictRoutedUpperBoundVerified,
     routedBoundingArea: boundingArea,

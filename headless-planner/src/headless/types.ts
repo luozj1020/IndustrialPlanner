@@ -335,6 +335,23 @@ export type BoundingAreaOptimalityStatus =
   | "bounding-area-optimal"
   | "bound-unavailable";
 
+export type CertifiedLogisticsKind = "belt" | "pipe";
+
+/** Static game-rule proof that deliberately ignores coordinates and route paths. */
+export interface CertifiedLogisticsFootprintLowerBound {
+  readonly constraintProfile: "certified-logistics-footprint-v1";
+  /** Sum of per-consumer/item lane floors before possible warehouse exemptions. */
+  readonly inputLaneLowerBoundByKind: Readonly<Record<CertifiedLogisticsKind, number>>;
+  /** Conservative upper bound on lanes whose cells may be free in the area objective. */
+  readonly maximumAreaExcludedLaneCountByKind: Readonly<
+    Record<CertifiedLogisticsKind, number>
+  >;
+  readonly chargedLaneLowerBoundByKind: Readonly<Record<CertifiedLogisticsKind, number>>;
+  /** At most two orthogonal lanes of one kind may share a routed grid cell. */
+  readonly chargedCellLowerBoundByKind: Readonly<Record<CertifiedLogisticsKind, number>>;
+  readonly chargedCellLowerBound: number;
+}
+
 /** Certified lower/upper bounds for the standalone charged bounding-area objective. */
 export interface BoundingAreaOptimality {
   readonly status: BoundingAreaOptimalityStatus;
@@ -347,8 +364,10 @@ export interface BoundingAreaOptimality {
   /** Individually valid bounds combined with max(), never by addition. */
   readonly lowerBoundSources: {
     readonly mandatoryDeviceArea?: number;
+    readonly mandatoryDeviceAndLogisticsArea?: number;
     readonly cpSatArea?: number;
   };
+  readonly certifiedLogisticsFootprint?: CertifiedLogisticsFootprintLowerBound;
   readonly proof: {
     readonly constraintProfile: CertifiedAreaRelaxationResult["constraintProfile"];
     readonly objective: CertifiedAreaRelaxationResult["objective"];

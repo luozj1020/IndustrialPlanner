@@ -183,18 +183,23 @@ npm run headless -- render optimized-blueprint.json --output optimized-layout.sv
 `cpSatAttemptedCandidates`、`cpSatStoppedBy` 和 `cpSatElapsedMs` 可用于核对实际消耗。输出蓝图
 可由本项目现有蓝图导入流程读取，并在 Node 环境通过拓扑编译器校验。
 `certification.boundingArea.maxSeconds` 是与候选搜索完全独立的面积证明预算，默认 2 秒。
-成功结果的 `optimality.boundingArea` 同时报告全局必需计费矩形面积下界、
-proof-only CP-SAT 下界（可用时）和经过拓扑、吞吐、供电、地图及蓝图几何复核的 routed UB。
+成功结果的 `optimality.boundingArea` 同时报告全局必需计费矩形面积下界、从冻结物料图推导的
+设备加最少计费物流格下界、proof-only CP-SAT 下界（可用时），以及经过拓扑、吞吐、供电、
+地图及蓝图几何复核的 routed UB。
 Certified Area Relaxation v3a 的矩形集合包含冻结生产图必然存在的生产设备、协议存储箱、取货口；
 存在用电设备时还包含至少一个可移动供电桩。它不固定这些实体的 incumbent 位置，也不假定实际
 最少供电桩数量，因此仍是完整游戏布局问题的安全松弛。
-组合下界只取各安全来源的最大值；`masterIncumbentArea` 仅是 relaxation witness，绝不作为 UB。
+静态物流证明不读取 incumbent 路径，也不冻结当前 producer-consumer 配对：每个 consumer/item 只取
+单条 graph edge 的最大 lane 数作为保守需求，再减去所有取货口可能产生的免费供料 lane 上界；
+按照一个物流格最多容纳两条同类正交 lane、belt 与 pipe 不能共格，得到最少计费物流格。该格数
+只与必需矩形面积相加，最终仍与 CP-SAT 下界通过 `max()` 组合；`masterIncumbentArea` 仅是
+relaxation witness，绝不作为 UB。
 若 OR-Tools 不可用，仍使用设备面积下界报告严格但更宽的 gap；只有整数 LB 与 routed UB 相等时，
 状态才是 `bounding-area-optimal`。该状态只证明独立 bounding-area 目标，不宣称完整词典序最优。
 该 relaxation 保留 v2 的 proof-only 强化：固定最左/最上设备坐标为 0、
 按 `(y,x)` 排序完全同构矩形、消除重复的 180/270 度几何朝向，并显式加入设备面积及最小边长
 不等式。它仍不包含端口可达性、传送带/管道路由、topology layer、搜索冻结状态或 learned
-routing cuts；这些游戏规则只有形成全局必要条件后才能进入 proof model。
+routing cuts；端口、路径长度与通道容量等游戏规则只有形成全局必要条件后才能进入 proof model。
 
 可以在同一组真实 routed 实例上分别测量 0.5/2/10 秒的 CP-SAT 下界。benchmark 会先重新运行
 完整优化与 strict UB 验证，再从全局必需计费矩形构造 proof case；因此表中的

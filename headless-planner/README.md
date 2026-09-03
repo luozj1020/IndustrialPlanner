@@ -847,9 +847,12 @@ CP-SAT 状态会在优化报告的 `search.cpSatStatus` 字段中报告：
 
 面积证明使用独立的 `certified-area-relaxation.py`，不会继承候选模型的端口、cluster、LNS freeze、
 proxy objective 或 learned cuts。v3a 纳入冻结生产图中必然存在且计费的生产设备、协议存储箱、
-取货口；存在用电设备时还纳入至少一个位置自由的供电桩。它仍不包含端口可达性或物流路由。
+取货口；存在用电设备时还纳入至少一个位置自由的供电桩。另一个纯 TS 静态证明从冻结物料图
+保守推导最少计费物流格：它不读取 incumbent 路径，对每个 consumer/item 只采用单条 edge 的
+最大 lane 数，并先扣除所有可能免费的取货口供料 lane。它仍不包含端口可达性或实际物流路由。
 `certification.boundingArea.maxSeconds` 默认 2 秒；OR-Tools 缺失或证明超时后，报告仍以这些全局
-必需计费矩形面积之和作为严格下界。只有该下界与通过
+必需计费矩形面积以及设备加静态物流格下界作为严格 fallback。所有安全来源只通过 `max()`
+组合。只有组合下界与通过
 拓扑、连通、吞吐、供电、地图边界、无重叠及蓝图一致性复核的 routed 面积完全相等时，才报告
 `bounding-area-optimal`；这不等同于完整词典序目标已经最优。
 

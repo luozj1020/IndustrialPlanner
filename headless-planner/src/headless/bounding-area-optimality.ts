@@ -4,8 +4,10 @@ import type { RegistryContract } from "../domain/registry/registry-contract";
 import type { CertifiedAreaRelaxationResult } from "./certified-area-relaxation";
 import type {
   BoundingAreaOptimality,
+  CertifiedLogisticsFootprintLowerBound,
   HeadlessPlacedDevice,
 } from "./types";
+import { CERTIFIED_LOGISTICS_FOOTPRINT_PROFILE } from "./certified-logistics-footprint";
 
 export const DEFAULT_CERTIFIED_AREA_MAX_SECONDS = 2;
 
@@ -152,6 +154,7 @@ export function isStrictRoutedBoundingAreaUpperBound(
 
 export function createBoundingAreaOptimalityReport(options: {
   readonly mandatoryDeviceAreaLowerBound?: number;
+  readonly certifiedLogisticsFootprint?: CertifiedLogisticsFootprintLowerBound;
   readonly proof: CertifiedAreaRelaxationResult;
   readonly strictRoutedUpperBoundVerified: boolean;
   readonly routedBoundingArea: number;
@@ -160,11 +163,18 @@ export function createBoundingAreaOptimalityReport(options: {
     options.mandatoryDeviceAreaLowerBound,
     "mandatory device-area lower bound",
   );
+  const logisticsCellLowerBound = validateLogisticsFootprint(
+    options.certifiedLogisticsFootprint,
+  );
+  const deviceAndLogisticsLowerBound = staticLowerBound === undefined
+    || logisticsCellLowerBound === undefined
+    ? undefined
+    : safeAreaSum(staticLowerBound, logisticsCellLowerBound);
   const cpSatLowerBound = validateOptionalArea(
     options.proof.certifiedIntegerLowerBound,
     "CP-SAT area lower bound",
   );
-  const lowerBounds = [staticLowerBound, cpSatLowerBound]
+  const lowerBounds = [staticLowerBound, deviceAndLogisticsLowerBound, cpSatLowerBound]
     .filter((bound): bound is number => bound !== undefined);
   const lowerBound = lowerBounds.length === 0 ? undefined : Math.max(...lowerBounds);
   const upperBound = options.strictRoutedUpperBoundVerified
@@ -205,8 +215,12 @@ export function createBoundingAreaOptimalityReport(options: {
     strictRoutedUpperBoundVerified: options.strictRoutedUpperBoundVerified,
     lowerBoundSources: {
       ...(staticLowerBound === undefined ? {} : { mandatoryDeviceArea: staticLowerBound }),
+      ...(deviceAndLogisticsLowerBound === undefined
+        ? {} : { mandatoryDeviceAndLogisticsArea: deviceAndLogisticsLowerBound }),
       ...(cpSatLowerBound === undefined ? {} : { cpSatArea: cpSatLowerBound }),
     },
+    ...(options.certifiedLogisticsFootprint === undefined
+      ? {} : { certifiedLogisticsFootprint: options.certifiedLogisticsFootprint }),
     proof: {
       constraintProfile: options.proof.constraintProfile,
       objective: options.proof.objective,
@@ -223,6 +237,47 @@ export function createBoundingAreaOptimalityReport(options: {
       ...(options.proof.elapsedMs === undefined ? {} : { elapsedMs: options.proof.elapsedMs }),
     },
   };
+}
+
+function validateLogisticsFootprint(
+  proof: CertifiedLogisticsFootprintLowerBound | undefined,
+): number | undefined {
+  if (proof === undefined) return undefined;
+  if (proof.constraintProfile !== CERTIFIED_LOGISTICS_FOOTPRINT_PROFILE) {
+    throw new Error(`Unsupported certified logistics footprint profile: ${proof.constraintProfile}`);
+  }
+  for (const kind of ["belt", "pipe"] as const) {
+    const input = validateArea(proof.inputLaneLowerBoundByKind[kind], `${kind} input lane lower bound`);
+    const excluded = validateArea(
+      proof.maximumAreaExcludedLaneCountByKind[kind],
+      `${kind} maximum area-excluded lane count`,
+    );
+    const charged = validateArea(
+      proof.chargedLaneLowerBoundByKind[kind],
+      `${kind} charged lane lower bound`,
+    );
+    const cells = validateArea(
+      proof.chargedCellLowerBoundByKind[kind],
+      `${kind} charged cell lower bound`,
+    );
+    if (charged !== Math.max(0, input - excluded) || cells !== Math.ceil(charged / 2)) {
+      throw new Error(`Certified ${kind} logistics footprint proof does not reconcile`);
+    }
+  }
+  const total = validateArea(proof.chargedCellLowerBound, "charged logistics-cell lower bound");
+  if (total !== proof.chargedCellLowerBoundByKind.belt
+      + proof.chargedCellLowerBoundByKind.pipe) {
+    throw new Error("Certified logistics footprint total does not reconcile");
+  }
+  return total;
+}
+
+function safeAreaSum(left: number, right: number): number {
+  const result = left + right;
+  if (!Number.isSafeInteger(result)) {
+    throw new Error("Mandatory device-and-logistics area lower bound exceeds the safe integer range");
+  }
+  return result;
 }
 
 function measureChargedBoundingArea(devices: readonly HeadlessPlacedDevice[]): number {

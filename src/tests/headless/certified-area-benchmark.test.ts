@@ -134,6 +134,38 @@ describe("certified area benchmark", () => {
     expect(markdown).toContain("feasible; LB=10; M=11; ΔM=1/9.1%");
   });
 
+  it("promotes the static charged-lane cell floor without treating it as routing", () => {
+    const report = benchmarkCertifiedAreaBounds({
+      cases: [{
+        ...TEST_CASE,
+        certifiedLogisticsFootprint: {
+          constraintProfile: "certified-logistics-footprint-v1",
+          inputLaneLowerBoundByKind: { belt: 4, pipe: 0 },
+          maximumAreaExcludedLaneCountByKind: { belt: 0, pipe: 0 },
+          chargedLaneLowerBoundByKind: { belt: 4, pipe: 0 },
+          chargedCellLowerBoundByKind: { belt: 2, pipe: 0 },
+          chargedCellLowerBound: 2,
+        },
+      }],
+      budgetsSeconds: [2],
+    }, () => ({
+      constraintProfile: CERTIFIED_AREA_RELAXATION_PROFILE,
+      objective: CERTIFIED_AREA_RELAXATION_OBJECTIVE,
+      status: "optimal",
+      rawBestObjectiveBound: 8,
+      certifiedIntegerLowerBound: 8,
+      masterIncumbentArea: 8,
+    }));
+
+    expect(report.cases[0]).toMatchObject({
+      mandatoryDeviceArea: 8,
+      mandatoryDeviceAndLogisticsArea: 10,
+      samples: [{ lowerBound: 10, absoluteGap: 2 }],
+    });
+    expect(formatCertifiedAreaBenchmarkMarkdown(report))
+      .toContain("10 (B4−0→4/2)");
+  });
+
   it("uses a matched validated best-known UB and exposes current search regression", () => {
     const bestKnown = {
       schemaVersion: 1,
@@ -168,6 +200,8 @@ describe("certified area benchmark", () => {
         lowerBound: 8,
         upperBound: 10,
         relaxationPackingLift: 0,
+        logisticsFootprintLift: 0,
+        certifiedLowerBoundLift: 0,
         additionalChargedFootprintAreaByKind: { belt: 1 },
         additionalChargedFootprintArea: 1,
         originAnchoringArea: 0,
@@ -203,7 +237,7 @@ describe("certified area benchmark", () => {
       },
     }, TEST_CASE.instanceHash)).toThrow(/does not reconcile/);
     expect(formatCertifiedAreaBenchmarkMarkdown(report))
-      .toContain("1[B1]+0+1−0=2");
+      .toContain("1[B1]+0+1−0[P0/L0]=2");
     expect(formatCertifiedAreaBenchmarkMarkdown(report))
       .toContain("8+0+2");
     expect(formatCertifiedAreaBenchmarkMarkdown(report))

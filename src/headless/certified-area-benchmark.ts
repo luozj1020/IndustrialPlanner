@@ -20,6 +20,7 @@ import {
 } from "./certified-area-relaxation";
 import type {
   BoundingAreaOptimalityStatus,
+  CertifiedLogisticsFootprintLowerBound,
   HeadlessMaterialGraph,
   HeadlessOptimizationRequest,
   HeadlessOptimizationResult,
@@ -85,6 +86,8 @@ export interface CertifiedAreaBenchmarkCase {
   readonly limitWidth: number;
   readonly limitHeight: number;
   readonly allowRotate: boolean;
+  /** Geometry-free static proof derived from the frozen material graph. */
+  readonly certifiedLogisticsFootprint?: CertifiedLogisticsFootprintLowerBound;
   /** Present only for this run's routed incumbent that passed the strict UB validator. */
   readonly currentRoutedUpperBound?: number;
   readonly currentAreaAttribution?: CertifiedAreaGameRuleAttribution;
@@ -100,6 +103,7 @@ export interface CertifiedAreaBenchmarkSample {
   readonly maxSeconds: number;
   readonly status: BoundingAreaOptimalityStatus;
   readonly mandatoryDeviceArea: number;
+  readonly mandatoryDeviceAndLogisticsArea?: number;
   readonly cpSatArea?: number;
   readonly lowerBound: number;
   readonly upperBound?: number;
@@ -130,6 +134,8 @@ export interface CertifiedAreaBenchmarkCaseResult {
   readonly routedIncumbentFailure?: string;
   readonly routedIncumbentElapsedMs?: number;
   readonly mandatoryDeviceArea: number;
+  readonly mandatoryDeviceAndLogisticsArea?: number;
+  readonly certifiedLogisticsFootprint?: CertifiedLogisticsFootprintLowerBound;
   readonly mandatoryRectangleAreaByCategory: ReturnType<typeof measureCertifiedAreaByCategory>;
   readonly samples: readonly CertifiedAreaBenchmarkSample[];
   /** Exact incumbent-gap identity for diagnosis only; none of its terms are new lower bounds. */
@@ -140,8 +146,12 @@ export interface CertifiedAreaIncumbentGapAttribution {
   readonly budgetSeconds: number;
   readonly lowerBound: number;
   readonly upperBound: number;
-  /** Lower-bound lift proved by packing beyond the raw mandatory rectangle sum. */
+  /** Lower-bound lift proved by the rectangle-packing CP-SAT relaxation alone. */
   readonly relaxationPackingLift: number;
+  /** Additive charged logistics footprint proved independently of placement. */
+  readonly logisticsFootprintLift: number;
+  /** Effective lift after all certified sources are combined through max(). */
+  readonly certifiedLowerBoundLift: number;
   /** Charged footprint absent from v3a, split by game entity kind. */
   readonly additionalChargedFootprintAreaByKind?: Readonly<
     Partial<Record<HeadlessPlacedDevice["kind"], number>>
@@ -235,6 +245,7 @@ export function benchmarkCertifiedAreaBounds(
       });
       const optimality = createBoundingAreaOptimalityReport({
         mandatoryDeviceAreaLowerBound: mandatoryDeviceArea,
+        certifiedLogisticsFootprint: benchmarkCase.certifiedLogisticsFootprint,
         proof,
         strictRoutedUpperBoundVerified: benchmarkUpperBound !== undefined,
         routedBoundingArea: benchmarkUpperBound ?? 0,
@@ -244,6 +255,8 @@ export function benchmarkCertifiedAreaBounds(
       }
       const masterIncumbentArea = proof.masterIncumbentArea;
       const cpSatArea = optimality.lowerBoundSources.cpSatArea;
+      const mandatoryDeviceAndLogisticsArea =
+        optimality.lowerBoundSources.mandatoryDeviceAndLogisticsArea;
       const masterAbsoluteGap = masterIncumbentArea === undefined || cpSatArea === undefined
         ? undefined
         : masterIncumbentArea - cpSatArea;
@@ -254,6 +267,8 @@ export function benchmarkCertifiedAreaBounds(
         maxSeconds,
         status: optimality.status,
         mandatoryDeviceArea,
+        ...(mandatoryDeviceAndLogisticsArea === undefined
+          ? {} : { mandatoryDeviceAndLogisticsArea }),
         ...(cpSatArea === undefined ? {} : { cpSatArea }),
         lowerBound: optimality.lowerBound,
         ...(optimality.upperBound === undefined ? {} : { upperBound: optimality.upperBound }),
@@ -268,6 +283,10 @@ export function benchmarkCertifiedAreaBounds(
       };
     });
     const gapSample = samples.find((sample) => sample.maxSeconds === gapBudgetSeconds)!;
+    assertCertifiedLogisticsFootprintFitsAttribution(
+      benchmarkCase.certifiedLogisticsFootprint,
+      benchmarkAreaAttribution,
+    );
     const incumbentGapAttribution = createCertifiedAreaIncumbentGapAttribution({
       budgetSeconds: gapBudgetSeconds,
       sample: gapSample,
@@ -300,6 +319,10 @@ export function benchmarkCertifiedAreaBounds(
       ...(benchmarkCase.routedIncumbentElapsedMs === undefined
         ? {} : { routedIncumbentElapsedMs: benchmarkCase.routedIncumbentElapsedMs }),
       mandatoryDeviceArea,
+      ...(gapSample.mandatoryDeviceAndLogisticsArea === undefined
+        ? {} : { mandatoryDeviceAndLogisticsArea: gapSample.mandatoryDeviceAndLogisticsArea }),
+      ...(benchmarkCase.certifiedLogisticsFootprint === undefined
+        ? {} : { certifiedLogisticsFootprint: benchmarkCase.certifiedLogisticsFootprint }),
       mandatoryRectangleAreaByCategory,
       samples,
       ...(incumbentGapAttribution === undefined ? {} : { incumbentGapAttribution }),
@@ -322,6 +345,7 @@ export function createCertifiedAreaBenchmarkCaseFromResult(options: {
   readonly result: HeadlessOptimizationResult;
   readonly registry: Pick<RegistryContract, "entityDefinitions">;
   readonly allowRotate: boolean;
+  readonly certifiedLogisticsFootprint: CertifiedLogisticsFootprintLowerBound;
   readonly validatedBestKnown?: CertifiedAreaBestKnownArtifact;
   readonly routedIncumbentElapsedMs?: number;
 }): CertifiedAreaBenchmarkCase {
@@ -345,6 +369,7 @@ export function createCertifiedAreaBenchmarkCaseFromResult(options: {
     limitWidth: options.result.layout.limitWidth,
     limitHeight: options.result.layout.limitHeight,
     allowRotate: options.allowRotate,
+    certifiedLogisticsFootprint: options.certifiedLogisticsFootprint,
     currentRoutedUpperBound: optimality.upperBound,
     currentAreaAttribution: createCertifiedAreaGameRuleAttribution(options.result),
     ...(options.validatedBestKnown === undefined
@@ -366,6 +391,7 @@ export function formatCertifiedAreaBenchmarkMarkdown(
     "best UB",
     "benchmark UB",
     "mandatory LB",
+    "device+logistics LB",
     "mandatory mix",
     ...budgetHeaders,
     `full gap @ ${formatBudget(report.gapBudgetSeconds)}s`,
@@ -388,6 +414,7 @@ export function formatCertifiedAreaBenchmarkMarkdown(
       formatOptionalInteger(benchmarkCase.bestKnownStrictUpperBound),
       formatOptionalInteger(benchmarkCase.benchmarkUpperBound),
       String(benchmarkCase.mandatoryDeviceArea),
+      formatCertifiedLogisticsBound(benchmarkCase),
       formatMandatoryMix(benchmarkCase.mandatoryRectangleAreaByCategory),
       ...benchmarkCase.samples.map(formatProofSample),
       gapSample?.relativeGap === undefined
@@ -459,14 +486,20 @@ export function createCertifiedAreaIncumbentGapAttribution(options: {
       .reduce((sum, area) => sum + (area ?? 0), 0) !== additionalChargedFootprintArea) {
     throw new Error("Additional charged footprint attribution does not reconcile");
   }
-  const relaxationPackingLift = options.sample.lowerBound - options.mandatoryDeviceArea;
-  if (relaxationPackingLift < 0) {
+  const relaxationPackingLift = Math.max(
+    0,
+    (options.sample.cpSatArea ?? options.mandatoryDeviceArea) - options.mandatoryDeviceArea,
+  );
+  const logisticsFootprintLift = (options.sample.mandatoryDeviceAndLogisticsArea
+    ?? options.mandatoryDeviceArea) - options.mandatoryDeviceArea;
+  const certifiedLowerBoundLift = options.sample.lowerBound - options.mandatoryDeviceArea;
+  if (logisticsFootprintLift < 0 || certifiedLowerBoundLift < 0) {
     throw new Error("Combined certified bound is below the mandatory device-area bound");
   }
   const reconstructedAbsoluteGap = additionalChargedFootprintArea
     + attribution.originAnchoringArea
     + attribution.interiorBoundingRemainderArea
-    - relaxationPackingLift;
+    - certifiedLowerBoundLift;
   if (options.sample.absoluteGap !== reconstructedAbsoluteGap
     || upperBound - options.sample.lowerBound !== reconstructedAbsoluteGap) {
     throw new Error("Incumbent game-rule gap attribution does not reconcile with LB/UB");
@@ -476,6 +509,8 @@ export function createCertifiedAreaIncumbentGapAttribution(options: {
     lowerBound: options.sample.lowerBound,
     upperBound,
     relaxationPackingLift,
+    logisticsFootprintLift,
+    certifiedLowerBoundLift,
     ...(additionalChargedFootprintAreaByKind === undefined
       ? {} : { additionalChargedFootprintAreaByKind }),
     additionalChargedFootprintArea,
@@ -1108,8 +1143,41 @@ function formatIncumbentGapAttribution(
     + `[${mix}]`
     + `+${attribution.originAnchoringArea}`
     + `+${attribution.interiorBoundingRemainderArea}`
-    + `−${attribution.relaxationPackingLift}`
+    + `−${attribution.certifiedLowerBoundLift}`
+    + `[P${attribution.relaxationPackingLift}/L${attribution.logisticsFootprintLift}]`
     + `=${attribution.reconstructedAbsoluteGap}`;
+}
+
+function formatCertifiedLogisticsBound(
+  benchmarkCase: CertifiedAreaBenchmarkCaseResult,
+): string {
+  const bound = benchmarkCase.mandatoryDeviceAndLogisticsArea;
+  const proof = benchmarkCase.certifiedLogisticsFootprint;
+  if (bound === undefined || proof === undefined) return "—";
+  const entries = (["belt", "pipe"] as const).flatMap((kind) => {
+    const input = proof.inputLaneLowerBoundByKind[kind];
+    const excluded = proof.maximumAreaExcludedLaneCountByKind[kind];
+    const lanes = proof.chargedLaneLowerBoundByKind[kind];
+    const cells = proof.chargedCellLowerBoundByKind[kind];
+    if (input === 0 && excluded === 0) return [];
+    return [`${kind === "belt" ? "B" : "F"}${input}−${excluded}→${lanes}/${cells}`];
+  });
+  return `${bound} (${entries.join(" ") || "0"})`;
+}
+
+function assertCertifiedLogisticsFootprintFitsAttribution(
+  proof: CertifiedLogisticsFootprintLowerBound | undefined,
+  attribution: CertifiedAreaGameRuleAttribution | undefined,
+): void {
+  if (proof === undefined || attribution === undefined) return;
+  for (const kind of ["belt", "pipe"] as const) {
+    if (proof.chargedLaneLowerBoundByKind[kind]
+        > (attribution.chargedMaterialLaneCountByKind[kind] ?? 0)
+      || proof.chargedCellLowerBoundByKind[kind]
+        > (attribution.chargedFootprintAreaByKind[kind] ?? 0)) {
+      throw new Error(`Certified ${kind} logistics floor exceeds the strict routed incumbent`);
+    }
+  }
 }
 
 function formatEnvelopeAttribution(

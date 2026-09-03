@@ -18,6 +18,7 @@ import {
   type CertifiedAreaBenchmarkCase,
   type CertifiedAreaBestKnownArtifact,
 } from "./certified-area-benchmark";
+import { measureCertifiedLogisticsFootprintLowerBound } from "./certified-logistics-footprint";
 import { createCertifiedAreaMandatoryDevices } from "./certified-area-mandatory-devices";
 import { renderMaterialGraphSvg } from "./material-graph-svg";
 import { renderBlueprintSvg } from "./svg-renderer";
@@ -87,6 +88,10 @@ async function main(): Promise<void> {
         await readFile(requestPath, "utf8"),
       ) as HeadlessOptimizationRequest;
       const graph = buildHeadlessMaterialGraph(request, registry);
+      const certifiedLogisticsFootprint = measureCertifiedLogisticsFootprintLowerBound({
+        graph,
+        resolveItemDomain: (itemId) => registry.queries.resolveItemDomain(itemId),
+      });
       const mandatoryDevices = createCertifiedAreaMandatoryDevices({
         entities: graph.nodes.map(({ id, kind, definitionId }) => ({ id, kind, definitionId })),
         entityDefinitions: registry.entityDefinitions,
@@ -114,6 +119,7 @@ async function main(): Promise<void> {
         limitWidth: request.width,
         limitHeight: request.height,
         allowRotate: request.allowRotate ?? true,
+        certifiedLogisticsFootprint,
         ...(validatedBestKnown === undefined ? {} : { validatedBestKnown }),
       };
       const routedIncumbentStartedAt = Date.now();
@@ -156,6 +162,7 @@ async function main(): Promise<void> {
           result,
           registry,
           allowRotate: request.allowRotate ?? true,
+          certifiedLogisticsFootprint,
           ...(validatedBestKnown === undefined ? {} : { validatedBestKnown }),
           routedIncumbentElapsedMs: Date.now() - routedIncumbentStartedAt,
         }));
@@ -254,6 +261,8 @@ async function main(): Promise<void> {
       used: `${result.layout.usedWidth}x${result.layout.usedHeight}`,
       boundingArea: result.layout.boundingArea,
       boundingAreaLowerBound: result.optimality.boundingArea.lowerBound,
+      boundingAreaDeviceAndLogisticsLowerBound:
+        result.optimality.boundingArea.lowerBoundSources.mandatoryDeviceAndLogisticsArea,
       boundingAreaAbsoluteGap: result.optimality.boundingArea.absoluteGap,
       boundingAreaRelativeGap: result.optimality.boundingArea.relativeGap,
       boundingAreaOptimalityStatus: result.optimality.boundingArea.status,
