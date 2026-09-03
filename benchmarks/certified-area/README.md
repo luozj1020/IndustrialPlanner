@@ -5,12 +5,12 @@ Each proof budget is an independent solve. `master gap` is the gap between the
 placement-only incumbent and CP-SAT best bound; `full gap` uses the smaller of
 the current routed UB and an instance-hash-matched best-known strict UB.
 
-| case | current / best UB | mandatory rectangles | CP-SAT LB @ 0.5 / 2 / 10s | master gap @ 2s | full gap @ 2s | charged / origin / interior | envelope core+power+logistics | gap identity @ 2s |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| iron-nugget | 66 / — | 37 | 39 / 39 / 39 | 0 | 27 (40.91%) | 39 / 12 / 15 | 66+0+0 | 2[B2]+12+15−2=27 |
-| simple-chain | 42 / — | 34 | 36 / 36 / 36 | 0 | 6 (14.29%) | 37 / 0 / 5 | 42+0+0 | 3[B3]+0+5−2=6 |
-| dense-scc-fanout | 484 / — | 241 | 241 / 242 / 242 | 0 | 242 (50.00%) | 318 / 0 / 166 | 441+0+43 | 77[B65/E12]+0+166−1=242 |
-| medium-battery-fan-in | 345 / 330 | 115 | 117 / 117 / 117 | 0 | 213 (64.55%) | 148 / 120 / 62 | 330+0+0 | 33[B33]+120+62−2=213 |
+| case | current / best UB | mandatory rectangles | CP-SAT LB @ 0.5 / 2 / 10s | master gap @ 2s | full gap @ 2s | charged / origin / interior | envelope core+power+logistics | lanes charged/excluded→floor/actual;cross | gap identity @ 2s |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| iron-nugget | 66 / — | 37 | 39 / 39 / 39 | 0 | 27 (40.91%) | 39 / 12 / 15 | 66+0+0 | B2/2→1/2;X0 | 2[B2]+12+15−2=27 |
+| simple-chain | 42 / — | 34 | 36 / 36 / 36 | 0 | 6 (14.29%) | 37 / 0 / 5 | 42+0+0 | B2/1→1/3;X0 | 3[B3]+0+5−2=6 |
+| dense-scc-fanout | 484 / — | 241 | 241 / 242 / 242 | 0 | 242 (50.00%) | 318 / 0 / 166 | 441+0+43 | B16/6→8/65;X9 | 77[B65/E12]+0+166−1=242 |
+| medium-battery-fan-in | 345 / 330 | 115 | 117 / 117 / 117 | 0 | 213 (64.55%) | 148 / 120 / 62 | 330+0+0 | B8/5→4/33;X3 | 33[B33]+120+62−2=213 |
 
 The medium best-known artifact is regenerated from the tracked 330-cell full
 report by `certify-area-best-known`; it is not an unchecked handwritten UB.
@@ -64,6 +64,17 @@ entities; the placed power and logistics fit inside it. Dense is different:
 its core envelope is 441, power adds zero, and charged logistics extend it by 43
 to 484. This does not prove logistics caused the underlying core placement, but
 it rules out treating every charged belt cell as direct bounding-box expansion.
+
+The lane screen classifies each routed lane as charged or warehouse-supply
+excluded, then applies the deliberately weak assumption that one logistics cell
+can carry at most two orthogonally crossing lanes of the same kind. `X` is the
+number of charged crossing cells in the incumbent. This is still screening data,
+not yet a reported certified source: the graph-side derivation and exact-oracle
+invariant must be implemented before promotion. Its likely strength is already
+bounded by the table. Adding the floor to mandatory rectangle area would not
+beat the current CP-SAT bound on iron-nugget or simple-chain; it would improve
+dense by seven cells and medium by two. It is a useful first logistics proof,
+but cannot explain the remaining large gap by itself.
 
 Run the suite with:
 

@@ -30,7 +30,7 @@ export const DEFAULT_CERTIFIED_AREA_BENCHMARK_BUDGETS = [0.5, 2, 10] as const;
 export const CERTIFIED_AREA_BENCHMARK_INSTANCE_PROFILE =
   "certified-area-benchmark-instance-v1" as const;
 export const CERTIFIED_AREA_BEST_KNOWN_ARTIFACT_PROFILE =
-  "strict-routed-bounding-area-v3" as const;
+  "strict-routed-bounding-area-v4" as const;
 
 export interface CertifiedAreaGameRuleAttribution {
   /** Raw occupied rectangle area before the game's area-exclusion rules. */
@@ -57,6 +57,12 @@ export interface CertifiedAreaGameRuleAttribution {
   readonly areaExcludedBeltArea: number;
   readonly warehouseBusArea: number;
   readonly materialLaneCountByKind: Readonly<Partial<Record<"belt" | "pipe", number>>>;
+  readonly chargedMaterialLaneCountByKind: Readonly<Partial<Record<"belt" | "pipe", number>>>;
+  readonly areaExcludedMaterialLaneCountByKind: Readonly<Partial<Record<"belt" | "pipe", number>>>;
+  readonly chargedCrossingCellCountByKind: Readonly<Partial<Record<"belt" | "pipe", number>>>;
+  /** Diagnostic floor if a modeled cell carries at most two orthogonally crossing lanes. */
+  readonly pairwiseCrossingCellFloorByKind: Readonly<Partial<Record<"belt" | "pipe", number>>>;
+  readonly pairwiseCrossingCellFloor: number;
   readonly connectedPortEndpointCount: number;
   readonly minimumPowerDeviceCount: number;
 }
@@ -367,6 +373,7 @@ export function formatCertifiedAreaBenchmarkMarkdown(
     "charged mix",
     "remainder (origin+interior)",
     "envelope (core+power+logistics)",
+    "lane screen charged/excluded→floor/actual;cross",
     `gap identity @ ${formatBudget(report.gapBudgetSeconds)}s`,
   ];
   const separator = header.map(() => "---:");
@@ -390,6 +397,7 @@ export function formatCertifiedAreaBenchmarkMarkdown(
       formatChargedMix(benchmarkCase.benchmarkAreaAttribution),
       formatAttributionRemainder(benchmarkCase.benchmarkAreaAttribution),
       formatEnvelopeAttribution(benchmarkCase.benchmarkAreaAttribution),
+      formatLaneCellScreening(benchmarkCase.benchmarkAreaAttribution),
       formatIncumbentGapAttribution(benchmarkCase.incumbentGapAttribution),
     ];
   });
@@ -638,6 +646,17 @@ export function parseCertifiedAreaBestKnownArtifact(
     throw new Error("Invalid or mismatched best-known area artifact");
   }
   const areaAttribution = parseAreaAttribution(value["areaAttribution"]);
+  const laneKinds = ["belt", "pipe"] as const;
+  const laneCountsReconcile = laneKinds.every((kind) =>
+    (areaAttribution.materialLaneCountByKind[kind] ?? 0)
+      === (areaAttribution.chargedMaterialLaneCountByKind[kind] ?? 0)
+        + (areaAttribution.areaExcludedMaterialLaneCountByKind[kind] ?? 0)
+    && (areaAttribution.pairwiseCrossingCellFloorByKind[kind] ?? 0)
+      === Math.ceil((areaAttribution.chargedMaterialLaneCountByKind[kind] ?? 0) / 2)
+    && (areaAttribution.chargedCrossingCellCountByKind[kind] ?? 0)
+      <= (areaAttribution.chargedFootprintAreaByKind[kind] ?? 0));
+  const pairwiseFloorTotal = laneKinds.reduce((sum, kind) =>
+    sum + (areaAttribution.pairwiseCrossingCellFloorByKind[kind] ?? 0), 0);
   if (areaAttribution.chargedFootprintArea + areaAttribution.chargedBoundingRemainderArea
       !== value["strictRoutedUpperBound"]
     || areaAttribution.originAnchoringArea
@@ -652,7 +671,9 @@ export function parseCertifiedAreaBestKnownArtifact(
       !== areaAttribution.powerInclusiveBoundingArea
     || areaAttribution.powerInclusiveBoundingArea
       + areaAttribution.logisticsEnvelopeExpansionArea
-      !== value["strictRoutedUpperBound"]) {
+      !== value["strictRoutedUpperBound"]
+    || !laneCountsReconcile
+    || pairwiseFloorTotal !== areaAttribution.pairwiseCrossingCellFloor) {
     throw new Error("Best-known area attribution does not reconcile with its strict UB");
   }
   return {
@@ -740,9 +761,31 @@ export function createCertifiedAreaGameRuleAttribution(
     throw new Error("Game-rule area attribution does not reconcile with the routed bounding area");
   }
   const materialLaneCountByKind: Partial<Record<"belt" | "pipe", number>> = {};
-  for (const connection of result.validation.materialConnections) {
+  const chargedMaterialLaneCountByKind: Partial<Record<"belt" | "pipe", number>> = {};
+  const areaExcludedMaterialLaneCountByKind: Partial<Record<"belt" | "pipe", number>> = {};
+  for (const connection of routedConnections) {
     materialLaneCountByKind[connection.kind] = (materialLaneCountByKind[connection.kind] ?? 0) + 1;
+    const target = connection.targetDeviceId === null
+      ? undefined : deviceById.get(connection.targetDeviceId);
+    const counts = eligibleExcludedConnections.has(connection.id) && target?.kind === "production"
+      ? areaExcludedMaterialLaneCountByKind
+      : chargedMaterialLaneCountByKind;
+    counts[connection.kind] = (counts[connection.kind] ?? 0) + 1;
   }
+  const chargedCrossingCellCountByKind: Partial<Record<"belt" | "pipe", number>> = {};
+  for (const device of chargedDevices) {
+    if (device.kind !== "belt" && device.kind !== "pipe") continue;
+    if (!result.blueprint.entities[device.id]?.tags.includes("logistics:crossing")) continue;
+    chargedCrossingCellCountByKind[device.kind]
+      = (chargedCrossingCellCountByKind[device.kind] ?? 0) + 1;
+  }
+  const pairwiseCrossingCellFloorByKind: Partial<Record<"belt" | "pipe", number>> = {};
+  for (const kind of ["belt", "pipe"] as const) {
+    const laneCount = chargedMaterialLaneCountByKind[kind] ?? 0;
+    if (laneCount > 0) pairwiseCrossingCellFloorByKind[kind] = Math.ceil(laneCount / 2);
+  }
+  const pairwiseCrossingCellFloor = Object.values(pairwiseCrossingCellFloorByKind)
+    .reduce((sum, count) => sum + (count ?? 0), 0);
   return {
     rawFootprintAreaByKind,
     chargedFootprintAreaByKind,
@@ -760,6 +803,11 @@ export function createCertifiedAreaGameRuleAttribution(
     areaExcludedBeltArea,
     warehouseBusArea,
     materialLaneCountByKind,
+    chargedMaterialLaneCountByKind,
+    areaExcludedMaterialLaneCountByKind,
+    chargedCrossingCellCountByKind,
+    pairwiseCrossingCellFloorByKind,
+    pairwiseCrossingCellFloor,
     connectedPortEndpointCount: result.validation.materialConnections.reduce(
       (count, connection) => count
         + Number(connection.sourceDeviceId !== null)
@@ -908,6 +956,22 @@ function parseAreaAttribution(value: unknown): CertifiedAreaGameRuleAttribution 
     value["materialLaneCountByKind"],
     new Set(["belt", "pipe"]),
   ) as Partial<Record<"belt" | "pipe", number>>;
+  const chargedMaterialLaneCountByKind = parseKindAreaRecord(
+    value["chargedMaterialLaneCountByKind"],
+    new Set(["belt", "pipe"]),
+  ) as Partial<Record<"belt" | "pipe", number>>;
+  const areaExcludedMaterialLaneCountByKind = parseKindAreaRecord(
+    value["areaExcludedMaterialLaneCountByKind"],
+    new Set(["belt", "pipe"]),
+  ) as Partial<Record<"belt" | "pipe", number>>;
+  const chargedCrossingCellCountByKind = parseKindAreaRecord(
+    value["chargedCrossingCellCountByKind"],
+    new Set(["belt", "pipe"]),
+  ) as Partial<Record<"belt" | "pipe", number>>;
+  const pairwiseCrossingCellFloorByKind = parseKindAreaRecord(
+    value["pairwiseCrossingCellFloorByKind"],
+    new Set(["belt", "pipe"]),
+  ) as Partial<Record<"belt" | "pipe", number>>;
   const numericFields = [
     "chargedFootprintArea",
     "chargedBoundingRemainderArea",
@@ -920,6 +984,7 @@ function parseAreaAttribution(value: unknown): CertifiedAreaGameRuleAttribution 
     "powerInclusiveBoundingArea",
     "powerEnvelopeExpansionArea",
     "logisticsEnvelopeExpansionArea",
+    "pairwiseCrossingCellFloor",
     "areaExcludedBeltArea",
     "warehouseBusArea",
     "connectedPortEndpointCount",
@@ -945,6 +1010,11 @@ function parseAreaAttribution(value: unknown): CertifiedAreaGameRuleAttribution 
     areaExcludedBeltArea: value["areaExcludedBeltArea"] as number,
     warehouseBusArea: value["warehouseBusArea"] as number,
     materialLaneCountByKind,
+    chargedMaterialLaneCountByKind,
+    areaExcludedMaterialLaneCountByKind,
+    chargedCrossingCellCountByKind,
+    pairwiseCrossingCellFloorByKind,
+    pairwiseCrossingCellFloor: value["pairwiseCrossingCellFloor"] as number,
     connectedPortEndpointCount: value["connectedPortEndpointCount"] as number,
     minimumPowerDeviceCount: value["minimumPowerDeviceCount"] as number,
   };
@@ -1050,6 +1120,23 @@ function formatEnvelopeAttribution(
     : `${attribution.coreDeviceBoundingArea}`
       + `+${attribution.powerEnvelopeExpansionArea}`
       + `+${attribution.logisticsEnvelopeExpansionArea}`;
+}
+
+function formatLaneCellScreening(
+  attribution: CertifiedAreaGameRuleAttribution | undefined,
+): string {
+  if (attribution === undefined) return "—";
+  const entries = (["belt", "pipe"] as const).flatMap((kind) => {
+    const total = attribution.materialLaneCountByKind[kind] ?? 0;
+    if (total === 0) return [];
+    const label = kind === "belt" ? "B" : "F";
+    return [`${label}${attribution.chargedMaterialLaneCountByKind[kind] ?? 0}`
+      + `/${attribution.areaExcludedMaterialLaneCountByKind[kind] ?? 0}`
+      + `→${attribution.pairwiseCrossingCellFloorByKind[kind] ?? 0}`
+      + `/${attribution.chargedFootprintAreaByKind[kind] ?? 0}`
+      + `;X${attribution.chargedCrossingCellCountByKind[kind] ?? 0}`];
+  });
+  return entries.join(" ") || "—";
 }
 
 function minimumDefined(

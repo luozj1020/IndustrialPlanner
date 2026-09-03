@@ -54,6 +54,11 @@ const ATTRIBUTION = {
   areaExcludedBeltArea: 1,
   warehouseBusArea: 0,
   materialLaneCountByKind: { belt: 1 },
+  chargedMaterialLaneCountByKind: { belt: 1 },
+  areaExcludedMaterialLaneCountByKind: {},
+  chargedCrossingCellCountByKind: {},
+  pairwiseCrossingCellFloorByKind: { belt: 1 },
+  pairwiseCrossingCellFloor: 1,
   connectedPortEndpointCount: 2,
   minimumPowerDeviceCount: 0,
 } as const;
@@ -132,7 +137,7 @@ describe("certified area benchmark", () => {
   it("uses a matched validated best-known UB and exposes current search regression", () => {
     const bestKnown = {
       schemaVersion: 1,
-      validationProfile: "strict-routed-bounding-area-v3",
+      validationProfile: "strict-routed-bounding-area-v4",
       instanceHash: TEST_CASE.instanceHash,
       strictRoutedUpperBound: 10,
       blueprintId: "best-blueprint",
@@ -190,10 +195,19 @@ describe("certified area benchmark", () => {
       ...bestKnown,
       strictRoutedUpperBound: 11,
     }, TEST_CASE.instanceHash)).toThrow(/does not reconcile/);
+    expect(() => parseCertifiedAreaBestKnownArtifact({
+      ...bestKnown,
+      areaAttribution: {
+        ...ATTRIBUTION,
+        chargedMaterialLaneCountByKind: { belt: 2 },
+      },
+    }, TEST_CASE.instanceHash)).toThrow(/does not reconcile/);
     expect(formatCertifiedAreaBenchmarkMarkdown(report))
       .toContain("1[B1]+0+1−0=2");
     expect(formatCertifiedAreaBenchmarkMarkdown(report))
       .toContain("8+0+2");
+    expect(formatCertifiedAreaBenchmarkMarkdown(report))
+      .toContain("B1/0→1/1;X0");
   });
 
   it("re-certifies the tracked 330-cell medium best-known artifact", () => {
@@ -281,6 +295,11 @@ describe("certified area benchmark", () => {
       areaExcludedBeltArea: 1,
       warehouseBusArea: 16,
       materialLaneCountByKind: { belt: 1 },
+      chargedMaterialLaneCountByKind: {},
+      areaExcludedMaterialLaneCountByKind: { belt: 1 },
+      chargedCrossingCellCountByKind: {},
+      pairwiseCrossingCellFloorByKind: {},
+      pairwiseCrossingCellFloor: 0,
       connectedPortEndpointCount: 2,
     });
   });

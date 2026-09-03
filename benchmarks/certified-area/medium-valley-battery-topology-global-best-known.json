@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "validationProfile": "strict-routed-bounding-area-v3",
+  "validationProfile": "strict-routed-bounding-area-v4",
   "instanceHash": "fnv1a32:c8ff94e5",
   "strictRoutedUpperBound": 330,
   "blueprintId": "headless-97d921a8",
@@ -39,6 +39,19 @@
     "materialLaneCountByKind": {
       "belt": 13
     },
+    "chargedMaterialLaneCountByKind": {
+      "belt": 8
+    },
+    "areaExcludedMaterialLaneCountByKind": {
+      "belt": 5
+    },
+    "chargedCrossingCellCountByKind": {
+      "belt": 3
+    },
+    "pairwiseCrossingCellFloorByKind": {
+      "belt": 4
+    },
+    "pairwiseCrossingCellFloor": 4,
     "connectedPortEndpointCount": 26,
     "minimumPowerDeviceCount": 1
   }
