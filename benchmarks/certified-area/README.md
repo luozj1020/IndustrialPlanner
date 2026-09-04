@@ -99,10 +99,21 @@ The strict routed-UB profile is now v5. It independently rechecks the editor's
 warehouse-hub geometry: every bus segment must be edge-connected to the source,
 and every unloader must touch that connected component on the side opposite its
 rotated item port. This rule is intentionally not promoted into the certified
-LB yet. A unit-test counterexample places the same five unloaders and three bus
-segments as the medium case in a valid vertical side hub with the first charged
-unloader at `y=0`. Consequently, the incumbent's eight-row horizontal shell is
-a search construction, not a globally necessary game-rule depth.
+LB yet. A unit-test counterexample serves five unloaders with one bus segment in
+a valid vertical side hub whose first charged unloader is at `y=0`. Consequently,
+both the incumbent's eight-row horizontal shell and the generator's
+`ceil(portCount / 2)` segment count are search constructions, not global
+game-rule lower bounds.
+
+An orientation-specific one-cell warehouse-access witness was also screened as
+a proof-only v3b candidate and rejected before integration. It kept all four
+published combined bounds unchanged (`39 / 36 / 247 / 118`) while making the
+placement proof harder: dense's 10-second CP bound fell from 242 to 241, and
+medium's two-second CP bound fell from 117 to 115 (it recovered to 117 at ten
+seconds). The witness is sound, but zero-cost bus space can sit outside the
+charged box and the extra directional variables slow the current proof. A
+future hub relaxation therefore needs a stronger count-independent game-rule
+formulation before it earns production proof budget.
 
 Run the suite with:
 

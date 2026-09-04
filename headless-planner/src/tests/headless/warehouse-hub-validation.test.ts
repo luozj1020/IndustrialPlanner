@@ -92,23 +92,37 @@ describe("generated warehouse hub validation", () => {
     })).toBe(false);
   });
 
-  it("admits a five-port side hub at y=0, disproving a universal shell-depth offset", () => {
+  it("admits five ports on one segment at y=0, disproving shell depth and segment-count floors", () => {
     const devices = [
-      device("source", sourceDefinition.id, "warehouse-bus", 4, 0, 4, 4),
-      device("segment-1", segmentDefinition.id, "warehouse-bus", 4, 4, 4, 8),
-      device("segment-2", segmentDefinition.id, "warehouse-bus", 4, 12, 4, 8),
-      device("segment-3", segmentDefinition.id, "warehouse-bus", 4, 20, 4, 8),
-      ...[0, 4, 7, 12, 15].map((y, index) =>
+      device("source", sourceDefinition.id, "warehouse-bus", 4, 8, 4, 4),
+      device("segment", segmentDefinition.id, "warehouse-bus", 4, 0, 4, 8),
+      ...[0, 3, 6, 9].map((y, index) =>
         // rotation=90 output faces west, so the connected bus is on the east.
         device(`port-${index + 1}`, portDefinition.id, "warehouse-port", 3, y, 1, 3, 90)),
+      // rotation=270 output faces east, so the connected bus is on the west.
+      device("port-5", portDefinition.id, "warehouse-port", 8, 0, 1, 3, 270),
     ];
 
+    expect(devices.filter((entry) =>
+      entry.definitionId === segmentDefinition.id)).toHaveLength(1);
     expect(Math.min(...devices
       .filter((entry) => entry.kind === "warehouse-port")
       .map((entry) => entry.position.y))).toBe(0);
+    expect(devices.some((left, leftIndex) => devices.some((right, rightIndex) =>
+      leftIndex < rightIndex && rectanglesOverlap(left, right)))).toBe(false);
     expect(hasValidGeneratedWarehouseHubAdjacency({
       devices,
       entityDefinitions: definitions,
     })).toBe(true);
   });
 });
+
+function rectanglesOverlap(
+  left: HeadlessPlacedDevice,
+  right: HeadlessPlacedDevice,
+): boolean {
+  return left.position.x < right.position.x + right.width
+    && left.position.x + left.width > right.position.x
+    && left.position.y < right.position.y + right.height
+    && left.position.y + left.height > right.position.y;
+}
