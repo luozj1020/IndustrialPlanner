@@ -31,7 +31,7 @@ export const DEFAULT_CERTIFIED_AREA_BENCHMARK_BUDGETS = [0.5, 2, 10] as const;
 export const CERTIFIED_AREA_BENCHMARK_INSTANCE_PROFILE =
   "certified-area-benchmark-instance-v1" as const;
 export const CERTIFIED_AREA_BEST_KNOWN_ARTIFACT_PROFILE =
-  "strict-routed-bounding-area-v4" as const;
+  "strict-routed-bounding-area-v5" as const;
 
 export interface CertifiedAreaGameRuleAttribution {
   /** Raw occupied rectangle area before the game's area-exclusion rules. */

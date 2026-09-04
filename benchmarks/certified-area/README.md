@@ -1,7 +1,7 @@
 # Certified area benchmark
 
 Representative v3a packing plus certified logistics-footprint v1 baseline,
-measured on 2026-09-03 with OR-Tools 9.15.6755.
+measured on 2026-09-04 with OR-Tools 9.15.6755.
 Each proof budget is an independent solve. `master gap` is the gap between the
 placement-only incumbent and CP-SAT best bound; `full gap` uses the smaller of
 the current routed UB and an instance-hash-matched best-known strict UB.
@@ -10,7 +10,7 @@ the current routed UB and an instance-hash-matched best-known strict UB.
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | iron-nugget | 66 / — | 37 | 38 (B3−2→1 lane→1 cell) | 39 / 39 / 39 | 39 | 27 (40.91%) | 39 / 12 / 15 | 66+0+0 | B2/2→1/2;X0 |
 | simple-chain | 42 / — | 34 | 35 (B3−1→2 lanes→1 cell) | 36 / 36 / 36 | 36 | 6 (14.29%) | 37 / 0 / 5 | 42+0+0 | B2/1→1/3;X0 |
-| dense-scc-fanout | 484 / — | 241 | 247 (B17−6→11 lanes→6 cells) | 241 / 242 / 242 | 247 | 237 (48.97%) | 318 / 0 / 166 | 441+0+43 | B16/6→8/65;X9 |
+| dense-scc-fanout | 484 / — | 241 | 247 (B17−6→11 lanes→6 cells) | 241 / 241 / 242 | 247 | 237 (48.97%) | 318 / 0 / 166 | 441+0+43 | B16/6→8/65;X9 |
 | medium-battery-fan-in | 345 / 330 | 115 | 118 (B10−5→5 lanes→3 cells) | 117 / 117 / 117 | 118 | 212 (64.24%) | 148 / 120 / 62 | 330+0+0 | B8/5→4/33;X3 |
 
 The medium best-known artifact is regenerated from the tracked 330-cell full
@@ -24,9 +24,10 @@ This data separates two effects:
   cannot reduce its 213-cell full gap; stronger globally valid game-rule
   constraints are required. A 0.5-second solve can expire before CP-SAT emits a
   useful bound, in which case the 115-cell mandatory-area fallback remains valid.
-- Dense closes its 242-cell placement master within two seconds in this run.
-  Earlier time-bounded runs left only a small internal master gap, while the
-  roughly 50% full gap consistently remains relaxation weakness.
+- Dense reaches a 241-cell proof bound with a 243-cell master incumbent at two
+  seconds, then closes its 242-cell placement master at ten seconds. The tiny
+  internal master gap contrasts with the roughly 50% full gap, which remains
+  relaxation weakness.
 - Simple-chain is already within six cells, making it a useful tiny case for
   screening a proposed strengthening before applying it to larger instances.
 
@@ -93,6 +94,15 @@ iron-nugget or simple-chain, raises dense's two-second combined LB from 242 to
 mechanism without pretending it explains the remaining 237/212 cells. Port
 accessibility is still only a candidate for later screening, not an assumed v3
 constraint.
+
+The strict routed-UB profile is now v5. It independently rechecks the editor's
+warehouse-hub geometry: every bus segment must be edge-connected to the source,
+and every unloader must touch that connected component on the side opposite its
+rotated item port. This rule is intentionally not promoted into the certified
+LB yet. A unit-test counterexample places the same five unloaders and three bus
+segments as the medium case in a valid vertical side hub with the first charged
+unloader at `y=0`. Consequently, the incumbent's eight-row horizontal shell is
+a search construction, not a globally necessary game-rule depth.
 
 Run the suite with:
 

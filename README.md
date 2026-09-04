@@ -185,7 +185,7 @@ npm run headless -- render optimized-blueprint.json --output optimized-layout.sv
 `certification.boundingArea.maxSeconds` 是与候选搜索完全独立的面积证明预算，默认 2 秒。
 成功结果的 `optimality.boundingArea` 同时报告全局必需计费矩形面积下界、从冻结物料图推导的
 设备加最少计费物流格下界、proof-only CP-SAT 下界（可用时），以及经过拓扑、吞吐、供电、
-地图及蓝图几何复核的 routed UB。
+地图、蓝图几何、仓库总线连通及取货口指定侧贴边复核的 routed UB。
 Certified Area Relaxation v3a 的矩形集合包含冻结生产图必然存在的生产设备、协议存储箱、取货口；
 存在用电设备时还包含至少一个可移动供电桩。它不固定这些实体的 incumbent 位置，也不假定实际
 最少供电桩数量，因此仍是完整游戏布局问题的安全松弛。
@@ -200,6 +200,9 @@ relaxation witness，绝不作为 UB。
 按 `(y,x)` 排序完全同构矩形、消除重复的 180/270 度几何朝向，并显式加入设备面积及最小边长
 不等式。它仍不包含端口可达性、传送带/管道路由、topology layer、搜索冻结状态或 learned
 routing cuts；端口、路径长度与通道容量等游戏规则只有形成全局必要条件后才能进入 proof model。
+仓库连接规则目前只进入 strict UB 验收，没有被直接加入 LB：源桩和基段在游戏规则内可以整体移动、
+旋转并组成非水平总线，单元测试保留了一个 5 个取货口、3 个基段且计费取货口从 `y=0` 开始的
+合法侧挂反例。因此 topology-sequential 当前构造出的 8 格仓库壳层偏移不能被提升成全局高度或面积下界。
 
 可以在同一组真实 routed 实例上分别测量 0.5/2/10 秒的 CP-SAT 下界。benchmark 会先重新运行
 完整优化与 strict UB 验证，再从全局必需计费矩形构造 proof case；因此表中的

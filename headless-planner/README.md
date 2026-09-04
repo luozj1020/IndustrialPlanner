@@ -853,8 +853,10 @@ proxy objective 或 learned cuts。v3a 纳入冻结生产图中必然存在且�
 `certification.boundingArea.maxSeconds` 默认 2 秒；OR-Tools 缺失或证明超时后，报告仍以这些全局
 必需计费矩形面积以及设备加静态物流格下界作为严格 fallback。所有安全来源只通过 `max()`
 组合。只有组合下界与通过
-拓扑、连通、吞吐、供电、地图边界、无重叠及蓝图一致性复核的 routed 面积完全相等时，才报告
+拓扑、连通、吞吐、供电、地图边界、无重叠、仓库总线/取货口邻接及蓝图一致性复核的 routed 面积完全相等时，才报告
 `bounding-area-optimal`；这不等同于完整词典序目标已经最优。
+仓库邻接尚未被加入证明模型：合法源桩/基段可以整体移动、转向并让取货口从 `y=0` 侧挂，
+所以当前横向仓库壳层造成的原点偏移不是全局面积下界。
 
 `benchmark-area` 同时报告每个预算的 solver status、master incumbent/internal gap，以及本次 UB、
 同实例哈希的 best-known strict UB 和完整游戏布局 gap。其实体面积分解只用于诊断游戏机制带来的

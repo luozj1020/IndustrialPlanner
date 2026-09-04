@@ -169,7 +169,7 @@ describe("certified area benchmark", () => {
   it("uses a matched validated best-known UB and exposes current search regression", () => {
     const bestKnown = {
       schemaVersion: 1,
-      validationProfile: "strict-routed-bounding-area-v4",
+      validationProfile: "strict-routed-bounding-area-v5",
       instanceHash: TEST_CASE.instanceHash,
       strictRoutedUpperBound: 10,
       blueprintId: "best-blueprint",

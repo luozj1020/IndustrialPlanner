@@ -8,6 +8,7 @@ import type {
   HeadlessPlacedDevice,
 } from "./types";
 import { CERTIFIED_LOGISTICS_FOOTPRINT_PROFILE } from "./certified-logistics-footprint";
+import { hasValidGeneratedWarehouseHubAdjacency } from "./warehouse-hub-validation";
 
 export const DEFAULT_CERTIFIED_AREA_MAX_SECONDS = 2;
 
@@ -126,6 +127,11 @@ export function isStrictRoutedBoundingAreaUpperBound(
       if (rectanglesOverlap(left, options.devices[rightIndex]!)) return false;
     }
   }
+
+  if (!hasValidGeneratedWarehouseHubAdjacency({
+    devices: options.devices,
+    entityDefinitions: options.registry.entityDefinitions,
+  })) return false;
 
   const eligibleAreaExcludedConnectionIds = new Set(options.routedConnections.flatMap((connection) => {
     const source = connection.sourceDeviceId === null
