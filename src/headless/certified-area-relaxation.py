@@ -160,7 +160,18 @@ def solve(devices, limit_width, limit_height, allow_rotate, max_seconds):
         y_intervals.append(
             model.new_interval_var(y, height, end_y, f"y_interval_{device_id}")
         )
-        variables.append({"x": x, "y": y, "end_x": end_x, "end_y": end_y})
+        variables.append(
+            {
+                "id": device_id,
+                "x": x,
+                "y": y,
+                "width": width,
+                "height": height,
+                "rotation": rotation,
+                "end_x": end_x,
+                "end_y": end_y,
+            }
+        )
         interchangeable_key = (
             (min(base_width, base_height), max(base_width, base_height))
             if allow_rotate
@@ -259,6 +270,17 @@ def solve(devices, limit_width, limit_height, allow_rotate, max_seconds):
         if status == cp_model.OPTIMAL and exact_lower_bound != incumbent:
             raise RuntimeError("optimal status did not close the master objective gap")
         result["masterIncumbentArea"] = incumbent
+        result["masterPlacement"] = [
+            {
+                "id": entry["id"],
+                "x": int(solver.value(entry["x"])),
+                "y": int(solver.value(entry["y"])),
+                "width": int(solver.value(entry["width"])),
+                "height": int(solver.value(entry["height"])),
+                "rotation": int(solver.value(entry["rotation"])),
+            }
+            for entry in sorted(variables, key=lambda candidate: candidate["id"])
+        ]
     return result
 
 

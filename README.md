@@ -217,7 +217,10 @@ INDUSTRIAL_PLANNER_PYTHON=.venv-headless/bin/python npm run benchmark:certified-
 `headless benchmark-area <suite.json> --output benchmark.json --format markdown|json`；JSON 报告
 保留每个预算的 solver status、raw/exact LB、relaxation witness、master internal gap、耗时及
 完整游戏布局 gap。表格区分本次 routed UB、同实例哈希的历史 best-known strict UB 和两者较小值，
-因此也能显式报告 incumbent search regression。best-known artifact 必须先由当前 strict validator
+因此也能显式报告 incumbent search regression。每个 placement witness 还会接受一轮诊断性的
+轴向 routing-capacity screening：需求只来自设备物料平衡，不读取当前 producer allocation 或
+A* 路径；screening 结果不会进入 `LB_A`，只用于判断下一版 globally valid constraint 是否值得建模。
+best-known artifact 必须先由当前 strict validator
 从完整报告生成：
 
 ```bash

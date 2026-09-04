@@ -166,6 +166,65 @@ describe("certified area benchmark", () => {
       .toContain("10 (B4−0→4/2)");
   });
 
+  it("screens master witnesses for axis capacity without changing the certified LB", () => {
+    const report = benchmarkCertifiedAreaBounds({
+      cases: [{
+        ...TEST_CASE,
+        routingCapacityScreeningProblem: {
+          items: [{ itemId: "iron", laneCapacityPerMinute: 30 }],
+          nodes: [
+            {
+              id: "a",
+              kind: "production",
+              inputs: [],
+              outputs: [{ itemId: "iron", perMinute: 90 }],
+            },
+            {
+              id: "b",
+              kind: "production",
+              inputs: [{ itemId: "iron", perMinute: 90 }],
+              outputs: [],
+            },
+          ],
+          omittedItems: [],
+        },
+      }],
+      budgetsSeconds: [2],
+    }, () => ({
+      constraintProfile: CERTIFIED_AREA_RELAXATION_PROFILE,
+      objective: CERTIFIED_AREA_RELAXATION_OBJECTIVE,
+      status: "feasible",
+      rawBestObjectiveBound: 8,
+      certifiedIntegerLowerBound: 8,
+      masterIncumbentArea: 12,
+      masterPlacement: [
+        { id: "a", x: 0, y: 0, width: 2, height: 2, rotation: 0 },
+        { id: "b", x: 4, y: 0, width: 2, height: 2, rotation: 0 },
+      ],
+    }));
+
+    expect(report.cases[0]!.samples[0]).toMatchObject({
+      lowerBound: 8,
+      routingCapacityScreening: {
+        violatingCutCount: 1,
+        maximumDeficit: 1,
+        strongestCut: {
+          axis: "vertical",
+          coordinate: 3,
+          demand: 3,
+          capacity: 2,
+        },
+      },
+    });
+    expect(report.cases[0]!.routingCapacityScreeningProblemSummary).toEqual({
+      itemCount: 1,
+      nodeCount: 2,
+      omittedItems: [],
+    });
+    expect(formatCertifiedAreaBenchmarkMarkdown(report))
+      .toContain("1/1;Δ1;V3:3/2;omit0");
+  });
+
   it("uses a matched validated best-known UB and exposes current search regression", () => {
     const bestKnown = {
       schemaVersion: 1,

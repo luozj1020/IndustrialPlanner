@@ -21,6 +21,16 @@ export interface CertifiedAreaRelaxationDevice {
   readonly category?: CertifiedAreaMandatoryRectangleKind;
 }
 
+/** Placement-only witness emitted for diagnostics; never a routed upper bound. */
+export interface CertifiedAreaRelaxationPlacement {
+  readonly id: string;
+  readonly x: number;
+  readonly y: number;
+  readonly width: number;
+  readonly height: number;
+  readonly rotation: 0 | 90 | 180 | 270;
+}
+
 export type CertifiedAreaRelaxationStatus =
   | "optimal"
   | "feasible"
@@ -41,6 +51,8 @@ export interface CertifiedAreaRelaxationResult {
   readonly certifiedIntegerLowerBound?: number;
   /** A placement-only incumbent. It is not a routed upper bound. */
   readonly masterIncumbentArea?: number;
+  /** Optional placement witness for screening globally valid strengthening candidates. */
+  readonly masterPlacement?: readonly CertifiedAreaRelaxationPlacement[];
   readonly pythonVersion?: string;
   readonly orToolsVersion?: string;
   readonly elapsedMs?: number;
@@ -143,7 +155,7 @@ export function solveCpSatAreaLowerBound(
     try {
       const parsed = parseEnvelope(
         JSON.parse(result.stdout) as Record<string, unknown>,
-        options.limitWidth * options.limitHeight,
+        options,
       );
       aggregatePythonVersion = parsed.pythonVersion ?? aggregatePythonVersion;
       aggregateOrToolsVersion = parsed.orToolsVersion ?? aggregateOrToolsVersion;
@@ -208,8 +220,10 @@ function assertPositiveSafeInteger(value: number, label: string): void {
 
 function parseEnvelope(
   value: Record<string, unknown>,
-  maximumArea: number,
+  options: Pick<CertifiedAreaRelaxationOptions,
+    "devices" | "limitWidth" | "limitHeight" | "allowRotate">,
 ): CertifiedAreaRelaxationResult {
+  const maximumArea = options.limitWidth * options.limitHeight;
   if (value["constraintProfile"] !== CERTIFIED_AREA_RELAXATION_PROFILE) {
     throw new Error("Unexpected certified relaxation profile");
   }
@@ -240,6 +254,13 @@ function parseEnvelope(
     value["certifiedIntegerLowerBound"], maximumArea,
   );
   const masterIncumbentArea = optionalAreaInteger(value["masterIncumbentArea"], maximumArea);
+  const masterPlacement = parseMasterPlacement(
+    value["masterPlacement"],
+    options.devices,
+    options.limitWidth,
+    options.limitHeight,
+    options.allowRotate,
+  );
   if (rawBestObjectiveBound === undefined || certifiedIntegerLowerBound === undefined) {
     throw new Error("Solver did not return a certified objective bound");
   }
@@ -256,12 +277,98 @@ function parseEnvelope(
   if (status === "optimal" && certifiedIntegerLowerBound !== masterIncumbentArea) {
     throw new Error("Optimal relaxation must close its own objective gap");
   }
+  if (masterPlacement !== undefined && masterIncumbentArea !== undefined
+    && measurePlacementArea(masterPlacement) !== masterIncumbentArea) {
+    throw new Error("Master placement does not match its incumbent area");
+  }
   return {
     ...base,
     rawBestObjectiveBound,
     certifiedIntegerLowerBound,
     ...(masterIncumbentArea === undefined ? {} : { masterIncumbentArea }),
+    ...(masterPlacement === undefined ? {} : { masterPlacement }),
   };
+}
+
+function parseMasterPlacement(
+  value: unknown,
+  devices: readonly CertifiedAreaRelaxationDevice[],
+  limitWidth: number,
+  limitHeight: number,
+  allowRotate: boolean,
+): CertifiedAreaRelaxationPlacement[] | undefined {
+  if (value === undefined) return undefined;
+  if (!Array.isArray(value) || value.length !== devices.length) {
+    throw new Error("Master placement must contain every certified rectangle exactly once");
+  }
+  const expectedById = new Map(devices.map((device) => [device.id, device] as const));
+  const seen = new Set<string>();
+  const placements = value.map((entry, index): CertifiedAreaRelaxationPlacement => {
+    if (typeof entry !== "object" || entry === null) {
+      throw new Error(`Master placement ${index} must be an object`);
+    }
+    const record = entry as Record<string, unknown>;
+    const id = record["id"];
+    const x = record["x"];
+    const y = record["y"];
+    const width = record["width"];
+    const height = record["height"];
+    const rotation = record["rotation"];
+    const device = typeof id === "string" ? expectedById.get(id) : undefined;
+    if (device === undefined || seen.has(id as string)) {
+      throw new Error(`Master placement ${index} has an unknown or duplicate device ID`);
+    }
+    seen.add(id as string);
+    if (!Number.isSafeInteger(x) || (x as number) < 0
+      || !Number.isSafeInteger(y) || (y as number) < 0
+      || !Number.isSafeInteger(width) || (width as number) <= 0
+      || !Number.isSafeInteger(height) || (height as number) <= 0
+      || (rotation !== 0 && rotation !== 90)) {
+      throw new Error(`Master placement ${id as string} has invalid geometry`);
+    }
+    const expectedWidth = rotation === 90
+      ? device.height
+      : device.width;
+    const expectedHeight = rotation === 90
+      ? device.width
+      : device.height;
+    if ((rotation === 90 && (!allowRotate || device.width === device.height))
+      || width !== expectedWidth
+      || height !== expectedHeight
+      || (x as number) + (width as number) > limitWidth
+      || (y as number) + (height as number) > limitHeight) {
+      throw new Error(`Master placement ${id as string} violates its certified rectangle domain`);
+    }
+    return {
+      id: id as string,
+      x: x as number,
+      y: y as number,
+      width: width as number,
+      height: height as number,
+      rotation,
+    };
+  });
+  for (const [index, left] of placements.entries()) {
+    for (const right of placements.slice(index + 1)) {
+      if (left.x < right.x + right.width && left.x + left.width > right.x
+        && left.y < right.y + right.height && left.y + left.height > right.y) {
+        throw new Error(`Master placements ${left.id} and ${right.id} overlap`);
+      }
+    }
+  }
+  if (Math.min(...placements.map((placement) => placement.x)) !== 0
+    || Math.min(...placements.map((placement) => placement.y)) !== 0) {
+    throw new Error("Master placement violates the proof model translation anchors");
+  }
+  return placements.sort((left, right) => left.id.localeCompare(right.id));
+}
+
+function measurePlacementArea(placements: readonly CertifiedAreaRelaxationPlacement[]): number {
+  if (placements.length === 0) return 0;
+  const minimumX = Math.min(...placements.map((placement) => placement.x));
+  const maximumX = Math.max(...placements.map((placement) => placement.x + placement.width));
+  const maximumY = Math.max(...placements.map((placement) => placement.y + placement.height));
+  return (maximumX - minimumX) * maximumY;
 }
 
 function isStatus(value: unknown): value is CertifiedAreaRelaxationStatus {

@@ -67,6 +67,9 @@ import {
 import { solveCpSatAreaLowerBound } from "./certified-area-relaxation";
 import { createCertifiedAreaMandatoryDevices } from "./certified-area-mandatory-devices";
 import { measureCertifiedLogisticsFootprintLowerBound } from "./certified-logistics-footprint";
+import type {
+  CertifiedRoutingCapacityScreeningProblem,
+} from "./certified-routing-capacity-screening";
 import {
   createBoundingAreaOptimalityReport,
   DEFAULT_CERTIFIED_AREA_MAX_SECONDS,
@@ -1427,53 +1430,7 @@ export function buildHeadlessMaterialGraph(
   request: HeadlessOptimizationRequest,
   registry: RegistryContract,
 ): HeadlessMaterialGraph {
-  validateRequest(request);
-  const index = buildProductionPlanningIndex(registry);
-  const supplies = (request.supplies ?? []).map((supply, supplyIndex): ProductionPlanningPort => ({
-    id: `supply-${supplyIndex}`,
-    itemId: supply.itemId,
-    perMinute: supply.perMinute,
-    isInfinite: supply.infinite,
-  }));
-  const plan = computeProductionPlan({
-    targets: request.targets.map((target, targetIndex) => ({
-      id: `target-${targetIndex}`,
-      itemId: target.itemId,
-      perMinute: target.perMinute,
-    })),
-    supplies,
-    infiniteItemIds: new Set(request.infiniteItemIds ?? []),
-    recipeChoices: new Map(Object.entries(request.recipeChoices ?? {})),
-    sourceConfig: {
-      ...DEFAULT_SOURCE_CONFIG,
-      ...request.sourceConfig,
-    },
-  }, index);
-  if (plan.unresolvedPerMinute > 0) {
-    const unresolved = plan.itemTotals
-      .filter((item) => item.unresolvedPerMinute > 0)
-      .map((item) => `${item.itemId}=${item.unresolvedPerMinute}/min`)
-      .join(", ");
-    throw new Error(`Production plan has unresolved inputs: ${unresolved}`);
-  }
-  const productionRequests = balanceCyclicProductionRequests(
-    createDeviceRequests(
-      plan.recipeTotals,
-      index.entityById,
-      index.recipeById,
-      request.minimumRecipeDeviceCounts,
-      request.allowRecipeOutputWaste,
-    ),
-    request.targets,
-    index.entityById,
-    index.recipeById,
-  );
-  const materialRequests = createWarehouseLogisticsRequests(
-    productionRequests,
-    request.targets,
-    index.entityById,
-    registry,
-  ).filter((deviceRequest) => deviceRequest.kind !== "warehouse-bus");
+  const materialRequests = createGeometryFreeMaterialRequests(request, registry);
   const edges = createCpSatFlowEdges(materialRequests, registry)
     .map((edge) => ({
       sourceId: edge.sourceId,
@@ -1531,6 +1488,111 @@ export function buildHeadlessMaterialGraph(
     edges,
     components,
   };
+}
+
+/**
+ * Build material balances for proof-candidate screening without coordinates,
+ * route paths, or the producer allocation used by the candidate solver.
+ */
+export function buildCertifiedRoutingCapacityScreeningProblem(
+  request: HeadlessOptimizationRequest,
+  registry: RegistryContract,
+): CertifiedRoutingCapacityScreeningProblem {
+  const materialRequests = createGeometryFreeMaterialRequests(request, registry);
+  const demandedItemIds = [...new Set(materialRequests.flatMap((device) =>
+    [...device.inputs.keys()]))].sort();
+  const items: CertifiedRoutingCapacityScreeningProblem["items"][number][] = [];
+  const omittedItems: CertifiedRoutingCapacityScreeningProblem["omittedItems"][number][] = [];
+  for (const itemId of demandedItemIds) {
+    if (registry.queries.resolveItemDomain(itemId) !== "solid") {
+      omittedItems.push({ itemId, reason: "non-solid-domain" });
+      continue;
+    }
+    const totalInput = materialRequests.reduce(
+      (sum, device) => sum + (device.inputs.get(itemId) ?? 0), 0,
+    );
+    const totalOutput = materialRequests.reduce(
+      (sum, device) => sum + (device.outputs.get(itemId) ?? 0), 0,
+    );
+    if (totalOutput + 0.000001 < totalInput) {
+      omittedItems.push({ itemId, reason: "unmodeled-external-supply" });
+      continue;
+    }
+    items.push({
+      itemId,
+      laneCapacityPerMinute: resolveLogisticsLaneCapacityPerMinute(itemId, registry),
+    });
+  }
+  const includedItemIds = new Set(items.map((item) => item.itemId));
+  return {
+    items,
+    nodes: materialRequests.map((device) => ({
+      id: device.id,
+      kind: device.kind as "production" | "storage" | "warehouse-port",
+      inputs: [...device.inputs]
+        .filter(([itemId]) => includedItemIds.has(itemId))
+        .map(([itemId, perMinute]) => ({ itemId, perMinute }))
+        .sort((left, right) => left.itemId.localeCompare(right.itemId)),
+      outputs: [...device.outputs]
+        .filter(([itemId]) => includedItemIds.has(itemId))
+        .map(([itemId, perMinute]) => ({ itemId, perMinute }))
+        .sort((left, right) => left.itemId.localeCompare(right.itemId)),
+    })).sort((left, right) => left.id.localeCompare(right.id)),
+    omittedItems,
+  };
+}
+
+function createGeometryFreeMaterialRequests(
+  request: HeadlessOptimizationRequest,
+  registry: RegistryContract,
+): DeviceRequest[] {
+  validateRequest(request);
+  const index = buildProductionPlanningIndex(registry);
+  const supplies = (request.supplies ?? []).map((supply, supplyIndex): ProductionPlanningPort => ({
+    id: `supply-${supplyIndex}`,
+    itemId: supply.itemId,
+    perMinute: supply.perMinute,
+    isInfinite: supply.infinite,
+  }));
+  const plan = computeProductionPlan({
+    targets: request.targets.map((target, targetIndex) => ({
+      id: `target-${targetIndex}`,
+      itemId: target.itemId,
+      perMinute: target.perMinute,
+    })),
+    supplies,
+    infiniteItemIds: new Set(request.infiniteItemIds ?? []),
+    recipeChoices: new Map(Object.entries(request.recipeChoices ?? {})),
+    sourceConfig: {
+      ...DEFAULT_SOURCE_CONFIG,
+      ...request.sourceConfig,
+    },
+  }, index);
+  if (plan.unresolvedPerMinute > 0) {
+    const unresolved = plan.itemTotals
+      .filter((item) => item.unresolvedPerMinute > 0)
+      .map((item) => `${item.itemId}=${item.unresolvedPerMinute}/min`)
+      .join(", ");
+    throw new Error(`Production plan has unresolved inputs: ${unresolved}`);
+  }
+  const productionRequests = balanceCyclicProductionRequests(
+    createDeviceRequests(
+      plan.recipeTotals,
+      index.entityById,
+      index.recipeById,
+      request.minimumRecipeDeviceCounts,
+      request.allowRecipeOutputWaste,
+    ),
+    request.targets,
+    index.entityById,
+    index.recipeById,
+  );
+  return createWarehouseLogisticsRequests(
+    productionRequests,
+    request.targets,
+    index.entityById,
+    registry,
+  ).filter((deviceRequest) => deviceRequest.kind !== "warehouse-bus");
 }
 
 function createDeviceRequests(

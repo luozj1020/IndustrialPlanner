@@ -118,6 +118,30 @@ describe("certified area relaxation bridge", () => {
     });
   });
 
+  it("rejects a malformed placement-only witness at the proof boundary", () => {
+    process.env["INDUSTRIAL_PLANNER_PYTHON"] = "certified-python";
+    spawnSyncMock.mockReturnValue(processResult({
+      status: "optimal",
+      rawBestObjectiveBound: 6,
+      certifiedIntegerLowerBound: 6,
+      masterIncumbentArea: 6,
+      masterPlacement: [{
+        id: "machine",
+        x: 0,
+        y: 0,
+        width: 1,
+        height: 6,
+        rotation: 0,
+      }],
+    }));
+
+    expect(solveCpSatAreaLowerBound(OPTIONS)).toEqual({
+      constraintProfile: CERTIFIED_AREA_RELAXATION_PROFILE,
+      objective: CERTIFIED_AREA_RELAXATION_OBJECTIVE,
+      status: "solver-failed",
+    });
+  });
+
   it("validates the proof model domain before invoking Python", () => {
     expect(() => solveCpSatAreaLowerBound({
       ...OPTIONS,

@@ -4,6 +4,7 @@ import {
   assessLayerInterlockWidthFeasibility,
   allocateRefinementCandidateBudgets,
   boundedCbs,
+  buildCertifiedRoutingCapacityScreeningProblem,
   buildHeadlessMaterialGraph,
   buildTopologyComponents,
   canRelaxedGridPointsConnect,
@@ -1981,6 +1982,53 @@ describe("headless layout optimizer", () => {
       const target = nodesById.get(edge.targetId)!;
       return source.componentId === target.componentId || source.layer < target.layer;
     })).toBe(true);
+  });
+
+  it("exports allocation-independent solid material balances for capacity screening", () => {
+    const problem = buildCertifiedRoutingCapacityScreeningProblem({
+      width: 32,
+      height: 32,
+      targets: [{ itemId: "item_iron_nugget", perMinute: 60 }],
+      search: { iterations: 0, routingVariants: 1, seed: 42 },
+    }, createRegistryContract());
+
+    expect(problem.items.length).toBeGreaterThan(0);
+    expect(problem.omittedItems).toEqual([]);
+    expect(problem.nodes.some((node) => node.kind === "warehouse-port")).toBe(true);
+    for (const item of problem.items) {
+      const totalInput = problem.nodes.reduce((sum, node) =>
+        sum + (node.inputs.find((flow) => flow.itemId === item.itemId)?.perMinute ?? 0), 0);
+      const totalOutput = problem.nodes.reduce((sum, node) =>
+        sum + (node.outputs.find((flow) => flow.itemId === item.itemId)?.perMinute ?? 0), 0);
+      expect(totalOutput + 0.000001).toBeGreaterThanOrEqual(totalInput);
+    }
+  });
+
+  it("records boundary-fed fluid demand instead of promoting it into belt screening", () => {
+    const problem = buildCertifiedRoutingCapacityScreeningProblem({
+      width: 32,
+      height: 32,
+      targets: [{
+        itemId: "item_iron_bottle_filled_liquid_xiranite",
+        perMinute: 30,
+      }],
+      supplies: [
+        { itemId: "item_iron_bottle", perMinute: 30, infinite: true },
+        { itemId: "item_liquid_xiranite", perMinute: 30, infinite: true },
+      ],
+      recipeChoices: {
+        item_iron_bottle_filled_liquid_xiranite:
+          "r_liquid_filling_iron_bottle_xiranite_default",
+      },
+      search: { iterations: 0, routingVariants: 1, seed: 42 },
+    }, createRegistryContract());
+
+    expect(problem.omittedItems).toContainEqual({
+      itemId: "item_liquid_xiranite",
+      reason: "non-solid-domain",
+    });
+    expect(problem.items.some((item) => item.itemId === "item_liquid_xiranite")).toBe(false);
+    expect(problem.items.some((item) => item.itemId === "item_iron_bottle")).toBe(true);
   });
 
   it("materializes a requested minimum recipe count without changing total flow", () => {

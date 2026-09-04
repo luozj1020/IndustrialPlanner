@@ -10,7 +10,7 @@ the current routed UB and an instance-hash-matched best-known strict UB.
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | iron-nugget | 66 / — | 37 | 38 (B3−2→1 lane→1 cell) | 39 / 39 / 39 | 39 | 27 (40.91%) | 39 / 12 / 15 | 66+0+0 | B2/2→1/2;X0 |
 | simple-chain | 42 / — | 34 | 35 (B3−1→2 lanes→1 cell) | 36 / 36 / 36 | 36 | 6 (14.29%) | 37 / 0 / 5 | 42+0+0 | B2/1→1/3;X0 |
-| dense-scc-fanout | 484 / — | 241 | 247 (B17−6→11 lanes→6 cells) | 241 / 241 / 242 | 247 | 237 (48.97%) | 318 / 0 / 166 | 441+0+43 | B16/6→8/65;X9 |
+| dense-scc-fanout | 484 / — | 241 | 247 (B17−6→11 lanes→6 cells) | 241 / 242 / 242 | 247 | 237 (48.97%) | 318 / 0 / 166 | 441+0+43 | B16/6→8/65;X9 |
 | medium-battery-fan-in | 345 / 330 | 115 | 118 (B10−5→5 lanes→3 cells) | 117 / 117 / 117 | 118 | 212 (64.24%) | 148 / 120 / 62 | 330+0+0 | B8/5→4/33;X3 |
 
 The medium best-known artifact is regenerated from the tracked 330-cell full
@@ -21,13 +21,12 @@ all gap calculations continue to use 330.
 This data separates two effects:
 
 - Medium closes its placement master at 117 within two seconds. More proof time
-  cannot reduce its 213-cell full gap; stronger globally valid game-rule
+  cannot reduce its 212-cell full gap; stronger globally valid game-rule
   constraints are required. A 0.5-second solve can expire before CP-SAT emits a
   useful bound, in which case the 115-cell mandatory-area fallback remains valid.
-- Dense reaches a 241-cell proof bound with a 243-cell master incumbent at two
-  seconds, then closes its 242-cell placement master at ten seconds. The tiny
-  internal master gap contrasts with the roughly 50% full gap, which remains
-  relaxation weakness.
+- Dense closes its 242-cell placement master within two seconds in the final
+  run. Earlier time-bounded runs left only a two-cell internal master gap; the
+  roughly 49% full gap consistently remains relaxation weakness.
 - Simple-chain is already within six cells, making it a useful tiny case for
   screening a proposed strengthening before applying it to larger instances.
 
@@ -114,6 +113,54 @@ seconds). The witness is sound, but zero-cost bus space can sit outside the
 charged box and the extra directional variables slow the current proof. A
 future hub relaxation therefore needs a stronger count-independent game-rule
 formulation before it earns production proof budget.
+
+## Routing-capacity screening v1
+
+The benchmark now screens each placement-only CP-SAT incumbent against
+allocation-independent axis-cut capacity. This remains diagnostic: it does not
+change `LB`, `full gap`, the v3a proof model, or the best-known UB. For a solid
+item and one side of an axis cut, the screen derives the residual material
+deficit from device input/output rates and converts it to belt lanes using the
+game's belt throughput. It does not read routed paths or `createCpSatFlowEdges`
+producer assignments.
+
+The screen deliberately relaxes every uncertain contribution. A rectangle is
+assigned to one side only when its whole footprint plus a one-cell endpoint
+halo lies there; ambiguous input demand is omitted and ambiguous output is
+available on both sides. Warehouse-unloader output is available globally, so
+area-excluded supply belts cannot create a false mandatory crossing. Fluid and
+unmodeled boundary-supply items are recorded as omitted. Synthetic proof-only
+rectangles such as the one-minimum-power witness do not block a cut. For each
+remaining cut, capacity is the number of free grid adjacencies across the
+charged placement envelope. The router permits one perpendicular same-kind
+crossing in a cell, but never two lanes using the same cut adjacency.
+
+The 2026-09-04 representative run screened the two-second master witness as
+follows (`violating / active cuts`, then the strongest `demand / capacity`):
+
+| case | axis-cut screen @ 2s | maximum deficit |
+| --- | ---: | ---: |
+| iron-nugget | 3 / 5; H6 = 1 / 0 | 1 |
+| simple-chain | 2 / 2; H7 = 1 / 0 | 1 |
+| dense-scc-fanout | 17 / 17; V12 = 6 / 0 | 6 |
+| medium-battery-fan-in | 5 / 5; H7 = 4 / 0 | 4 |
+
+Thus every sampled v3a witness would be rejected by at least one sound
+necessary condition, with the strongest signal on dense. This is evidence that
+an offline v3c constraint prototype is worth measuring. It is **not** evidence
+that the area lower bound rises: another packing at the same area may satisfy
+all cuts. In addition, v3a currently orders same-size rectangles as a valid
+packing symmetry even when their recipe identities differ. The table excludes
+the emitted labeled witness, not every material-identity permutation of the
+same geometry. A v3c model must therefore restrict that symmetry to devices
+with identical material signatures (or remove it), encode the condition over
+placement variables, re-run the exact-small oracle invariant, and measure an
+actual LB lift.
+
+Axis coordinates and counts are witness-specific. An earlier two-second dense
+run produced a 243-cell witness with `18 / 19` violating/active cuts and maximum
+deficit 5; the final 242-cell witness produced `17 / 17` and deficit 6. The
+stable observation is rejection of both witnesses, not a canonical cut.
 
 Run the suite with:
 

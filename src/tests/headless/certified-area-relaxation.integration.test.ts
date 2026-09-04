@@ -87,6 +87,12 @@ describe.skipIf(ortoolsPython === undefined)("certified area relaxation exact or
     expect(result.status).toBe("optimal");
     expect(result.certifiedIntegerLowerBound).toBe(oracle);
     expect(result.masterIncumbentArea).toBe(oracle);
+    expect(result.masterPlacement).toHaveLength(testCase.devices.length);
+    const placement = result.masterPlacement!;
+    const minimumX = Math.min(...placement.map((device) => device.x));
+    const maximumX = Math.max(...placement.map((device) => device.x + device.width));
+    const maximumY = Math.max(...placement.map((device) => device.y + device.height));
+    expect((maximumX - minimumX) * maximumY).toBe(oracle);
   }, 30_000);
 
   it("proves the relaxation infeasible when no orientation fits", () => {

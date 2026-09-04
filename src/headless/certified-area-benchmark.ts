@@ -18,6 +18,11 @@ import {
   type CertifiedAreaRelaxationOptions,
   type CertifiedAreaRelaxationResult,
 } from "./certified-area-relaxation";
+import {
+  screenCertifiedRoutingCapacity,
+  type CertifiedRoutingCapacityScreeningProblem,
+  type CertifiedRoutingCapacityScreeningResult,
+} from "./certified-routing-capacity-screening";
 import type {
   BoundingAreaOptimalityStatus,
   CertifiedLogisticsFootprintLowerBound,
@@ -88,6 +93,8 @@ export interface CertifiedAreaBenchmarkCase {
   readonly allowRotate: boolean;
   /** Geometry-free static proof derived from the frozen material graph. */
   readonly certifiedLogisticsFootprint?: CertifiedLogisticsFootprintLowerBound;
+  /** Diagnostic-only material balances; never combined into a lower bound. */
+  readonly routingCapacityScreeningProblem?: CertifiedRoutingCapacityScreeningProblem;
   /** Present only for this run's routed incumbent that passed the strict UB validator. */
   readonly currentRoutedUpperBound?: number;
   readonly currentAreaAttribution?: CertifiedAreaGameRuleAttribution;
@@ -114,6 +121,8 @@ export interface CertifiedAreaBenchmarkSample {
   readonly masterAbsoluteGap?: number;
   readonly masterRelativeGap?: number;
   readonly masterProofClosed: boolean;
+  /** Screening of this placement witness only; not an area lower bound. */
+  readonly routingCapacityScreening?: CertifiedRoutingCapacityScreeningResult;
   readonly proof: CertifiedAreaRelaxationResult;
 }
 
@@ -136,6 +145,11 @@ export interface CertifiedAreaBenchmarkCaseResult {
   readonly mandatoryDeviceArea: number;
   readonly mandatoryDeviceAndLogisticsArea?: number;
   readonly certifiedLogisticsFootprint?: CertifiedLogisticsFootprintLowerBound;
+  readonly routingCapacityScreeningProblemSummary?: {
+    readonly itemCount: number;
+    readonly nodeCount: number;
+    readonly omittedItems: CertifiedRoutingCapacityScreeningProblem["omittedItems"];
+  };
   readonly mandatoryRectangleAreaByCategory: ReturnType<typeof measureCertifiedAreaByCategory>;
   readonly samples: readonly CertifiedAreaBenchmarkSample[];
   /** Exact incumbent-gap identity for diagnosis only; none of its terms are new lower bounds. */
@@ -263,6 +277,17 @@ export function benchmarkCertifiedAreaBounds(
       const masterRelativeGap = masterAbsoluteGap === undefined || masterIncumbentArea === undefined
         ? undefined
         : masterIncumbentArea === 0 ? 0 : masterAbsoluteGap / masterIncumbentArea;
+      const routingCapacityScreening = benchmarkCase.routingCapacityScreeningProblem === undefined
+        || proof.masterPlacement === undefined
+        ? undefined
+        : screenCertifiedRoutingCapacity({
+            problem: benchmarkCase.routingCapacityScreeningProblem,
+            placements: proof.masterPlacement,
+          });
+      if (routingCapacityScreening !== undefined
+        && routingCapacityScreening.screenedPlacementArea !== masterIncumbentArea) {
+        throw new Error("Routing-capacity screen and master incumbent area disagree");
+      }
       return {
         maxSeconds,
         status: optimality.status,
@@ -279,6 +304,7 @@ export function benchmarkCertifiedAreaBounds(
         ...(masterAbsoluteGap === undefined ? {} : { masterAbsoluteGap }),
         ...(masterRelativeGap === undefined ? {} : { masterRelativeGap }),
         masterProofClosed: masterAbsoluteGap === 0,
+        ...(routingCapacityScreening === undefined ? {} : { routingCapacityScreening }),
         proof,
       };
     });
@@ -323,6 +349,13 @@ export function benchmarkCertifiedAreaBounds(
         ? {} : { mandatoryDeviceAndLogisticsArea: gapSample.mandatoryDeviceAndLogisticsArea }),
       ...(benchmarkCase.certifiedLogisticsFootprint === undefined
         ? {} : { certifiedLogisticsFootprint: benchmarkCase.certifiedLogisticsFootprint }),
+      ...(benchmarkCase.routingCapacityScreeningProblem === undefined ? {} : {
+        routingCapacityScreeningProblemSummary: {
+          itemCount: benchmarkCase.routingCapacityScreeningProblem.items.length,
+          nodeCount: benchmarkCase.routingCapacityScreeningProblem.nodes.length,
+          omittedItems: benchmarkCase.routingCapacityScreeningProblem.omittedItems,
+        },
+      }),
       mandatoryRectangleAreaByCategory,
       samples,
       ...(incumbentGapAttribution === undefined ? {} : { incumbentGapAttribution }),
@@ -346,6 +379,7 @@ export function createCertifiedAreaBenchmarkCaseFromResult(options: {
   readonly registry: Pick<RegistryContract, "entityDefinitions">;
   readonly allowRotate: boolean;
   readonly certifiedLogisticsFootprint: CertifiedLogisticsFootprintLowerBound;
+  readonly routingCapacityScreeningProblem?: CertifiedRoutingCapacityScreeningProblem;
   readonly validatedBestKnown?: CertifiedAreaBestKnownArtifact;
   readonly routedIncumbentElapsedMs?: number;
 }): CertifiedAreaBenchmarkCase {
@@ -370,6 +404,8 @@ export function createCertifiedAreaBenchmarkCaseFromResult(options: {
     limitHeight: options.result.layout.limitHeight,
     allowRotate: options.allowRotate,
     certifiedLogisticsFootprint: options.certifiedLogisticsFootprint,
+    ...(options.routingCapacityScreeningProblem === undefined
+      ? {} : { routingCapacityScreeningProblem: options.routingCapacityScreeningProblem }),
     currentRoutedUpperBound: optimality.upperBound,
     currentAreaAttribution: createCertifiedAreaGameRuleAttribution(options.result),
     ...(options.validatedBestKnown === undefined
@@ -400,6 +436,7 @@ export function formatCertifiedAreaBenchmarkMarkdown(
     "remainder (origin+interior)",
     "envelope (core+power+logistics)",
     "lane screen charged/excluded→floor/actual;cross",
+    `axis capacity screen @ ${formatBudget(report.gapBudgetSeconds)}s`,
     `gap identity @ ${formatBudget(report.gapBudgetSeconds)}s`,
   ];
   const separator = header.map(() => "---:");
@@ -425,12 +462,30 @@ export function formatCertifiedAreaBenchmarkMarkdown(
       formatAttributionRemainder(benchmarkCase.benchmarkAreaAttribution),
       formatEnvelopeAttribution(benchmarkCase.benchmarkAreaAttribution),
       formatLaneCellScreening(benchmarkCase.benchmarkAreaAttribution),
+      formatRoutingCapacityScreening(
+        gapSample?.routingCapacityScreening,
+        benchmarkCase.routingCapacityScreeningProblemSummary?.omittedItems.length ?? 0,
+      ),
       formatIncumbentGapAttribution(benchmarkCase.incumbentGapAttribution),
     ];
   });
   return [header, separator, ...rows]
     .map((row) => `| ${row.join(" | ")} |`)
     .join("\n");
+}
+
+function formatRoutingCapacityScreening(
+  screening: CertifiedRoutingCapacityScreeningResult | undefined,
+  omittedItemCount: number,
+): string {
+  if (screening === undefined) return "—";
+  const strongest = screening.strongestCut;
+  const cut = strongest === undefined
+    ? "inactive"
+    : `${strongest.axis === "vertical" ? "V" : "H"}${strongest.coordinate}`
+      + `:${strongest.demand}/${strongest.capacity}`;
+  return `${screening.violatingCutCount}/${screening.activeCutCount}`
+    + `;Δ${screening.maximumDeficit};${cut};omit${omittedItemCount}`;
 }
 
 export function createCertifiedAreaIncumbentGapAttribution(options: {

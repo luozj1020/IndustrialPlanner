@@ -5,7 +5,11 @@ import { dirname, resolve } from "node:path";
 import { createRegistryContract } from "../registry";
 import type { BlueprintDocument } from "../domain/document/blueprint-document";
 
-import { buildHeadlessMaterialGraph, optimizeHeadlessLayout } from "./layout-optimizer";
+import {
+  buildCertifiedRoutingCapacityScreeningProblem,
+  buildHeadlessMaterialGraph,
+  optimizeHeadlessLayout,
+} from "./layout-optimizer";
 import {
   benchmarkCertifiedAreaBounds,
   certifyArchivedAreaBestKnownArtifact,
@@ -92,6 +96,8 @@ async function main(): Promise<void> {
         graph,
         resolveItemDomain: (itemId) => registry.queries.resolveItemDomain(itemId),
       });
+      const routingCapacityScreeningProblem =
+        buildCertifiedRoutingCapacityScreeningProblem(request, registry);
       const mandatoryDevices = createCertifiedAreaMandatoryDevices({
         entities: graph.nodes.map(({ id, kind, definitionId }) => ({ id, kind, definitionId })),
         entityDefinitions: registry.entityDefinitions,
@@ -120,6 +126,7 @@ async function main(): Promise<void> {
         limitHeight: request.height,
         allowRotate: request.allowRotate ?? true,
         certifiedLogisticsFootprint,
+        routingCapacityScreeningProblem,
         ...(validatedBestKnown === undefined ? {} : { validatedBestKnown }),
       };
       const routedIncumbentStartedAt = Date.now();
@@ -163,6 +170,7 @@ async function main(): Promise<void> {
           registry,
           allowRotate: request.allowRotate ?? true,
           certifiedLogisticsFootprint,
+          routingCapacityScreeningProblem,
           ...(validatedBestKnown === undefined ? {} : { validatedBestKnown }),
           routedIncumbentElapsedMs: Date.now() - routedIncumbentStartedAt,
         }));

@@ -129,9 +129,9 @@ INDUSTRIAL_PLANNER_PYTHON=../.venv-headless/bin/python npm run benchmark:certifi
 ```
 
 默认 suite 对真实请求先生成并严格验证 routed UB，再分别以 0.5、2、10 秒运行 Certified Area
-Relaxation v2。Markdown 表显示 mandatory device LB、各预算的 CP-SAT LB 与 2 秒 gap；完整 JSON
+Relaxation v3a。Markdown 表显示 mandatory device/logistics LB、各预算的 CP-SAT LB 与 2 秒 gap；完整 JSON
 可用 `npm run headless -- benchmark-area <suite.json> --output benchmark.json --format json` 导出。
-v2 仅包含 mandatory rectangles、bounds、rotation、`NoOverlap2D`，以及最优值保持的平移/同构矩形
+v3a proof model 仅包含 mandatory charged rectangles、bounds、rotation、`NoOverlap2D`，以及最优值保持的平移/同构矩形
 对称消除和显式 packing 不等式；不导入 topology layer 或 learned routing cuts。29 台生产设备的
 high-capacity 实例单独由 `npm run benchmark:certified-area:long` 运行，避免主 suite 被 UB 路由耗时主导。
 
@@ -861,7 +861,8 @@ proxy objective 或 learned cuts。v3a 纳入冻结生产图中必然存在且�
 
 `benchmark-area` 同时报告每个预算的 solver status、master incumbent/internal gap，以及本次 UB、
 同实例哈希的 best-known strict UB 和完整游戏布局 gap。其实体面积分解只用于诊断游戏机制带来的
-松弛，不会被提升成证明。历史报告需先通过：
+松弛，不会被提升成证明。每个 placement witness 还会接受诊断性的轴向 routing-capacity screening；
+它只使用设备物料平衡，不读取当前 producer allocation 或 A* 路径，也不会进入 `LB_A`。历史报告需先通过：
 
 ```bash
 npm run headless -- certify-area-best-known request.json report.json --output best-known.json
