@@ -131,6 +131,13 @@ INDUSTRIAL_PLANNER_PYTHON=.venv-headless/bin/python npm run headless -- optimize
 Windows 下 Python 路径通常为 `.venv-headless/Scripts/python.exe`。未安装 OR-Tools 或未找到指定
 Python 时，优化器会自动回退到确定性 LNS，不依赖在线服务。
 
+可通过 `optimize <request.json> --bounded-box` 启用实验性 M1 全局搜索：在可行 warm start 后，
+对面积小于 incumbent 的 Pareto box frontier 重新求设备位置/旋转，并进行完整路由与 strict 验收。
+它不复用面积 proof model，也不把 A* 失败或 Master 耗尽报告为 full-box UNSAT。
+`search.boundedBox` 可分别限制 box 数量、Master 秒数与候选数。运行
+`npm run benchmark:global-layout` 或 `npm run benchmark:global-layout:long` 对照严格 UB；
+配置、实测与证明边界见 [global-layout benchmark](benchmarks/global-layout/README.md)。
+
 致密源石粉末示例按 `90/min` 的三联组规划：一台砂叶（数据 ID 中沿用 moss）粉碎机
 每 2 秒将 1 份砂叶加工为 3 份粉末，恰好满速供应三台各消耗 `30/min` 的增稠机，
 避免只建单线时闲置粉碎机三分之二产能。

@@ -121,6 +121,21 @@ npm run headless -- optimize <request.json> [--output blueprint.json] [--report 
 | `--output` | 蓝图输出路径 | `optimized-blueprint.json` |
 | `--report` | 优化报告路径 | 不生成 |
 | `--svg` | 布局 SVG 路径 | 不生成 |
+| `--bounded-box` | 启用 M1 bounded-box SAT 全局搜索，并使用 global scope | 关闭 |
+
+### benchmark-global
+
+```bash
+INDUSTRIAL_PLANNER_PYTHON=../.venv-headless/bin/python npm run benchmark:global-layout -- \
+  --output /tmp/global-benchmark.json --artifacts /tmp/global-artifacts
+```
+
+M1 在 warm start/local closure 后搜索更小的 Pareto-maximal boxes，使用独立无目标 CP-SAT
+Master 重新选择设备位置、旋转及必要端口，再通过完整 Router 与 strict validator 验收。
+`search.boundedBox` 的默认预算为 8 个 box、各 1 秒 Master、各 4 个 placement；默认不启用。
+仓库几何仍可重排，免计费实体可位于 charged box 外。不把 master infeasible、A* 失败、超时
+提升为 full-box UNSAT，生产 certified LB 仍是 v3a。完整说明和实测见
+[global-layout benchmark](benchmarks/global-layout/README.md)。
 
 ### benchmark-area
 

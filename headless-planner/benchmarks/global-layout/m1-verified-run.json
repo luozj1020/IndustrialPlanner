@@ -1,0 +1,230 @@
+{
+  "profile": "global-layout-benchmark-m1",
+  "cases": [
+    {
+      "name": "iron-nugget",
+      "instanceHash": "fnv1a32:d998b6b4",
+      "warmStartUpperBound": 66,
+      "currentRoutedUpperBound": 54,
+      "benchmarkUpperBound": 54,
+      "boxesAttempted": 1,
+      "boxesSat": 1,
+      "boxesUnknown": 0,
+      "boxesCertifiedUnsat": 0,
+      "placementsEvaluated": 1,
+      "fullRouteSuccesses": 1,
+      "timeToFirstImprovementMs": 6583,
+      "elapsedMs": 14738,
+      "search": {
+        "constraintProfile": "bounded-box-sat-search-m1",
+        "status": "improved",
+        "frontierSize": 11,
+        "boxesSelected": 4,
+        "boxesAttempted": 1,
+        "masterPlacementsEvaluated": 1,
+        "routedWitnesses": 1,
+        "improvements": 1,
+        "warmStartUpperBound": 66,
+        "boxesSat": 1,
+        "boxesUnknown": 0,
+        "elapsedMs": 6583,
+        "timeToFirstImprovementMs": 6583,
+        "masterStatusCounts": {
+          "success": 1,
+          "master-infeasible": 0,
+          "unknown": 0,
+          "executable-missing": 0,
+          "dependency-missing": 0,
+          "timeout": 0,
+          "solver-failed": 0
+        },
+        "attempts": [
+          {
+            "box": {
+              "width": 6,
+              "height": 10,
+              "area": 60
+            },
+            "masterStatus": "success",
+            "placementCount": 4,
+            "routedWitnesses": 1,
+            "elapsedMs": 913
+          }
+        ],
+        "improvedBox": {
+          "width": 6,
+          "height": 10,
+          "area": 60
+        }
+      }
+    },
+    {
+      "name": "simple-chain",
+      "instanceHash": "fnv1a32:8551d2dc",
+      "warmStartUpperBound": 42,
+      "currentRoutedUpperBound": 42,
+      "benchmarkUpperBound": 42,
+      "boxesAttempted": 4,
+      "boxesSat": 0,
+      "boxesUnknown": 4,
+      "boxesCertifiedUnsat": 0,
+      "placementsEvaluated": 12,
+      "fullRouteSuccesses": 0,
+      "elapsedMs": 34008,
+      "search": {
+        "constraintProfile": "bounded-box-sat-search-m1",
+        "status": "no-routed-improvement",
+        "frontierSize": 7,
+        "boxesSelected": 4,
+        "boxesAttempted": 4,
+        "masterPlacementsEvaluated": 12,
+        "routedWitnesses": 0,
+        "improvements": 0,
+        "warmStartUpperBound": 42,
+        "boxesSat": 0,
+        "boxesUnknown": 4,
+        "elapsedMs": 25201,
+        "masterStatusCounts": {
+          "success": 3,
+          "master-infeasible": 1,
+          "unknown": 0,
+          "executable-missing": 0,
+          "dependency-missing": 0,
+          "timeout": 0,
+          "solver-failed": 0
+        },
+        "attempts": [
+          {
+            "box": {
+              "width": 3,
+              "height": 13,
+              "area": 39
+            },
+            "masterStatus": "success",
+            "placementCount": 4,
+            "routedWitnesses": 0,
+            "elapsedMs": 765
+          },
+          {
+            "box": {
+              "width": 4,
+              "height": 10,
+              "area": 40
+            },
+            "masterStatus": "success",
+            "placementCount": 4,
+            "routedWitnesses": 0,
+            "elapsedMs": 711
+          },
+          {
+            "box": {
+              "width": 5,
+              "height": 8,
+              "area": 40
+            },
+            "masterStatus": "master-infeasible",
+            "placementCount": 0,
+            "routedWitnesses": 0,
+            "elapsedMs": 183
+          },
+          {
+            "box": {
+              "width": 6,
+              "height": 6,
+              "area": 36
+            },
+            "masterStatus": "success",
+            "placementCount": 4,
+            "routedWitnesses": 0,
+            "elapsedMs": 856
+          }
+        ]
+      }
+    },
+    {
+      "name": "medium-battery",
+      "instanceHash": "fnv1a32:c8ff94e5",
+      "warmStartUpperBound": 345,
+      "currentRoutedUpperBound": 345,
+      "validatedBestKnownUpperBound": 330,
+      "benchmarkUpperBound": 330,
+      "regressionFromBestKnown": 15,
+      "boxesAttempted": 4,
+      "boxesSat": 0,
+      "boxesUnknown": 4,
+      "boxesCertifiedUnsat": 0,
+      "placementsEvaluated": 16,
+      "fullRouteSuccesses": 0,
+      "elapsedMs": 102857,
+      "search": {
+        "constraintProfile": "bounded-box-sat-search-m1",
+        "status": "no-routed-improvement",
+        "frontierSize": 26,
+        "boxesSelected": 4,
+        "boxesAttempted": 4,
+        "masterPlacementsEvaluated": 16,
+        "routedWitnesses": 0,
+        "improvements": 0,
+        "warmStartUpperBound": 345,
+        "boxesSat": 0,
+        "boxesUnknown": 4,
+        "elapsedMs": 32093,
+        "masterStatusCounts": {
+          "success": 4,
+          "master-infeasible": 0,
+          "unknown": 0,
+          "executable-missing": 0,
+          "dependency-missing": 0,
+          "timeout": 0,
+          "solver-failed": 0
+        },
+        "attempts": [
+          {
+            "box": {
+              "width": 15,
+              "height": 22,
+              "area": 330
+            },
+            "masterStatus": "success",
+            "placementCount": 4,
+            "routedWitnesses": 0,
+            "elapsedMs": 3545
+          },
+          {
+            "box": {
+              "width": 14,
+              "height": 24,
+              "area": 336
+            },
+            "masterStatus": "success",
+            "placementCount": 4,
+            "routedWitnesses": 0,
+            "elapsedMs": 3459
+          },
+          {
+            "box": {
+              "width": 16,
+              "height": 21,
+              "area": 336
+            },
+            "masterStatus": "success",
+            "placementCount": 4,
+            "routedWitnesses": 0,
+            "elapsedMs": 4321
+          },
+          {
+            "box": {
+              "width": 17,
+              "height": 20,
+              "area": 340
+            },
+            "masterStatus": "success",
+            "placementCount": 4,
+            "routedWitnesses": 0,
+            "elapsedMs": 4302
+          }
+        ]
+      }
+    }
+  ]
+}

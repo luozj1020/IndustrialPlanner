@@ -17,6 +17,8 @@
     "headless": "tsx --tsconfig tsconfig.app.json src/headless/cli.ts",
     "benchmark:certified-area": "tsx --tsconfig tsconfig.app.json src/headless/cli.ts benchmark-area benchmarks/certified-area/representative-suite.json",
     "benchmark:certified-area:long": "tsx --tsconfig tsconfig.app.json src/headless/cli.ts benchmark-area benchmarks/certified-area/long-running-suite.json",
+    "benchmark:global-layout": "tsx --tsconfig tsconfig.app.json src/headless/cli.ts benchmark-global benchmarks/global-layout/representative-suite.json",
+    "benchmark:global-layout:long": "tsx --tsconfig tsconfig.app.json src/headless/cli.ts benchmark-global benchmarks/global-layout/long-running-suite.json",
     "blueprint:convert": "tsx --tsconfig tsconfig.app.json src/scripts/convert-legacy-blueprint.ts",
     "draw-device-blueprint-svg": "tsx --tsconfig tsconfig.app.json src/scripts/draw-device-blueprint-svg.mjs",
     "format-device-sprites": "node src/scripts/format-device-sprites.mjs",

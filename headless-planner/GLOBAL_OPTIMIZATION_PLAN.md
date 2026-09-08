@@ -1,5 +1,17 @@
 # 通用产线自动铺设与全局优化模型
 
+## 当前路线：bounded-box search
+
+后文的层序/交错构造作为 warm start 与局部搜索历史设计保留，不是全局证明的限制。
+当前 M1 已实现 `warm start → Pareto box frontier → device-level satisfaction Master → full Router`
+并只接受 strict routed UB 改进。所有仓库实体都能在 box 搜索中移动，取货口不再是固定锚点。
+Master 没有 weighted objective、宏、跨 ID 几何对称排序或 learned cut；候选失败仍为 UNKNOWN。
+
+依次推进 M2 sound routing separation、M3 certified box UNSAT、M4 并行 frontier closure。
+仅当 `U-1` 全部 maximal boxes 被严格证明 UNSAT，才可由已有 strict UB=U 推出全局面积最优。
+charged box 与 physical map 必须分开；本次 generator 选定的 bus segment 数不能用于全局 UNSAT。
+参见 [M1 配置、实测与边界](benchmarks/global-layout/README.md)。
+
 ## 1. 目标与边界
 
 本模型面向任意配方、分支、汇流、并行设备和生产循环，不以某一条产线的配方名、设备 ID、数量或
@@ -13,7 +25,7 @@
 4. 保持连接关系不变，执行设备与传送带联合局部紧凑化；
 5. 在拓扑允许的自由度内执行全局交错、插入和重建。
 
-取货口是唯一允许固定的布局锚点。生产设备、协议存储箱、传送带和供电器的位置都必须由输入数据、
+取货口可作为旧顺序构造的临时锚点，但不是全局问题的固定实体。生产设备、协议存储箱、传送带和供电器的位置都必须由输入数据、
 物料图、端口、地图边界和目标函数共同决定。
 
 ## 2. 从产量到设备实例

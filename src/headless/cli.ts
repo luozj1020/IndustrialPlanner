@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 
 import { createRegistryContract } from "@/registry";
@@ -27,6 +27,10 @@ import { createCertifiedAreaMandatoryDevices } from "./certified-area-mandatory-
 import { renderMaterialGraphSvg } from "./material-graph-svg";
 import { renderBlueprintSvg } from "./svg-renderer";
 import type { HeadlessOptimizationRequest, HeadlessOptimizationResult } from "./types";
+import {
+  createGlobalLayoutBenchmarkRecord, formatGlobalLayoutBenchmark,
+  type GlobalLayoutBenchmarkRecord,
+} from "./global-layout-benchmark";
 
 async function main(): Promise<void> {
   const [command, ...args] = process.argv.slice(2);
@@ -203,6 +207,45 @@ async function main(): Promise<void> {
     return;
   }
 
+  if (command === "benchmark-global") {
+    const inputPath = args[0];
+    if (inputPath === undefined) throw new Error("Usage: benchmark-global <suite.json> [--output report.json] [--artifacts directory]");
+    const suitePath = resolve(inputPath);
+    const suite = parseAreaBenchmarkSuite(JSON.parse(await readFile(suitePath, "utf8")) as unknown);
+    const artifactDirectory = readOption(args, "--artifacts");
+    if (artifactDirectory !== undefined) await mkdir(resolve(artifactDirectory), { recursive: true });
+    const records: GlobalLayoutBenchmarkRecord[] = [];
+    for (const [caseIndex, entry] of suite.cases.entries()) {
+      const request = JSON.parse(await readFile(resolve(dirname(suitePath), entry.request), "utf8")) as HeadlessOptimizationRequest;
+      process.stderr.write(`benchmark-global: ${entry.name}\n`);
+      const graph = buildHeadlessMaterialGraph(request, registry);
+      const devices = createCertifiedAreaMandatoryDevices({ entities: graph.nodes, entityDefinitions: registry.entityDefinitions });
+      const instanceHash = createCertifiedAreaBenchmarkInstanceHash({ request, graph, devices, registry });
+      const validatedBestKnown = entry.bestKnownArtifact === undefined ? undefined : parseCertifiedAreaBestKnownArtifact(
+        JSON.parse(await readFile(resolve(dirname(suitePath), entry.bestKnownArtifact), "utf8")) as unknown,
+        instanceHash,
+      );
+      const started = Date.now();
+      const result = optimizeHeadlessLayout(request, registry);
+      records.push(createGlobalLayoutBenchmarkRecord({
+        name: entry.name, instanceHash, result, validatedBestKnown, elapsedMs: Date.now() - started,
+      }));
+      if (artifactDirectory !== undefined) {
+        const basename = `${caseIndex + 1}-${entry.name.replace(/[^a-zA-Z0-9_-]/g, "-")}`;
+        const reportPath = resolve(artifactDirectory, `${basename}-report.json`);
+        await writeFile(reportPath, `${JSON.stringify(result, null, 2)}\n`, "utf8");
+        await writeFile(resolve(artifactDirectory, `${basename}-blueprint.json`), `${JSON.stringify(result.blueprint, null, 2)}\n`, "utf8");
+        await writeFile(resolve(artifactDirectory, `${basename}-layout.svg`), renderBlueprintSvg(result.blueprint, registry), "utf8");
+        const attestation = createCertifiedAreaBestKnownArtifact({ instanceHash, result, sourceArtifact: reportPath });
+        await writeFile(resolve(artifactDirectory, `${basename}-strict-v5.json`), `${JSON.stringify(attestation, null, 2)}\n`, "utf8");
+      }
+    }
+    const outputPath = readOption(args, "--output");
+    if (outputPath !== undefined) await writeFile(resolve(outputPath), `${JSON.stringify({ profile: "global-layout-benchmark-m1", cases: records }, null, 2)}\n`, "utf8");
+    process.stdout.write(`${formatGlobalLayoutBenchmark(records)}\n`);
+    return;
+  }
+
   if (command === "certify-area-best-known") {
     const requestPath = args[0];
     const reportPath = args[1];
@@ -254,7 +297,15 @@ async function main(): Promise<void> {
     const outputPath = readOption(args, "--output") ?? "optimized-blueprint.json";
     const reportPath = readOption(args, "--report");
     const svgPath = readOption(args, "--svg");
-    const request = JSON.parse(await readFile(resolve(inputPath), "utf8")) as HeadlessOptimizationRequest;
+    const parsedRequest = JSON.parse(await readFile(resolve(inputPath), "utf8")) as HeadlessOptimizationRequest;
+    const request: HeadlessOptimizationRequest = args.includes("--bounded-box") ? {
+      ...parsedRequest,
+      search: {
+        ...parsedRequest.search,
+        scope: "global",
+        boundedBox: { ...parsedRequest.search?.boundedBox, enabled: true },
+      },
+    } : parsedRequest;
     const result = optimizeHeadlessLayout(request, registry);
     await writeFile(resolve(outputPath), `${JSON.stringify(result.blueprint, null, 2)}\n`, "utf8");
     if (reportPath !== undefined) {
@@ -347,6 +398,8 @@ async function main(): Promise<void> {
     "  graph <request.json> [--output material-graph.svg] [--json material-graph.json]",
     "  optimize <request.json> [--output blueprint.json] [--report report.json] [--svg layout.svg]",
     "  benchmark-area <suite.json> [--output benchmark.json] [--format markdown|json]",
+    "  benchmark-global <suite.json> [--output benchmark.json] [--artifacts directory]",
+    "  optimize <request.json> --bounded-box [--output blueprint.json] [--report report.json]",
     "  certify-area-best-known <request.json> <report.json> [--output artifact.json]",
     "  render <blueprint.json> [--output layout.svg]",
     "",

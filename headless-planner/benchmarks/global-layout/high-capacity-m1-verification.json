@@ -1,0 +1,88 @@
+{
+  "profile": "bounded-box-m1-high-capacity-verification",
+  "request": "benchmarks/global-layout/high-capacity-global-request.json",
+  "instanceHash": "fnv1a32:702f82ef",
+  "referenceIncumbent": "examples/headless/high-capacity-valley-battery-report.json",
+  "reportSha256": "6a5a4b263327d3379cba641e4013326c6bf66bb1c0933fc6a460b81c8f297c60",
+  "devicesMatch": true,
+  "entitiesMatch": true,
+  "topologyMatches": true,
+  "boundingArea": 2115,
+  "strictRoutedUpperBoundVerified": true,
+  "validation": {
+    "topologyId": "fnv1a32:06be9bb9",
+    "errorCount": 0,
+    "productionConnectivityVerified": true,
+    "productionThroughputVerified": true,
+    "powerCoverageVerified": true
+  },
+  "boundedBox": {
+    "constraintProfile": "bounded-box-sat-search-m1",
+    "status": "no-routed-improvement",
+    "frontierSize": 41,
+    "boxesSelected": 4,
+    "boxesAttempted": 4,
+    "masterPlacementsEvaluated": 0,
+    "routedWitnesses": 0,
+    "improvements": 0,
+    "warmStartUpperBound": 2115,
+    "boxesSat": 0,
+    "boxesUnknown": 4,
+    "elapsedMs": 66014,
+    "masterStatusCounts": {
+      "success": 0,
+      "master-infeasible": 0,
+      "unknown": 4,
+      "executable-missing": 0,
+      "dependency-missing": 0,
+      "timeout": 0,
+      "solver-failed": 0
+    },
+    "attempts": [
+      {
+        "box": {
+          "width": 45,
+          "height": 46,
+          "area": 2070
+        },
+        "masterStatus": "unknown",
+        "placementCount": 0,
+        "routedWitnesses": 0,
+        "elapsedMs": 10355
+      },
+      {
+        "box": {
+          "width": 44,
+          "height": 48,
+          "area": 2112
+        },
+        "masterStatus": "unknown",
+        "placementCount": 0,
+        "routedWitnesses": 0,
+        "elapsedMs": 10223
+      },
+      {
+        "box": {
+          "width": 46,
+          "height": 45,
+          "area": 2070
+        },
+        "masterStatus": "unknown",
+        "placementCount": 0,
+        "routedWitnesses": 0,
+        "elapsedMs": 10354
+      },
+      {
+        "box": {
+          "width": 43,
+          "height": 49,
+          "area": 2107
+        },
+        "masterStatus": "unknown",
+        "placementCount": 0,
+        "routedWitnesses": 0,
+        "elapsedMs": 10343
+      }
+    ]
+  }
+}

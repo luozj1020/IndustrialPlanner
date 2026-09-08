@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "validationProfile": "strict-routed-bounding-area-v5",
+  "instanceHash": "fnv1a32:d998b6b4",
+  "strictRoutedUpperBound": 54,
+  "blueprintId": "headless-0054384e",
+  "topologyId": "fnv1a32:4376cc18",
+  "sourceArtifact": "benchmarks/global-layout/iron-nugget-m1-report.json",
+  "areaAttribution": {
+    "rawFootprintAreaByKind": {
+      "production": 18,
+      "warehouse-bus": 48,
+      "storage": 9,
+      "warehouse-port": 6,
+      "belt": 4,
+      "power": 4
+    },
+    "chargedFootprintAreaByKind": {
+      "production": 18,
+      "warehouse-bus": 0,
+      "storage": 9,
+      "warehouse-port": 6,
+      "belt": 2,
+      "power": 4
+    },
+    "chargedFootprintArea": 39,
+    "chargedBoundingRemainderArea": 15,
+    "chargedBoundsWidth": 6,
+    "chargedBoundsSpanHeight": 9,
+    "chargedMinimumY": 0,
+    "originAnchoringArea": 0,
+    "interiorBoundingRemainderArea": 15,
+    "coreDeviceBoundingArea": 54,
+    "powerInclusiveBoundingArea": 54,
+    "powerEnvelopeExpansionArea": 0,
+    "logisticsEnvelopeExpansionArea": 0,
+    "areaExcludedBeltArea": 2,
+    "warehouseBusArea": 48,
+    "materialLaneCountByKind": {
+      "belt": 4
+    },
+    "chargedMaterialLaneCountByKind": {
+      "belt": 2
+    },
+    "areaExcludedMaterialLaneCountByKind": {
+      "belt": 2
+    },
+    "chargedCrossingCellCountByKind": {},
+    "pairwiseCrossingCellFloorByKind": {
+      "belt": 1
+    },
+    "pairwiseCrossingCellFloor": 1,
+    "connectedPortEndpointCount": 8,
+    "minimumPowerDeviceCount": 1
+  }
+}

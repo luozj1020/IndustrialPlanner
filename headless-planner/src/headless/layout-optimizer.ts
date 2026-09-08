@@ -77,6 +77,11 @@ import {
   measureMandatoryDeviceAreaLowerBound,
 } from "./bounding-area-optimality";
 import { hasValidGeneratedWarehouseHubAdjacency } from "./warehouse-hub-validation";
+import {
+  searchBetterBoundedBoxPlacements,
+  type BoundedBoxSatSearchResult,
+} from "./bounded-box-solver";
+import { createBoundedBoxDevices, resolveBoundedBoxWarmStartRequest } from "./bounded-box-problem";
 
 /**
  * Fixed contract for recipe-agnostic local compaction.
@@ -1228,7 +1233,6 @@ export function optimizeHeadlessLayout(
     routingClearance: request.routingClearance ?? 1,
   });
   const {
-    productionEntities,
     routing,
     allDevices,
     bounds,
@@ -1243,6 +1247,104 @@ export function optimizeHeadlessLayout(
     search,
     routeFailureDiagnostics,
   } = routedLayout;
+  const { blueprint, validation, strictRoutedUpperBoundVerified } = validateRoutedLayoutCandidate({
+    request, registry, deviceRequests, candidate: routedLayout, routeFailureDiagnostics,
+  });
+  const boundingArea = bounds.width * bounds.height;
+  const logisticsDevices = routing.devices;
+  // Rebuild the geometry-free graph from the request, independently of the
+  // winning placement and route paths. Certified static bounds must not learn
+  // facts from the incumbent they are intended to bound.
+  const certifiedMaterialGraph = buildHeadlessMaterialGraph(request, registry);
+  const mandatoryAreaDevices = createCertifiedAreaMandatoryDevices({
+    entities: certifiedMaterialGraph.nodes.map(({ id, kind, definitionId }) => ({
+      id,
+      kind,
+      definitionId,
+    })),
+    entityDefinitions: registry.entityDefinitions,
+  });
+  const certifiedLogisticsFootprint = measureCertifiedLogisticsFootprintLowerBound({
+    graph: certifiedMaterialGraph,
+    resolveItemDomain: (itemId) => registry.queries.resolveItemDomain(itemId),
+  });
+  const areaProof = solveCpSatAreaLowerBound({
+    devices: mandatoryAreaDevices,
+    limitWidth: request.width,
+    limitHeight: request.height,
+    allowRotate: request.allowRotate ?? true,
+    maxSeconds: request.certification?.boundingArea?.maxSeconds
+      ?? DEFAULT_CERTIFIED_AREA_MAX_SECONDS,
+  });
+  const boundingAreaOptimality = createBoundingAreaOptimalityReport({
+    mandatoryDeviceAreaLowerBound: measureMandatoryDeviceAreaLowerBound(mandatoryAreaDevices),
+    certifiedLogisticsFootprint,
+    proof: areaProof,
+    strictRoutedUpperBoundVerified,
+    routedBoundingArea: boundingArea,
+  });
+
+  return {
+    blueprint,
+    layout: {
+      limitWidth: request.width,
+      limitHeight: request.height,
+      usedWidth: bounds.width,
+      usedHeight: bounds.height,
+      boundingArea,
+      physicalUsedWidth: physicalBounds.width,
+      physicalUsedHeight: physicalBounds.height,
+      physicalBoundingArea: physicalBounds.width * physicalBounds.height,
+      contourArea,
+      contourVoidArea,
+      boundingVoidCellCount,
+      enclosedVoidCellCount,
+      frontageOverflowCellCount,
+      equipmentArea,
+      utilization: boundingArea === 0 ? 1 : round(equipmentArea / boundingArea),
+      contourUtilization: contourArea === 0
+        ? 1
+        : round((contourArea - contourVoidArea) / contourArea),
+      devices: allDevices,
+      productionDeviceCount: allDevices.filter((device) => device.kind === "production").length,
+      logisticsDeviceCount: logisticsDevices.length,
+      beltCellCount: logisticsDevices.filter((device) => device.kind === "belt").length,
+      areaExcludedBeltCellCount: logisticsDevices.filter((device) =>
+        device.kind === "belt" && routing.areaExcludedDeviceIds.has(device.id)).length,
+      pipeCellCount: logisticsDevices.filter((device) => device.kind === "pipe").length,
+      storageDeviceCount: allDevices.filter((device) => device.kind === "storage").length,
+      warehousePortCount: allDevices.filter((device) => device.kind === "warehouse-port").length,
+      warehouseBusCount: allDevices.filter((device) => device.kind === "warehouse-bus").length,
+      powerDeviceCount: allDevices.filter((device) => device.kind === "power").length,
+      minimumPowerDeviceCount,
+    },
+    production: {
+      targetCount: request.targets.length,
+      recipeCount: plan.recipeTotals.length,
+      deviceCount: allDevices.filter((device) => device.kind === "production").length,
+      unresolvedPerMinute: plan.unresolvedPerMinute,
+    },
+    validation,
+    optimality: {
+      boundingArea: boundingAreaOptimality,
+    },
+    search,
+  };
+}
+
+function validateRoutedLayoutCandidate(options: {
+  readonly request: HeadlessOptimizationRequest;
+  readonly registry: RegistryContract;
+  readonly deviceRequests: readonly DeviceRequest[];
+  readonly candidate: RoutedLayoutCandidate;
+  readonly routeFailureDiagnostics: readonly RouteFailureEvidence[];
+}): {
+  readonly blueprint: BlueprintDocument;
+  readonly validation: HeadlessOptimizationResult["validation"];
+  readonly strictRoutedUpperBoundVerified: boolean;
+} {
+  const { request, registry, deviceRequests, routeFailureDiagnostics } = options;
+  const { productionEntities, routing, allDevices, bounds, frontageOverflowCellCount } = options.candidate;
   const entities = { ...productionEntities, ...routing.entities };
   const blueprint = createBlueprintDocument({
     blueprintId: createStableBlueprintId(request, allDevices),
@@ -1262,7 +1364,6 @@ export function optimizeHeadlessLayout(
   });
   const boundingArea = bounds.width * bounds.height;
   const errors = topology.diagnostics.filter((item) => item.severity === "error");
-  const logisticsDevices = routing.devices;
   const expectedPhysicalConnections = routing.connections.reduce(
     (sum, connection) => sum
       + Math.max(0, connection.points.length - 1)
@@ -1321,30 +1422,6 @@ export function optimizeHeadlessLayout(
     powerCoverageVerified,
     routeFailureDiagnostics,
   };
-  // Rebuild the geometry-free graph from the request, independently of the
-  // winning placement and route paths. Certified static bounds must not learn
-  // facts from the incumbent they are intended to bound.
-  const certifiedMaterialGraph = buildHeadlessMaterialGraph(request, registry);
-  const mandatoryAreaDevices = createCertifiedAreaMandatoryDevices({
-    entities: certifiedMaterialGraph.nodes.map(({ id, kind, definitionId }) => ({
-      id,
-      kind,
-      definitionId,
-    })),
-    entityDefinitions: registry.entityDefinitions,
-  });
-  const certifiedLogisticsFootprint = measureCertifiedLogisticsFootprintLowerBound({
-    graph: certifiedMaterialGraph,
-    resolveItemDomain: (itemId) => registry.queries.resolveItemDomain(itemId),
-  });
-  const areaProof = solveCpSatAreaLowerBound({
-    devices: mandatoryAreaDevices,
-    limitWidth: request.width,
-    limitHeight: request.height,
-    allowRotate: request.allowRotate ?? true,
-    maxSeconds: request.certification?.boundingArea?.maxSeconds
-      ?? DEFAULT_CERTIFIED_AREA_MAX_SECONDS,
-  });
   const effectiveFrontageConstraint = request.frontageConstraint === "hard"
     || (request.search?.initialLayout === "topology-sequential"
       && request.frontageConstraint !== "soft")
@@ -1366,60 +1443,7 @@ export function optimizeHeadlessLayout(
     frontageConstraint: effectiveFrontageConstraint,
     frontageOverflowCellCount,
   });
-  const boundingAreaOptimality = createBoundingAreaOptimalityReport({
-    mandatoryDeviceAreaLowerBound: measureMandatoryDeviceAreaLowerBound(mandatoryAreaDevices),
-    certifiedLogisticsFootprint,
-    proof: areaProof,
-    strictRoutedUpperBoundVerified,
-    routedBoundingArea: boundingArea,
-  });
-
-  return {
-    blueprint,
-    layout: {
-      limitWidth: request.width,
-      limitHeight: request.height,
-      usedWidth: bounds.width,
-      usedHeight: bounds.height,
-      boundingArea,
-      physicalUsedWidth: physicalBounds.width,
-      physicalUsedHeight: physicalBounds.height,
-      physicalBoundingArea: physicalBounds.width * physicalBounds.height,
-      contourArea,
-      contourVoidArea,
-      boundingVoidCellCount,
-      enclosedVoidCellCount,
-      frontageOverflowCellCount,
-      equipmentArea,
-      utilization: boundingArea === 0 ? 1 : round(equipmentArea / boundingArea),
-      contourUtilization: contourArea === 0
-        ? 1
-        : round((contourArea - contourVoidArea) / contourArea),
-      devices: allDevices,
-      productionDeviceCount: allDevices.filter((device) => device.kind === "production").length,
-      logisticsDeviceCount: logisticsDevices.length,
-      beltCellCount: logisticsDevices.filter((device) => device.kind === "belt").length,
-      areaExcludedBeltCellCount: logisticsDevices.filter((device) =>
-        device.kind === "belt" && routing.areaExcludedDeviceIds.has(device.id)).length,
-      pipeCellCount: logisticsDevices.filter((device) => device.kind === "pipe").length,
-      storageDeviceCount: allDevices.filter((device) => device.kind === "storage").length,
-      warehousePortCount: allDevices.filter((device) => device.kind === "warehouse-port").length,
-      warehouseBusCount: allDevices.filter((device) => device.kind === "warehouse-bus").length,
-      powerDeviceCount: allDevices.filter((device) => device.kind === "power").length,
-      minimumPowerDeviceCount,
-    },
-    production: {
-      targetCount: request.targets.length,
-      recipeCount: plan.recipeTotals.length,
-      deviceCount: allDevices.filter((device) => device.kind === "production").length,
-      unresolvedPerMinute: plan.unresolvedPerMinute,
-    },
-    validation,
-    optimality: {
-      boundingArea: boundingAreaOptimality,
-    },
-    search,
-  };
+  return { blueprint, validation, strictRoutedUpperBoundVerified };
 }
 
 /**
@@ -2024,15 +2048,19 @@ function selectRoutedLayout(options: {
   const initialLayout = options.request.search?.initialLayout ?? "auto";
   const optimizationScope = options.request.search?.scope ?? "global";
   const globalNeighborhoods = options.request.search?.globalNeighborhoods ?? "all";
+  const boundedBoxEnabled = options.request.search?.boundedBox?.enabled === true;
   const topologySequentialOnly = initialLayout === "topology-sequential";
   const localOnly = optimizationScope === "local";
-  const localNeighborhoodOnly = localOnly || globalNeighborhoods === "layer-interlock";
+  const localNeighborhoodOnly = localOnly || globalNeighborhoods === "layer-interlock" || boundedBoxEnabled;
   const hardFrontageRequired = options.request.frontageConstraint === "hard"
     || (topologySequentialOnly && options.request.frontageConstraint !== "soft");
   const seed = normalizeSearchSeed(
     options.request.search?.seed ?? hashString(JSON.stringify({
       ...options.request,
       certification: undefined,
+      ...(options.request.search === undefined ? {} : {
+        search: { ...options.request.search, boundedBox: undefined },
+      }),
     })),
   );
   // Build the graph-derived warehouse neighborhood before the broad heuristic
@@ -2047,7 +2075,10 @@ function selectRoutedLayout(options: {
   });
   const topologySequentialCandidates = topologySequentialOnly
     ? createTopologySequentialWarehousePackings({
-        request: options.request,
+        // Box search owns the global phase. Its warm start must retain the
+        // same construction policy as local scope (especially the bounded
+        // large-graph Tetris family), not expand that generator first.
+        request: resolveBoundedBoxWarmStartRequest(options.request),
         requests: options.requests,
         registry: options.registry,
         limitWidth: options.request.width,
@@ -2263,6 +2294,7 @@ function selectRoutedLayout(options: {
   let globalLayerInterlockTransitions = 0;
   let globalLayerInterlockStoppedBy: "disabled" | "fixed-point" | "width-infeasible" | "safety-bound"
     = "disabled";
+  let boundedBoxSearch: BoundedBoxSatSearchResult | undefined;
   let localConvergencePasses = 0;
   let localConvergenceTransitions = 0;
   let localConvergenceStoppedBy: "disabled" | "fixed-point" | "safety-bound"
@@ -2290,11 +2322,16 @@ function selectRoutedLayout(options: {
     routingVariantLimit = routingVariants,
     adaptiveRouting = false,
     deferRoutingSeedPolish = false,
-  ): void => {
+    requiredBoundingBox?: { readonly width: number; readonly height: number },
+  ): boolean => {
     // Warehouse ports are not free-standing anchors. A layout that separates
     // them from the connected warehouse bus is invalid in the editor even when
     // every production belt can be routed, so reject it before spending A* work.
-    if (!hasValidWarehouseHubAdjacency(packing.devices, options.requests)) return;
+    if (!hasValidWarehouseHubAdjacency(packing.devices, options.requests)) return false;
+    // Rerouting cannot fix equipment outside its required frontage. This is a
+    // cheap SAT-search rejection only; it does not produce a proof cut.
+    if (requiredBoundingBox !== undefined && hardFrontageRequired
+      && measureFrontageOverflowCells(packing.devices) > 0) return false;
     const signature = packing.evaluationKey ?? packingSignature(packing);
     const isGlobalRebuildCandidate = packing.debugLabel?.startsWith("global-rebuild:") === true;
     const isPartialRebuildCandidate = packing.debugLabel?.startsWith(
@@ -2346,6 +2383,7 @@ function selectRoutedLayout(options: {
       || isGlobalRebuildCandidate
       || packing.debugLabel?.startsWith("warehouse-supply-cluster:") === true;
     const isWarehouseSupplyCluster = packing.debugLabel?.startsWith("warehouse-supply-cluster:") === true;
+    const isBoundedBoxCandidate = packing.debugLabel?.startsWith("bounded-box:") === true;
     const isLocalRefinementCandidate = localRoutingBase !== undefined;
     const incumbent = best as RoutedLayoutCandidate | null;
     if (isLocalAreaCompaction
@@ -2357,7 +2395,7 @@ function selectRoutedLayout(options: {
       // bounding area, regardless of port allocation or A* route order.
       localAreaLowerBoundRejected += 1;
       clusterCandidatesCheapRejected += 1;
-      return;
+      return false;
     }
     const translationOffsets = packing.debugLabel?.match(/^cluster-translate:[^:]+:down:(\d+):(\d+)$/);
     const isSmallTranslation = translationOffsets !== null
@@ -2365,9 +2403,19 @@ function selectRoutedLayout(options: {
       && Number(translationOffsets?.[2]) <= 4;
     let packingRouted = false;
     let packingImproved = false;
+    let requiredBoxWitnessFound = false;
     let packingRoutingProgress = -1;
     let packingRoutingMessage = "";
     const productionEntities = createEntities(options.requests, packing.devices);
+    const chargedRoutingBox = requiredBoundingBox === undefined ? undefined : {
+      minX: Math.min(
+        ...packing.devices.filter((device) => device.kind !== "warehouse-bus")
+          .map((device) => device.position.x),
+        options.request.width - requiredBoundingBox.width,
+      ),
+      width: requiredBoundingBox.width,
+      height: requiredBoundingBox.height,
+    };
     const movedDeviceIds = localRoutingBase === undefined
       ? new Set<string>()
       : findMovedDeviceIds(localRoutingBase.packing.devices, packing.devices);
@@ -2419,7 +2467,7 @@ function selectRoutedLayout(options: {
       previouslyAttempted,
       adaptiveRouting ? routingVariantLimit - routingVariants : undefined,
     );
-    if (packingRoutingVariantIndexes.length === 0) return;
+    if (packingRoutingVariantIndexes.length === 0) return false;
     if (!evaluatedPackingSignatures.has(signature)) {
       evaluatedPackingSignatures.add(signature);
       evaluatedPackings += 1;
@@ -2471,6 +2519,8 @@ function selectRoutedLayout(options: {
           productionDevices: packing.devices,
           productionEntities,
           routingVariant,
+          chargedRoutingBox,
+          relaxPortBandAssignment: isBoundedBoxCandidate,
           prioritizeFanoutGroups: isClusterCandidate,
           // Frontage-constrained layouts have very little spare corridor space.
           // Scoring every port pair is slower, but avoids committing an early
@@ -2486,11 +2536,14 @@ function selectRoutedLayout(options: {
           // This preserves the already legal majority instead of repeatedly
           // destroying all 22 routes to repair the final one or two.
           enforceFrontageConstraint: false,
-          freezeFlowAllocation: topologySequentialOnly,
+          // A bounded-box rebuild is a new global placement and must be free to
+          // choose a new producer allocation even when its warm start came from
+          // the topology-sequential baseline.
+          freezeFlowAllocation: topologySequentialOnly && !isBoundedBoxCandidate,
           // A cropped terminal search is a heuristic routing region, not proof
           // that the same placement is infeasible on the full request grid.
           enablePlacementConflictCertificates:
-            terminalRoutingHeight === options.request.height,
+            terminalRoutingHeight === options.request.height && !isBoundedBoxCandidate,
           onRelaxedConnectivityRejected: (count: number) => {
             relaxedConnectivityRejectedPortPairs += count;
           },
@@ -2926,6 +2979,7 @@ function selectRoutedLayout(options: {
             registry: options.registry,
             limitWidth: options.request.width,
             limitHeight: options.request.height,
+            chargedBox: chargedRoutingBox,
           });
           if (powerPlacement === null) {
             // Power is a post-routing feasibility phase. Reject this complete
@@ -2971,6 +3025,16 @@ function selectRoutedLayout(options: {
             equipmentArea: areaDevices.reduce((sum, device) => sum + device.width * device.height, 0),
             physicalBounds,
           };
+          // The placement master constrains only globally movable charged
+          // equipment. Routing, warehouse attachment, and power may enlarge
+          // that geometry, so only this post-routing charged-footprint check
+          // can turn an M1 placement into a bounded-box SAT witness. Uncharged
+          // warehouse bus and eligible supply belts remain map-bounded only.
+          if (requiredBoundingBox !== undefined
+            && (bounds.width > requiredBoundingBox.width
+              || bounds.height > requiredBoundingBox.height)) {
+            continue;
+          }
           if ((packing.debugLabel?.startsWith("local-scc-internal:") === true
               || packing.debugLabel?.startsWith("local-scc-cluster:") === true
               || packing.debugLabel?.startsWith("local-scc-routed-core:") === true)
@@ -3051,6 +3115,14 @@ function selectRoutedLayout(options: {
               packingImproved = true;
             }
             continue;
+          }
+          if (requiredBoundingBox !== undefined) {
+            const validated = validateRoutedLayoutCandidate({
+              request: options.request, registry: options.registry,
+              deviceRequests: options.requests, candidate, routeFailureDiagnostics: [],
+            });
+            if (!validated.strictRoutedUpperBoundVerified) continue;
+            requiredBoxWitnessFound = true;
           }
           const previousBest = best;
           best = retainRoutedEliteCandidate(
@@ -3188,6 +3260,7 @@ function selectRoutedLayout(options: {
       if (packingRouted) partialRebuildCandidatesRouted += 1;
       if (packingImproved) partialRebuildCandidatesImproved += 1;
     }
+    return requiredBoxWitnessFound;
   };
   for (const packing of candidates) {
     const deferSeed = topologySequentialOnly
@@ -3414,7 +3487,7 @@ function selectRoutedLayout(options: {
     }
     return false;
   };
-  if (localOnly) {
+  if (localOnly || boundedBoxEnabled) {
     // Every successful round removes at least one integer coordinate from the
     // charged rectangle, so width+height is a finite, geometry-derived bound.
     const maximumProvenRounds = options.request.width + options.request.height;
@@ -3890,7 +3963,7 @@ function selectRoutedLayout(options: {
     // the local result.
     closeLocalNeighborhood();
   }
-  if (!localOnly && requestedIterations > 0) {
+  if (!localOnly && !boundedBoxEnabled && requestedIterations > 0) {
     globalLayerInterlockStoppedBy = "safety-bound";
     for (
       let pass = 0;
@@ -3912,6 +3985,56 @@ function selectRoutedLayout(options: {
       closeLocalNeighborhood();
     }
   }
+  const boxWarmStart = best as RoutedLayoutCandidate | null;
+  if (boundedBoxEnabled && !localOnly && boxWarmStart !== null) {
+    const verified = validateRoutedLayoutCandidate({
+      request: options.request, registry: options.registry, deviceRequests: options.requests,
+      candidate: boxWarmStart, routeFailureDiagnostics: [],
+    });
+    if (verified.strictRoutedUpperBoundVerified) {
+      const boxConfig = options.request.search!.boundedBox!;
+      const masterDevices = createBoundedBoxDevices({
+        requests: options.requests,
+        incumbent: boxWarmStart.allDevices,
+        allowRotate: options.allowRotate,
+        itemKind: (itemId) => resolveItemLogisticsKind(itemId, options.registry),
+        laneCapacity: (itemId) => resolveLogisticsLaneCapacityPerMinute(itemId, options.registry),
+      });
+      const requestById = new Map(options.requests.map((request) => [request.id, request]));
+      boundedBoxSearch = searchBetterBoundedBoxPlacements({
+        devices: masterDevices,
+        mapWidth: options.request.width,
+        mapHeight: options.request.height,
+        incumbentBox: boxWarmStart.bounds,
+        incumbentArea: boxWarmStart.bounds.width * boxWarmStart.bounds.height,
+        minimumArea: masterDevices.filter((device) => device.charged !== false)
+          .reduce((area, device) => area + device.width * device.height, 0),
+        allowRotate: options.allowRotate,
+        maxBoxes: boxConfig.maxBoxes,
+        maxSecondsPerBox: boxConfig.maxSecondsPerBox,
+        candidatesPerBox: boxConfig.candidatesPerBox,
+        seed,
+        evaluatePlacement: ({ box, placement, placementIndex }) => {
+          const before = best as RoutedLayoutCandidate;
+          const devices = placement.map((pose) => toProductionDevice(
+            requestById.get(pose.id)!, pose.x, pose.y, pose,
+          ));
+          const packingBounds = measureBounds(devices);
+          const debugLabel = `bounded-box:${box.width}x${box.height}:${placementIndex}`;
+          const routedWitness = evaluatePacking({
+            devices, usedWidth: packingBounds.width, usedHeight: packingBounds.height,
+            equipmentArea: devices.reduce((area, device) => area + device.width * device.height, 0),
+            debugLabel,
+            evaluationKey: `${debugLabel}:${JSON.stringify(placement)}`,
+          }, undefined, routingVariants, false, false, box);
+          return {
+            routedWitness,
+            improved: routedWitness && compareRoutedLayouts(best as RoutedLayoutCandidate, before) < 0,
+          };
+        },
+      });
+    }
+  }
   const selected = best as RoutedLayoutCandidate | null;
   if (selected !== null) {
     // Assignments happen inside evaluatePacking; retain the declared union at this boundary.
@@ -3922,7 +4045,9 @@ function selectRoutedLayout(options: {
     return {
       ...selected,
       search: {
-        algorithm: packingCandidateSet.cpSatCandidateCount > 0
+        algorithm: boundedBoxSearch !== undefined
+          ? "hybrid-bounded-box-cp-sat-lns-a-star"
+          : packingCandidateSet.cpSatCandidateCount > 0
           ? "hybrid-cp-sat-lns-a-star"
           : "deterministic-lns-a-star",
         initialLayout,
@@ -3987,6 +4112,7 @@ function selectRoutedLayout(options: {
         cpSatAttemptedCandidates: packingCandidateSet.cpSatAttemptedCandidates,
         cpSatStoppedBy: packingCandidateSet.cpSatStoppedBy,
         cpSatElapsedMs: packingCandidateSet.cpSatElapsedMs,
+        ...(boundedBoxSearch === undefined ? {} : { boundedBox: boundedBoxSearch }),
         objective: {
           priorities: DEFAULT_LAYOUT_OBJECTIVE.priorities,
           vector: buildRoutedObjectiveVector(selected),
@@ -14773,6 +14899,7 @@ function placePowerDiffusers(options: {
   readonly registry: RegistryContract;
   readonly limitWidth: number;
   readonly limitHeight: number;
+  readonly chargedBox?: { readonly minX: number; readonly width: number; readonly height: number };
 }): PowerPlacementResult | null {
   const powerDefinition = options.registry.entityDefinitions.find((definition) =>
     definition.id === "item_port_power_diffuser_1");
@@ -14808,6 +14935,10 @@ function placePowerDiffusers(options: {
   const rawCandidates: PowerPlacementCandidate[] = [];
   for (let y = 0; y + powerDefinition.footprint.height <= options.limitHeight; y += 1) {
     for (let x = 0; x + powerDefinition.footprint.width <= options.limitWidth; x += 1) {
+      if (options.chargedBox !== undefined
+        && (x < options.chargedBox.minX
+          || x + powerDefinition.footprint.width > options.chargedBox.minX + options.chargedBox.width
+          || y + powerDefinition.footprint.height > options.chargedBox.height)) continue;
       const device: HeadlessPlacedDevice = {
         id: `power-candidate-${x}-${y}`,
         definitionId: powerDefinition.id,
@@ -15276,6 +15407,7 @@ function routeMaterialFlow(options: {
   readonly productionDevices: readonly HeadlessPlacedDevice[];
   readonly productionEntities: Readonly<Record<string, WorldEntity>>;
   readonly routingVariant: number;
+  readonly chargedRoutingBox?: { readonly minX: number; readonly width: number; readonly height: number };
   readonly prioritizeFanoutGroups?: boolean;
   readonly preferFirstFeasibleRoute?: boolean;
   /** Let joint rerouting reassign any free sibling port instead of a monotone band. */
@@ -15339,6 +15471,20 @@ function routeMaterialFlow(options: {
     options.request.height,
     connectionBlocked,
   );
+  const chargedBlocked = options.chargedRoutingBox === undefined
+    ? connectionBlocked : new Set(connectionBlocked);
+  if (options.chargedRoutingBox !== undefined) {
+    const box = options.chargedRoutingBox;
+    for (let y = 0; y < options.request.height; y += 1) {
+      for (let x = 0; x < options.request.width; x += 1) {
+        if (x < box.minX || x >= box.minX + box.width || y >= box.height) {
+          chargedBlocked.add(`${x},${y}`);
+        }
+      }
+    }
+  }
+  const chargedConnectivity = options.chargedRoutingBox === undefined ? relaxedRouteConnectivity
+    : buildRelaxedRouteConnectivity(options.request.width, options.request.height, chargedBlocked);
   const routedCells = new Set<string>();
   const routedCellOccupations = new Map<string, RoutedCellOccupation>();
   const usedPorts = new Set<string>();
@@ -15557,7 +15703,7 @@ function routeMaterialFlow(options: {
     const resolved = resolveBestRoute({
       width: options.request.width,
       height: options.request.height,
-      blocked: connectionBlocked,
+      blocked: areaExcludedConnection ? connectionBlocked : chargedBlocked,
       routedCells,
       routedCellOccupations,
       reservedPortCells,
@@ -15568,7 +15714,7 @@ function routeMaterialFlow(options: {
       preferFirstFeasible: options.preferFirstFeasibleRoute === true,
       preferShortestPortPair: options.relaxPortBandAssignment === true,
       contourRouting,
-      relaxedConnectivity: relaxedRouteConnectivity,
+      relaxedConnectivity: areaExcludedConnection ? relaxedRouteConnectivity : chargedConnectivity,
       onRelaxedConnectivityRejected: options.onRelaxedConnectivityRejected,
     });
     if (resolved === null) {
@@ -18240,6 +18386,25 @@ function blueprintToWorldDocument(blueprint: ReturnType<typeof createBlueprintDo
 }
 
 function validateRequest(request: HeadlessOptimizationRequest): void {
+  const boundedBox = request.search?.boundedBox;
+  if (boundedBox !== undefined) {
+    if (boundedBox.enabled !== undefined && typeof boundedBox.enabled !== "boolean") {
+      throw new Error("search.boundedBox.enabled must be a boolean");
+    }
+    if (boundedBox.enabled === true && request.search?.scope === "local") {
+      throw new Error("search.boundedBox requires global scope");
+    }
+    for (const key of ["maxBoxes", "candidatesPerBox"] as const) {
+      const value = boundedBox[key];
+      if (value !== undefined && (!Number.isInteger(value) || value < 1 || value > 64)) {
+        throw new Error(`search.boundedBox.${key} must be an integer from 1 to 64`);
+      }
+    }
+    const seconds = boundedBox.maxSecondsPerBox;
+    if (seconds !== undefined && (!Number.isFinite(seconds) || seconds <= 0 || seconds > 30)) {
+      throw new Error("search.boundedBox.maxSecondsPerBox must be in (0, 30]");
+    }
+  }
   if (!Number.isInteger(request.width) || request.width <= 0 || !Number.isInteger(request.height) || request.height <= 0) {
     throw new Error(`width and height must be positive integers, received ${request.width}x${request.height}`);
   }
@@ -18857,7 +19022,10 @@ function createStableBlueprintId(
   devices: readonly HeadlessPlacedDevice[],
 ): string {
   const source = JSON.stringify({
-    request: { ...request, certification: undefined },
+    request: {
+      ...request, certification: undefined,
+      ...(request.search === undefined ? {} : { search: { ...request.search, boundedBox: undefined } }),
+    },
     devices,
   });
   let hash = 2166136261;

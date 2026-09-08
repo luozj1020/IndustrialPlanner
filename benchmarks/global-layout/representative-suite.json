@@ -1,0 +1,11 @@
+{
+  "cases": [
+    { "name": "iron-nugget", "request": "iron-nugget-request.json" },
+    { "name": "simple-chain", "request": "simple-chain-request.json" },
+    {
+      "name": "medium-battery",
+      "request": "medium-battery-request.json",
+      "bestKnownArtifact": "../certified-area/medium-valley-battery-topology-global-best-known.json"
+    }
+  ]
+}

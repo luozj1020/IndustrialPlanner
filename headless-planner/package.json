@@ -9,7 +9,9 @@
     "test": "vitest run",
     "headless": "tsx src/headless/cli.ts",
     "benchmark:certified-area": "tsx src/headless/cli.ts benchmark-area benchmarks/certified-area/representative-suite.json",
-    "benchmark:certified-area:long": "tsx src/headless/cli.ts benchmark-area benchmarks/certified-area/long-running-suite.json"
+    "benchmark:certified-area:long": "tsx src/headless/cli.ts benchmark-area benchmarks/certified-area/long-running-suite.json",
+    "benchmark:global-layout": "tsx src/headless/cli.ts benchmark-global benchmarks/global-layout/representative-suite.json",
+    "benchmark:global-layout:long": "tsx src/headless/cli.ts benchmark-global benchmarks/global-layout/long-running-suite.json"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",

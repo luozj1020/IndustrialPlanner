@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "validationProfile": "strict-routed-bounding-area-v5",
+  "instanceHash": "fnv1a32:702f82ef",
+  "strictRoutedUpperBound": 2115,
+  "blueprintId": "headless-7330e1aa",
+  "topologyId": "fnv1a32:06be9bb9",
+  "sourceArtifact": "examples/headless/high-capacity-valley-battery-report.json",
+  "areaAttribution": {
+    "rawFootprintAreaByKind": {
+      "production": 351,
+      "storage": 9,
+      "warehouse-bus": 272,
+      "warehouse-port": 45,
+      "belt": 195,
+      "power": 20
+    },
+    "chargedFootprintAreaByKind": {
+      "production": 351,
+      "storage": 9,
+      "warehouse-bus": 0,
+      "warehouse-port": 45,
+      "belt": 180,
+      "power": 20
+    },
+    "chargedFootprintArea": 605,
+    "chargedBoundingRemainderArea": 1510,
+    "chargedBoundsWidth": 45,
+    "chargedBoundsSpanHeight": 39,
+    "chargedMinimumY": 8,
+    "originAnchoringArea": 360,
+    "interiorBoundingRemainderArea": 1150,
+    "coreDeviceBoundingArea": 2115,
+    "powerInclusiveBoundingArea": 2115,
+    "powerEnvelopeExpansionArea": 0,
+    "logisticsEnvelopeExpansionArea": 0,
+    "areaExcludedBeltArea": 15,
+    "warehouseBusArea": 272,
+    "materialLaneCountByKind": {
+      "belt": 44
+    },
+    "chargedMaterialLaneCountByKind": {
+      "belt": 29
+    },
+    "areaExcludedMaterialLaneCountByKind": {
+      "belt": 15
+    },
+    "chargedCrossingCellCountByKind": {},
+    "pairwiseCrossingCellFloorByKind": {
+      "belt": 15
+    },
+    "pairwiseCrossingCellFloor": 15,
+    "connectedPortEndpointCount": 88,
+    "minimumPowerDeviceCount": 5
+  }
+}

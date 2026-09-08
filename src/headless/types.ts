@@ -5,6 +5,7 @@ import type {
   CertifiedAreaRelaxationResult,
   CertifiedAreaRelaxationStatus,
 } from "./certified-area-relaxation";
+import type { BoundedBoxSatSearchResult } from "./bounded-box-solver";
 
 /** Metrics that drive lexicographic layout comparison, in priority order. */
 export type LayoutObjectiveMetric =
@@ -175,6 +176,16 @@ export interface HeadlessOptimizationRequest {
       readonly maxSeconds?: number;
       /** Maximum candidate variants attempted within maxSeconds. */
       readonly candidates?: number;
+    };
+    /** Opt-in M1 better-than-incumbent fixed-box SAT search. Never reports full box UNSAT. */
+    readonly boundedBox?: {
+      readonly enabled?: boolean;
+      /** Pareto-maximal boxes attempted nearest to the routed incumbent. Defaults to 8. */
+      readonly maxBoxes?: number;
+      /** Independent placement-master budget for each attempted box. Defaults to 1 second. */
+      readonly maxSecondsPerBox?: number;
+      /** Placement witnesses sent to the full router per box. Defaults to 4. */
+      readonly candidatesPerBox?: number;
     };
   };
   /** Proof-only budgets, deliberately separate from candidate-search settings. */
@@ -454,7 +465,10 @@ export interface HeadlessOptimizationResult {
     readonly boundingArea: BoundingAreaOptimality;
   };
   readonly search: {
-    readonly algorithm: "deterministic-lns-a-star" | "hybrid-cp-sat-lns-a-star";
+    readonly algorithm:
+      | "deterministic-lns-a-star"
+      | "hybrid-cp-sat-lns-a-star"
+      | "hybrid-bounded-box-cp-sat-lns-a-star";
     readonly initialLayout: "auto" | "topology-sequential";
     readonly scope: "local" | "global";
     readonly globalNeighborhoods: "layer-interlock" | "all";
@@ -570,6 +584,8 @@ export interface HeadlessOptimizationResult {
     readonly cpSatStoppedBy?: CpSatStopReason;
     /** Python-side elapsed wall time for the initial CP-SAT candidate batch. */
     readonly cpSatElapsedMs?: number;
+    /** M1 SAT-finding diagnostics. Master exhaustion is intentionally not a full UNSAT claim. */
+    readonly boundedBox?: BoundedBoxSatSearchResult;
     /** Winning objective priority list and lexicographic vector. */
     readonly objective: {
       readonly priorities: readonly LayoutObjectiveMetric[];

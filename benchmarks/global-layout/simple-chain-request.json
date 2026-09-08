@@ -1,0 +1,25 @@
+{
+  "width": 24,
+  "height": 24,
+  "name": "Iron component compact line",
+  "targets": [
+    {
+      "itemId": "item_iron_cmpt",
+      "perMinute": 10
+    }
+  ],
+  "search": {
+    "scope": "global",
+    "boundedBox": {
+      "enabled": true,
+      "maxBoxes": 4,
+      "maxSecondsPerBox": 3,
+      "candidatesPerBox": 4
+    }
+  },
+  "certification": {
+    "boundingArea": {
+      "maxSeconds": 0.5
+    }
+  }
+}

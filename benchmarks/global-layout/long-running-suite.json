@@ -1,0 +1,14 @@
+{
+  "cases": [
+    {
+      "name": "high-capacity-sequential-baseline",
+      "request": "../../examples/headless/high-capacity-valley-battery-request.json",
+      "bestKnownArtifact": "high-capacity-sequential-best-known.json"
+    },
+    {
+      "name": "high-capacity-global",
+      "request": "high-capacity-global-request.json",
+      "bestKnownArtifact": "high-capacity-sequential-best-known.json"
+    }
+  ]
+}
