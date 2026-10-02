@@ -1,6 +1,5 @@
 import {
   readFromLocalStorage,
-  saveToLocalStorage,
 } from "@/shared/storage";
 
 import { V3_MIGRATION_STATE_LOCAL_STORAGE_KEY } from "./v2-migration-keys";
@@ -26,14 +25,16 @@ export function readV2MigrationState(): V2MigrationState {
 
 export function writeV2MigrationCompletedState(
   summary: V2MigrationCompletionSummary,
+  completedAt = new Date().toISOString(),
 ): V2MigrationState {
   const state: V2MigrationState = {
     schemaVersion: 1,
-    completedAt: new Date().toISOString(),
+    completedAt,
     summary,
   };
 
-  return saveToLocalStorage<V2MigrationState>(V3_MIGRATION_STATE_LOCAL_STORAGE_KEY, state);
+  localStorage.setItem(V3_MIGRATION_STATE_LOCAL_STORAGE_KEY, JSON.stringify(state));
+  return state;
 }
 
 function normalizeV2MigrationState(value: unknown): V2MigrationState {

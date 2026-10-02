@@ -208,6 +208,7 @@ interface AppWithLogisticsPlacementRuntime {
 }
 
 export class GenericDeviceSprite extends BaseRenderSprite {
+  private readonly generatedTextures = new Set<Texture>()
   private readonly spriteId: string
   private readonly body: Sprite
   private readonly previewEffectRoot: Container
@@ -794,13 +795,12 @@ export class GenericDeviceSprite extends BaseRenderSprite {
         return
       }
 
-      // TextureManager 加载失败时返回 16×16 红色 fallback，Promise 不 reject。
-      // 通过尺寸判断 body 纹理是否为 fallback，若是则走自定义 fallback 渲染。
-      if (bodyTexture.width === 16 && bodyTexture.height === 16) {
+      if (this.renderHost.textureManager.isFallbackTexture(bodyTexture)) {
         this.loadFallbackTexture(activeLoadVersion)
         return
       }
 
+      this.releaseGeneratedTextures()
       this.body.texture = bodyTexture
       this.previewMask.texture = previewMaskTexture
       this.selectionMask.texture = previewMaskTexture
@@ -871,8 +871,6 @@ export class GenericDeviceSprite extends BaseRenderSprite {
       bctx.lineWidth = stroke
       bctx.strokeRect(padding, padding, canvasW - padding * 2, canvasH - padding * 2)
 
-      const bodyTexture = Texture.from(bodyCanvas)
-
       // Mask Canvas：白色矩形（与 body 同尺寸，用于 scanline 矩形裁剪）
       const maskCanvas = document.createElement("canvas")
       maskCanvas.width = canvasW
@@ -880,8 +878,11 @@ export class GenericDeviceSprite extends BaseRenderSprite {
       const mctx = maskCanvas.getContext("2d")!
       mctx.fillStyle = "#ffffff"
       mctx.fillRect(0, 0, canvasW, canvasH)
+      this.releaseGeneratedTextures()
+      const bodyTexture = Texture.from(bodyCanvas)
+      this.generatedTextures.add(bodyTexture)
       const maskTexture = Texture.from(maskCanvas)
-
+      this.generatedTextures.add(maskTexture)
       this.body.texture = bodyTexture
       this.previewMask.texture = maskTexture
       this.selectionMask.texture = maskTexture
@@ -897,6 +898,7 @@ export class GenericDeviceSprite extends BaseRenderSprite {
         return
       }
 
+      this.releaseGeneratedTextures()
       this.body.visible = false
       this.previewEffectRoot.visible = false
       this.selectionEffectRoot.visible = false
@@ -1785,8 +1787,18 @@ export class GenericDeviceSprite extends BaseRenderSprite {
     }
   }
 
+  private releaseGeneratedTextures(): void {
+    if (this.generatedTextures.size === 0) return
+    this.body.texture = Texture.EMPTY
+    this.previewMask.texture = Texture.EMPTY
+    this.selectionMask.texture = Texture.EMPTY
+    for (const texture of this.generatedTextures) texture.destroy(true)
+    this.generatedTextures.clear()
+  }
+
   protected onDestroy(): void {
     this.disposed = true
+    this.releaseGeneratedTextures()
   }
 
   private applyLayout(layout: RenderSpriteLayout): void {

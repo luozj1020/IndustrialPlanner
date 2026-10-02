@@ -10,10 +10,6 @@ import {
   normalizeLegacyV2BlueprintSnapshotsStorage,
   normalizeLegacyV2LayoutsByBaseStorage,
   readFromLocalStorage,
-  replaceWorldDocuments,
-  saveBlueprintDocument,
-  upsertBlueprintFolder,
-  writeEditorPersistState,
 } from "@/shared/storage";
 
 import {
@@ -21,14 +17,17 @@ import {
   V2_LAYOUTS_BY_BASE_LOCAL_STORAGE_KEY,
   V2_LEGACY_USER_BLUEPRINTS_LOCAL_STORAGE_KEY,
   V2_USER_BLUEPRINTS_LOCAL_STORAGE_KEY,
-  V3_MIGRATED_BLUEPRINT_FOLDER_ID,
   V3_MIGRATION_ID_PREFIX,
 } from "./v2-migration-keys";
 import { migrateV2ModuleBalancingState } from "./v2-module-balancing-migration";
 import {
   type V2MigrationCompletionSummary,
   writeV2MigrationCompletedState,
+  readV2MigrationState,
 } from "./v2-migration-state";
+import { WORKBENCH_STATE_LOCAL_STORAGE_KEY } from "@/app/state/storage-hook";
+import { EDITOR_PERSIST_STATE_LOCAL_STORAGE_KEY } from "@/shared/storage/editor-persist-state-storage";
+import { commitV2MigrationDocuments, readPendingV2Migration, clearPendingV2Migration, type V2MigrationReceipt } from "./v2-migration-transaction";
 import { cleanupDiscardableV2LocalStorageBeforeV3Boot } from "./v2-storage-cleanup";
 
 export interface V2MigrationExecutorResult extends V2MigrationCompletionSummary {
@@ -40,48 +39,52 @@ export async function executeV2Migration(
 ): Promise<V2MigrationExecutorResult> {
   cleanupDiscardableV2LocalStorageBeforeV3Boot();
 
-  const migratedWorldDocuments = createMigratedWorldDocuments(
-    appHost.workspace.registry.baseDefinitions,
-  );
-  const didReplaceWorldDocuments = await replaceWorldDocuments(migratedWorldDocuments);
+  const pending = await readPendingV2Migration();
+  if (pending !== null) return finalizeMigration(appHost, pending);
 
-  if (!didReplaceWorldDocuments) {
-    throw new Error("Failed to replace v3 world documents.");
+  // Prepare every conversion before touching the existing v3 documents.
+  const migratedWorldDocuments = createMigratedWorldDocuments(appHost.workspace.registry.baseDefinitions);
+  const blueprints = createMigratedUserBlueprints();
+  const moduleResult = migrateV2ModuleBalancingState(appHost.internalState.workbench.toolbox.moduleBalancing);
+  const receipt: V2MigrationReceipt = {
+    schemaVersion: 1,
+    completedAt: new Date().toISOString(),
+    summary: {
+      migratedMapCount: migratedWorldDocuments.length,
+      migratedBlueprintCount: blueprints.length,
+      migratedModuleCanvasCount: moduleResult.migratedCanvasCount,
+      migratedCustomModuleCount: moduleResult.migratedCustomModuleCount,
+    },
+    editorState: {
+      lastDocumentId: resolveLastMigratedDocumentId(migratedWorldDocuments),
+      latestDocumentIdByBaseId: Object.fromEntries(
+        migratedWorldDocuments.map((document) => [document.baseId, document.documentKey]),
+      ),
+    },
+    moduleBalancing: moduleResult.state,
+  };
+  await commitV2MigrationDocuments(migratedWorldDocuments, blueprints, receipt);
+  return finalizeMigration(appHost, receipt);
+}
+
+async function finalizeMigration(appHost: AppHost, receipt: V2MigrationReceipt): Promise<V2MigrationExecutorResult> {
+  let loadedBaseId: string | null = null;
+  if (readV2MigrationState().completedAt !== receipt.completedAt) {
+    // These writes must throw on quota/storage failure. The durable IndexedDB
+    // receipt is retained until all local settings have been finalized.
+    const workbench = appHost.internalState.workbench;
+    localStorage.setItem(WORKBENCH_STATE_LOCAL_STORAGE_KEY, JSON.stringify({
+      ...workbench,
+      toolbox: { ...workbench.toolbox, moduleBalancing: receipt.moduleBalancing },
+    }));
+    localStorage.setItem(EDITOR_PERSIST_STATE_LOCAL_STORAGE_KEY, JSON.stringify(receipt.editorState));
+    runInAction(() => Object.assign(workbench.toolbox.moduleBalancing, receipt.moduleBalancing));
+    loadedBaseId = await loadMigratedActiveBase(appHost, Object.entries(receipt.editorState.latestDocumentIdByBaseId)
+      .map(([baseId, documentKey]) => ({ baseId, documentKey })));
+    writeV2MigrationCompletedState(receipt.summary, receipt.completedAt);
   }
-
-  writeEditorPersistState({
-    lastDocumentId: resolveLastMigratedDocumentId(migratedWorldDocuments),
-    latestDocumentIdByBaseId: Object.fromEntries(
-      migratedWorldDocuments.map((document) => [document.baseId, document.documentKey]),
-    ),
-  });
-
-  const migratedBlueprintCount = await migrateUserBlueprints();
-  const moduleResult = migrateV2ModuleBalancingState(
-    appHost.internalState.workbench.toolbox.moduleBalancing,
-  );
-
-  runInAction(() => {
-    Object.assign(
-      appHost.internalState.workbench.toolbox.moduleBalancing,
-      moduleResult.state,
-    );
-  });
-
-  const loadedBaseId = await loadMigratedActiveBase(appHost, migratedWorldDocuments);
-  const summary: V2MigrationCompletionSummary = {
-    migratedMapCount: migratedWorldDocuments.length,
-    migratedBlueprintCount,
-    migratedModuleCanvasCount: moduleResult.migratedCanvasCount,
-    migratedCustomModuleCount: moduleResult.migratedCustomModuleCount,
-  };
-
-  writeV2MigrationCompletedState(summary);
-
-  return {
-    ...summary,
-    loadedBaseId,
-  };
+  await clearPendingV2Migration();
+  return { ...receipt.summary, loadedBaseId };
 }
 
 function createMigratedWorldDocuments(baseDefinitions: readonly BaseDefinition[]) {
@@ -103,24 +106,15 @@ function createMigratedWorldDocuments(baseDefinitions: readonly BaseDefinition[]
         name: `迁移地图 - ${layout.baseId}`,
       });
 
-      return document === null ? [] : [document];
+      if (document === null) throw new Error(`Failed to convert v2 map ${layout.baseId}.`);
+      return [document];
     });
 }
 
-async function migrateUserBlueprints(): Promise<number> {
-  const folder = await upsertBlueprintFolder({
-    folderId: V3_MIGRATED_BLUEPRINT_FOLDER_ID,
-    name: "迁移的蓝图",
-    parentFolderId: null,
-  });
-
-  if (folder === null) {
-    throw new Error("Failed to create migrated blueprint folder.");
-  }
-
+function createMigratedUserBlueprints() {
   const snapshots = readLegacyUserBlueprintSnapshots();
   const usedBlueprintIds = new Set<string>();
-  let migratedCount = 0;
+  const blueprints = [];
 
   for (const [snapshotIndex, snapshot] of snapshots.entries()) {
     const blueprintId = createMigratedBlueprintId(snapshot.id, snapshotIndex, usedBlueprintIds);
@@ -132,20 +126,11 @@ async function migrateUserBlueprints(): Promise<number> {
       },
     );
 
-    if (blueprint === null) {
-      continue;
-    }
+    if (blueprint === null) throw new Error(`Failed to convert v2 blueprint ${snapshot.id}.`);
 
-    const savedRecord = await saveBlueprintDocument(blueprint, {
-      parentFolderId: folder.folderId,
-    });
-
-    if (savedRecord !== null) {
-      migratedCount += 1;
-    }
+    blueprints.push(blueprint);
   }
-
-  return migratedCount;
+  return blueprints;
 }
 
 function readLegacyUserBlueprintSnapshots() {
@@ -175,7 +160,8 @@ async function loadMigratedActiveBase(
 
   const didLoad = await editor.actions.loadLatestBaseDocument(activeBaseId);
 
-  return didLoad ? activeBaseId : null;
+  if (!didLoad) throw new Error(`Failed to load migrated base ${activeBaseId}.`);
+  return activeBaseId;
 }
 
 function resolveMigratedActiveBaseId(

@@ -19,6 +19,7 @@ export interface IndexedDbStorageLocation extends IndexedDbStoreLocation {
 }
 
 export type IndexedDbMutationOperation<TValue> =
+  | { type: "clear" }
   | {
     type: "put";
     key: IDBValidKey;
@@ -190,33 +191,44 @@ export async function applyIndexedDbTransactionMutations<TValue>(
     return false;
   }
 
+  let transaction: IDBTransaction | null = null;
+  let completion: Promise<void> | null = null;
   try {
-    const transaction = database.transaction(
+    // Serialization must succeed for every value before any deletion or write.
+    const serialize = getCodec(codec).serialize;
+    const preparedBatches = activeBatches.map((batch) => ({
+      storeName: batch.storeName,
+      operations: batch.operations.map((operation) => operation.type === "put"
+        ? { ...operation, value: serialize(operation.value) }
+        : operation),
+    }));
+    transaction = database.transaction(
       Array.from(new Set(activeBatches.map((batch) => batch.storeName))),
       "readwrite",
     );
-    const completion = waitForTransaction(transaction);
-    const serialize = getCodec(codec).serialize;
-
-    for (const batch of activeBatches) {
+    completion = waitForTransaction(transaction);
+    // Register a rejection handler even if enqueueing a request throws.
+    void completion.catch(() => undefined);
+    const requests: Promise<unknown>[] = [];
+    for (const batch of preparedBatches) {
       const objectStore = transaction.objectStore(batch.storeName);
-
       for (const operation of batch.operations) {
-        if (operation.type === "put") {
-          await waitForRequest(
-            objectStore.put(serialize(operation.value), operation.key),
-          );
-          continue;
-        }
-
-        await waitForRequest(objectStore.delete(operation.key));
+        const result = operation.type === "put"
+          ? waitForRequest(objectStore.put(operation.value, operation.key))
+          : operation.type === "clear"
+            ? waitForRequest(objectStore.clear())
+            : waitForRequest(objectStore.delete(operation.key));
+        void result.catch(() => undefined);
+        requests.push(result);
       }
     }
-
-    await completion;
-
+    await Promise.all([...requests, completion]);
     return true;
   } catch {
+    if (transaction !== null) {
+      try { transaction.abort(); } catch { /* The transaction may already have aborted. */ }
+    }
+    await completion?.catch(() => undefined);
     return false;
   } finally {
     database.close();

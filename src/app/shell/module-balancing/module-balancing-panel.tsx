@@ -480,6 +480,7 @@ export const ModuleBalancingPanel = observer(function ModuleBalancingPanel({
           <StageDetailPanel
             expandedBalanceIds={expandedBalanceIds}
             index={index}
+            isTouch={isTouch}
             onAddModule={() => setLibraryOpen(true)}
             onAddStage={addStage}
             onClearStage={(stage) => runInAction(() => { stage.entries = []; })}
@@ -1053,6 +1054,7 @@ const CanvasSettingsPanel = observer(function CanvasSettingsPanel({
 const StageDetailPanel = observer(function StageDetailPanel({
   expandedBalanceIds,
   index,
+  isTouch,
   onAddModule,
   onAddStage,
   onClearStage,
@@ -1067,6 +1069,7 @@ const StageDetailPanel = observer(function StageDetailPanel({
 }: {
   expandedBalanceIds: Set<string>;
   index: ModuleBalancingIndex;
+  isTouch: boolean;
   onAddModule: () => void;
   onAddStage: () => void;
   onClearStage: (stage: ModuleBalancingStageReadWrite) => void;
@@ -1102,7 +1105,7 @@ const StageDetailPanel = observer(function StageDetailPanel({
       />
       <StageEntryGrid
         index={index}
-        isTouch
+        isTouch={isTouch}
         onAddModule={onAddModule}
         onEditEntry={(moduleId, entryIndex, quantity) => onEditEntry(selectedStage.id, moduleId, entryIndex, quantity)}
         onMoveEntry={(fromIndex, toIndex) => moveStageEntry(selectedStage, fromIndex, toIndex)}

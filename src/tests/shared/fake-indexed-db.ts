@@ -7,6 +7,8 @@ interface FakeTransactionState {
   pendingRequestCount: number;
   completionQueued: boolean;
   aborted: boolean;
+  commit: () => void;
+  mutations: Array<() => void>;
 }
 
 export function createFakeIndexedDbFactory(): IDBFactory {
@@ -95,18 +97,28 @@ function createDatabaseHandle(databaseState: FakeDatabaseState): IDBDatabase {
 function createTransactionHandle(
   stores: ReadonlyMap<string, Map<IDBValidKey, unknown>>,
 ): IDBTransaction {
+  const stagedStores = new Map(Array.from(stores, ([name, store]) => [name, new Map(store)]));
   const transactionState: FakeTransactionState = {
     pendingRequestCount: 0,
     completionQueued: false,
     aborted: false,
+    mutations: [],
+    commit: () => {
+      for (const mutate of transactionState.mutations) mutate();
+    },
   };
-  const transaction = {
+  const transaction: IDBTransaction = {
     error: null,
     oncomplete: null,
     onerror: null,
     onabort: null,
+    abort: () => {
+      if (transactionState.aborted) return;
+      transactionState.aborted = true;
+      queueMicrotask(() => transaction.onabort?.(new Event("abort")));
+    },
     objectStore: (requestedStoreName: string) => {
-      const store = stores.get(requestedStoreName);
+      const store = stagedStores.get(requestedStoreName);
 
       if (store === undefined) {
         throw new Error(`Unexpected store "${requestedStoreName}".`);
@@ -114,17 +126,19 @@ function createTransactionHandle(
 
       return createObjectStoreHandle(
         store,
+        stores.get(requestedStoreName)!,
         transaction as unknown as IDBTransaction,
         transactionState,
       );
     },
-  };
+  } as unknown as IDBTransaction;
 
   return transaction as unknown as IDBTransaction;
 }
 
 function createObjectStoreHandle(
   store: Map<IDBValidKey, unknown>,
+  originalStore: Map<IDBValidKey, unknown>,
   transaction: IDBTransaction,
   transactionState: FakeTransactionState,
 ): IDBObjectStore {
@@ -144,6 +158,7 @@ function createObjectStoreHandle(
       trackFakeTransactionRequest(transactionState);
 
       queueMicrotask(() => {
+        if (transactionState.aborted) return;
         if (key === undefined) {
           transactionState.aborted = true;
           assignRequestError(request, new Error("Key is required."));
@@ -153,6 +168,7 @@ function createObjectStoreHandle(
         }
 
         store.set(key, value);
+        transactionState.mutations.push(() => originalStore.set(key, value));
         assignRequestResult(request, key);
         request.onsuccess?.(new Event("success"));
         finishFakeTransactionRequest(transactionState, transaction);
@@ -165,12 +181,27 @@ function createObjectStoreHandle(
       trackFakeTransactionRequest(transactionState);
 
       queueMicrotask(() => {
+        if (transactionState.aborted) return;
         store.delete(key);
+        transactionState.mutations.push(() => originalStore.delete(key));
         assignRequestResult(request, undefined);
         request.onsuccess?.(new Event("success"));
         finishFakeTransactionRequest(transactionState, transaction);
       });
 
+      return request;
+    },
+    clear: () => {
+      const request = createRequest<undefined>();
+      trackFakeTransactionRequest(transactionState);
+      queueMicrotask(() => {
+        if (transactionState.aborted) return;
+        store.clear();
+        transactionState.mutations.push(() => originalStore.clear());
+        assignRequestResult(request, undefined);
+        request.onsuccess?.(new Event("success"));
+        finishFakeTransactionRequest(transactionState, transaction);
+      });
       return request;
     },
     getAll: () => {
@@ -210,6 +241,7 @@ function finishFakeTransactionRequest(
     transactionState.completionQueued = false;
 
     if (transactionState.pendingRequestCount === 0 && !transactionState.aborted) {
+      transactionState.commit();
       transaction.oncomplete?.(new Event("complete"));
     }
   });

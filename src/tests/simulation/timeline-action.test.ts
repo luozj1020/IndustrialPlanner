@@ -26,6 +26,40 @@ describe("simulation timeline actions", () => {
     vi.useRealTimers();
   });
 
+  it("ignores a timeline export that completes after stop and restart", async () => {
+    vi.useFakeTimers();
+    const state = createSimulationStateReadWrite();
+    state.hasStarted = true;
+    state.runningState = "start";
+    state.currentSnapshot = createRuntimeExport(37).snapshot;
+    state.currentPlaybackTickNumber = 37;
+    const firstExport = createDeferred<Awaited<ReturnType<SimulationWorkerBridge["exportRuntimeState"]>>>();
+    const bridge = createSimulationBridge();
+    vi.mocked(bridge.exportRuntimeState).mockImplementationOnce(() => firstExport.promise);
+    const timelineBridge = createTimelineBridge();
+    const action = new SimulationActionImpl({
+      workspace: {} as WorkspaceContract, state,
+      topology: createSnapshotStore<CompiledSimulationTopology | null>(null),
+      bridge, createTimelineBridge: () => timelineBridge,
+    });
+    const firstEnable = action.enableTimeline();
+    action.stop();
+    expect(bridge.reset).toHaveBeenCalledOnce();
+    state.hasStarted = true;
+    state.runningState = "start";
+    state.currentSnapshot = createRuntimeExport(1).snapshot;
+    await action.enableTimeline();
+    expect(timelineBridge.loadTimeline).toHaveBeenCalledTimes(1);
+    firstExport.resolve({
+      type: "runtime-state-exported", requestId: 1,
+      runtimeExport: createRuntimeExport(31), status: createRuntimeStatus(31),
+    });
+    await firstEnable;
+    expect(timelineBridge.loadTimeline).toHaveBeenCalledTimes(1);
+    action.stop();
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
   it("starts timeline prediction from the previous half-second boundary", async () => {
     const state = createSimulationStateReadWrite();
     state.hasStarted = true;
@@ -841,6 +875,7 @@ function createSimulationBridge(
   overrides: Partial<SimulationWorkerBridge> = {},
 ): SimulationWorkerBridge {
   return {
+    reset: vi.fn(),
     loadTopology: vi.fn(async () => ({
       type: "topology-loaded" as const,
       requestId: 1,

@@ -5,7 +5,7 @@ import { act } from "react";
 import { createRoot, Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { createAppHost } from "@/app/host/app-host";
+import { createAppHost as createAppHostImpl } from "@/app/host/app-host";
 import { AYU_DARK_THEME, AYU_LIGHT_THEME } from "@/app/theme";
 import type { GestureEvent } from "@/app/input/gesture/adapter";
 import {
@@ -43,6 +43,19 @@ import { createDummyWorldDocument } from "@/tests/helpers/dummy-document";
 import { createEditorHost } from "@/editor/editor-host";
 import { createInitialSimulationTimelineState } from "@/simulation/state-impl";
 import { createFakeIndexedDbFactory } from "@/tests/shared/fake-indexed-db";
+
+const appHosts: ReturnType<typeof createAppHostImpl>[] = [];
+
+function createAppHost(workspace: WorkspaceContract) {
+  const host = createAppHostImpl(workspace);
+  appHosts.push(host);
+  return host;
+}
+
+// Persistence batches changes; pagehide synchronously flushes the final value.
+function flushPersistedState(): void {
+  window.dispatchEvent(new Event("pagehide"));
+}
 
 function createWorkspace(): WorkspaceContract {
   return {
@@ -475,6 +488,7 @@ describe("WorkbenchApp", () => {
       root.unmount();
     });
 
+    for (const host of appHosts.splice(0)) host.dispose();
     container.remove();
     localStorage.clear();
     document.documentElement.removeAttribute("data-app-theme");
@@ -778,6 +792,7 @@ describe("WorkbenchApp", () => {
 
     expect(appHost.state.workbench.leftDockWidth).toBe(470);
     expect(workbench?.style.getPropertyValue("--left-dock-width")).toBe("470px");
+    flushPersistedState();
     expect(localStorage.getItem(WORKBENCH_STATE_LOCAL_STORAGE_KEY)).toBe(
       JSON.stringify(createWorkbenchStorageSnapshot({
         leftDockWidth: 470,
@@ -2689,6 +2704,7 @@ describe("WorkbenchApp", () => {
     });
 
     expect(container.querySelector(".help-dialog")?.classList.contains("is-maximized")).toBe(true);
+    flushPersistedState();
     expect(localStorage.getItem(WORKBENCH_STATE_LOCAL_STORAGE_KEY)).toBe(
       JSON.stringify(createWorkbenchStorageSnapshot({
         helpDialog: createDialogStateSnapshot({
@@ -2903,6 +2919,7 @@ describe("WorkbenchApp", () => {
       root.unmount();
     });
 
+    appHost.dispose();
     root = createRoot(container);
 
     const nextWorkspace = createWorkspace();
@@ -3175,6 +3192,7 @@ describe("WorkbenchApp", () => {
       "calc(var(--bottom-bar-height, 28px) + var(--toolbox-bottom-dock-height, 0px))",
     );
     expect(container.querySelector("#toolbox-bottom-dock-tab-item-encyclopedia")?.getAttribute("aria-selected")).toBe("true");
+    flushPersistedState();
     expect(localStorage.getItem(WORKBENCH_STATE_LOCAL_STORAGE_KEY)).toBe(
       JSON.stringify(createWorkbenchStorageSnapshot({
         toolboxDialog: createDialogStateSnapshot({
@@ -3478,11 +3496,13 @@ describe("WorkbenchApp", () => {
     expect(languageSelect?.value).toBe("en-US");
     expect(settingsButton?.title).toBe("Settings");
     expect(container.querySelector(".settings-dialog-header h2")?.textContent).toBe("Settings");
+    flushPersistedState();
     expect(localStorage.getItem(WORKBENCH_STATE_LOCAL_STORAGE_KEY)).toBe(
       JSON.stringify(createWorkbenchStorageSnapshot({
         settingsDialog: createDialogStateSnapshot({ visible: true }),
       })),
     );
+    flushPersistedState();
     expect(localStorage.getItem(APP_SETTINGS_LOCAL_STORAGE_KEY)).toBe(
       JSON.stringify({
         ...DEFAULT_APP_SETTINGS_STORAGE,
@@ -3527,11 +3547,13 @@ describe("WorkbenchApp", () => {
     expect(appHost.state.settings.themeId).toBe("ayu-dark");
     expect(themeSelect?.value).toBe("ayu-dark");
     expect(document.documentElement.dataset.appTheme).toBe("ayu-dark");
+    flushPersistedState();
     expect(localStorage.getItem(WORKBENCH_STATE_LOCAL_STORAGE_KEY)).toBe(
       JSON.stringify(createWorkbenchStorageSnapshot({
         settingsDialog: createDialogStateSnapshot({ visible: true }),
       })),
     );
+    flushPersistedState();
     expect(localStorage.getItem(APP_SETTINGS_LOCAL_STORAGE_KEY)).toBe(
       JSON.stringify({
         ...DEFAULT_APP_SETTINGS_STORAGE,
@@ -3611,6 +3633,7 @@ describe("WorkbenchApp", () => {
 
     expect(appHost.state.settings.hypergryphImmediateMarquee).toBe(true);
     expect(immediateMarqueeToggle?.checked).toBe(true);
+    flushPersistedState();
     expect(localStorage.getItem(APP_SETTINGS_LOCAL_STORAGE_KEY)).toBe(
       JSON.stringify({
         ...DEFAULT_APP_SETTINGS_STORAGE,
@@ -3684,6 +3707,7 @@ describe("WorkbenchApp", () => {
     expect(appHost.state.settings.debugShowGestureDiagnosticsWindow).toBe(true);
     expect(appHost.internalState.settings.debugSimulationWorkerDetailedReport).toBe(true);
     expect(backendApiAddressInput?.value).toBe("http://localhost:8787");
+    flushPersistedState();
     expect(localStorage.getItem(APP_SETTINGS_LOCAL_STORAGE_KEY)).toBe(
       JSON.stringify({
         ...DEFAULT_APP_SETTINGS_STORAGE,
@@ -3708,6 +3732,7 @@ describe("WorkbenchApp", () => {
     expect(container.querySelector(
       'input[name="debug-simulation-worker-detailed-report"]',
     )).toBeNull();
+    flushPersistedState();
     expect(localStorage.getItem(APP_SETTINGS_LOCAL_STORAGE_KEY)).toBe(
       JSON.stringify(DEFAULT_APP_SETTINGS_STORAGE),
     );
@@ -3742,6 +3767,7 @@ describe("WorkbenchApp", () => {
 
     expect(appHost.state.settings.gameAlwaysShowGridLines).toBe(false);
     expect(alwaysShowGridLinesToggle?.checked).toBe(false);
+    flushPersistedState();
     expect(localStorage.getItem(APP_SETTINGS_LOCAL_STORAGE_KEY)).toBe(
       JSON.stringify({
         ...DEFAULT_APP_SETTINGS_STORAGE,
@@ -3806,6 +3832,7 @@ describe("WorkbenchApp", () => {
     expect(alwaysShowGridLinesToggle?.disabled).toBe(true);
     expect(showGrassBackgroundToggle?.checked).toBe(false);
     expect(showGrassBackgroundToggle?.disabled).toBe(true);
+    flushPersistedState();
     expect(localStorage.getItem(APP_SETTINGS_LOCAL_STORAGE_KEY)).toBe(
       JSON.stringify({
         ...DEFAULT_APP_SETTINGS_STORAGE,
@@ -3895,6 +3922,7 @@ describe("WorkbenchApp", () => {
     expect(appHost.state.settings.gameShowDeviceIcons).toBe(true);
     expect(showDeviceIconsToggle?.checked).toBe(true);
     expect(showDeviceIconsToggle?.disabled).toBe(true);
+    flushPersistedState();
     expect(localStorage.getItem(APP_SETTINGS_LOCAL_STORAGE_KEY)).toBe(
       JSON.stringify({
         ...DEFAULT_APP_SETTINGS_STORAGE,

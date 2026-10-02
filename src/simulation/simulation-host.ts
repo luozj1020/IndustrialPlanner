@@ -126,6 +126,16 @@ export function createSimulationHost(
     let previousPowerMode = editorDocument.getSnapshot().documentSettings.powerMode ?? "infinite";
     let previousPowerConsumptionOverride: number | undefined =
       editorDocument.getSnapshot().documentSettings.powerConsumptionOverride;
+    void bridge.setPowerMode(previousPowerMode).catch((error: unknown) => {
+      console.error("[SimHost] Failed to initialize power mode.", error);
+    });
+    void bridge.setPowerConsumptionOverride(
+      typeof previousPowerConsumptionOverride === "number"
+        && Number.isFinite(previousPowerConsumptionOverride) && previousPowerConsumptionOverride >= 0
+        ? previousPowerConsumptionOverride : undefined,
+    ).catch((error: unknown) => {
+      console.error("[SimHost] Failed to initialize power consumption.", error);
+    });
     const unsubscribe = editorDocument.subscribe((doc) => {
       const currentPowerMode = doc.documentSettings.powerMode ?? "infinite";
       if (currentPowerMode !== previousPowerMode) {
@@ -983,6 +993,10 @@ class BrowserSimulationWorkerBridge implements SimulationWorkerBridge {
     }, "power-consumption-override-set");
   }
 
+  public reset(): void {
+    this.worker.postMessage({ type: "reset", requestId: this.createRequestId() } satisfies SimulationWorkerRequest);
+  }
+
   public dispose(): void {
     const error = new Error("Simulation worker disposed");
     for (const handlers of this.pending.values()) {
@@ -1259,7 +1273,12 @@ class LocalSimulationWorkerBridge implements SimulationWorkerBridge {
     return Promise.resolve(response);
   }
 
+  public reset(): void {
+    this.runtime.reset();
+  }
+
   public dispose(): void {
+    this.runtime.reset();
   }
 
   private createRequestId(): number {

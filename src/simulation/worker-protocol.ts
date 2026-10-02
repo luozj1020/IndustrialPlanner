@@ -15,6 +15,7 @@ import type {
 } from "@/domain/simulation/types/simulation-types";
 
 export type SimulationWorkerRequest =
+  | { readonly type: "reset"; readonly requestId: number }
   | {
       readonly type: "load-topology";
       readonly requestId: number;
@@ -104,6 +105,7 @@ export type SimulationWorkerRequest =
     };
 
 export type SimulationWorkerResponse =
+  | { readonly type: "runtime-reset"; readonly requestId: number; readonly status: SimulationRuntimeStatus }
   | {
       readonly type: "topology-loaded";
       readonly requestId: number;

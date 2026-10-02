@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import type { BlueprintDocument } from "@/domain/document/blueprint-document";
 import type { WorkspaceContract } from "@/domain/document/workspace-contract";
@@ -30,6 +30,40 @@ import {
 } from "./blueprint-test-helpers";
 
 describe("REQ-084: simulation power system", () => {
+  it("synchronizes an existing real power mode and demand override before the first tick", async () => {
+    const document = createWorldDocumentFromBlueprint(createGrinderBlueprint("initial-real-power", 4));
+    document.documentSettings = { ...document.documentSettings, powerMode: "real", powerConsumptionOverride: 1_000_000_000 };
+    const workspace = createHeadlessWorkspace(createSnapshotStore(document), createRegistryContract());
+    const host = createSimulationHost(workspace, { workerMode: "runtime" });
+    try {
+      await host.actions.start();
+      await host.internalActions.syncToTick(2);
+      expect(host.queries.getDocumentRuntimeStatus()?.totalPowerDemand).toBe(1_000_000_000);
+      expect(host.internalState.currentSnapshot?.isPowerOutage).toBe(true);
+    } finally { host.dispose(); }
+  });
+
+  it("cancels local background work and never revives a stopped in-flight start", async () => {
+    vi.useFakeTimers();
+    const workspace = createHeadlessWorkspace(createSnapshotStore(createWorldDocument()), createRegistryContract());
+    const host = createSimulationHost(workspace, { workerMode: "runtime" });
+    try {
+      const starting = host.actions.start();
+      host.actions.stop();
+      await starting;
+      expect(host.state.runningState).toBe("stop");
+      expect(host.topology.getSnapshot()).toBeNull();
+      expect(vi.getTimerCount()).toBe(0);
+      await host.actions.start();
+      expect(host.state.runningState).toBe("start");
+      expect(vi.getTimerCount()).toBeGreaterThan(0);
+      host.dispose();
+      expect(vi.getTimerCount()).toBe(0);
+      await vi.runAllTimersAsync();
+      expect(host.state.runningState).toBe("stop");
+    } finally { host.dispose(); vi.useRealTimers(); }
+  });
+
   it("runs powered recipes and exposes total power demand through topology and snapshots", async () => {
     const completionTick = 2 * STANDARD_TICK_RATE_PER_SECOND + 1;
     const report = await runBlueprintSimulation({

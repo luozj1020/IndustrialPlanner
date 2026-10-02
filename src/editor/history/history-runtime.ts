@@ -15,6 +15,7 @@ import type {
 import {
   readEditorHistoryState,
   writeEditorHistoryState,
+  type PersistedEditorHistoryState,
 } from "./history-storage";
 
 /** 每张地图最多保留的历史记录条数 */
@@ -23,6 +24,8 @@ const MAX_HISTORY_PER_DOCUMENT = 100;
 export class EditorHistoryRuntime {
   private loadSerial = 0;
   private writeQueue = Promise.resolve();
+  private readonly pendingWrites = new Map<string, PersistedEditorHistoryState>();
+  private writing = false;
 
   public constructor(
     private readonly state: EditorHistoryStateReadWrite,
@@ -36,6 +39,7 @@ export class EditorHistoryRuntime {
     });
 
     void (async () => {
+      await this.writeQueue;
       const persistedState = await readEditorHistoryState(documentKey);
 
       if (serial !== this.loadSerial) {
@@ -173,9 +177,24 @@ export class EditorHistoryRuntime {
       records: this.state.records.map((record) => record),
     };
 
-    this.writeQueue = this.writeQueue
-      .catch(() => undefined)
-      .then(() => writeEditorHistoryState(snapshot));
+    this.pendingWrites.set(documentKey, snapshot);
+    if (this.writing) return;
+    this.writing = true;
+    this.writeQueue = this.writeQueue.then(async () => {
+      try {
+        while (this.pendingWrites.size > 0) {
+          const entry = this.pendingWrites.entries().next().value;
+          if (entry === undefined) break;
+          const [key, pending] = entry;
+          this.pendingWrites.delete(key);
+          await writeEditorHistoryState(pending);
+        }
+      } finally {
+        this.writing = false;
+      }
+    }).catch((error: unknown) => {
+      console.error("Failed to persist editor history.", error);
+    });
   }
 }
 

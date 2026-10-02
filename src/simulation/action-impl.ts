@@ -113,6 +113,7 @@ function logTopologyRuntimeTransition(
 }
 
 export interface SimulationWorkerBridge {
+  reset(): void;
   loadTopology(topology: CompiledSimulationTopology, migration?: SimulationTopologyMigration, perfEnabled?: boolean, simulationSpeed?: number, debugDataEnabled?: boolean): Promise<Extract<
     SimulationWorkerResponse,
     { readonly type: "topology-loaded" }
@@ -410,13 +411,16 @@ implements SimulationAction, SimulationInternalAction {
     this.getActiveActivityIds = options.getActiveActivityIds;
   }
 
+  private lifecycleRevision = 0;
+
   public readonly start: SimulationAction["start"] = async () => {
+    const revision = this.lifecycleRevision;
     runInAction(() => {
       this.stateReadWrite.hasStarted = true;
     });
 
     const result = await this.refreshFromCurrentDocument();
-    if (result.status === "started") {
+    if (revision === this.lifecycleRevision && result.status === "started") {
       runInAction(() => {
         this.stateReadWrite.runningState = "start";
       });
@@ -781,10 +785,14 @@ implements SimulationAction, SimulationInternalAction {
   }
 
   public readonly refreshFromCurrentDocument: SimulationInternalAction["refreshFromCurrentDocument"] = () => {
+    const revision = this.lifecycleRevision;
+    const runRefresh = () => revision === this.lifecycleRevision
+      ? this.refreshFromCurrentDocumentNow(revision)
+      : Promise.resolve(this.cancelledRefreshResult());
     const queuedRefresh = this.topologyRefreshQueue;
     const refresh = queuedRefresh === null
-      ? this.refreshFromCurrentDocumentNow()
-      : queuedRefresh.then(() => this.refreshFromCurrentDocumentNow());
+      ? runRefresh()
+      : queuedRefresh.then(runRefresh);
     const completion = refresh.then(
       () => undefined,
       () => undefined,
@@ -798,12 +806,17 @@ implements SimulationAction, SimulationInternalAction {
     return refresh;
   };
 
-  private readonly refreshFromCurrentDocumentNow = async (): Promise<SimulationStartResult> => {
+  private cancelledRefreshResult(): SimulationStartResult {
+    return { status: "failed", topologyId: null, diagnostics: [], error: "Simulation was stopped." };
+  }
+
+  private readonly refreshFromCurrentDocumentNow = async (revision: number): Promise<SimulationStartResult> => {
     const playbackTickRequestCompletion = this.playbackTickRequestCompletion;
     if (playbackTickRequestCompletion !== null) {
       await playbackTickRequestCompletion;
     }
 
+    if (revision !== this.lifecycleRevision) return this.cancelledRefreshResult();
     const sourceDocument = this.workspace.editor?.document.getSnapshot();
     if (sourceDocument === undefined) {
       this.topology.setSnapshot(null);
@@ -932,6 +945,10 @@ implements SimulationAction, SimulationInternalAction {
       this.releaseTopologyPresentationBoundary(presentationBoundary);
       throw error;
     }
+    if (revision !== this.lifecycleRevision) {
+      this.releaseTopologyPresentationBoundary(presentationBoundary);
+      return this.cancelledRefreshResult();
+    }
     logTopologyRuntimeTransition(response.result.runtimeTransition);
     if (response.result.status !== "started") {
       this.releaseTopologyPresentationBoundary(presentationBoundary);
@@ -943,6 +960,7 @@ implements SimulationAction, SimulationInternalAction {
     if (presentationBoundary !== null) {
       await presentationBoundary.reached;
     }
+    if (revision !== this.lifecycleRevision) return this.cancelledRefreshResult();
     this.topology.setSnapshot(compiledTopology);
     this.compiledDocument = cloneWorldDocument(document);
     this.compiledActivitySignature = nextActivitySignature;
@@ -1002,6 +1020,7 @@ implements SimulationAction, SimulationInternalAction {
     //   }
     // }
 
+    if (revision !== this.lifecycleRevision) return this.cancelledRefreshResult();
     if (shouldMarkTimelineDocumentChange) {
       this.addTimelineMark("document-change");
       await this.restartTimelineFromCurrentSimulation();
@@ -1027,18 +1046,22 @@ implements SimulationAction, SimulationInternalAction {
       return;
     }
 
+    const revision = this.lifecycleRevision;
     this.resetPlaybackHotQueue();
     const response = await this.bridge.patchRuntimeSlot(patch);
+    if (revision !== this.lifecycleRevision) return;
     runInAction(() => {
       this.stateReadWrite.runtimeStatus = response.status;
     });
 
     const targetTickNumber = Math.trunc(this.stateReadWrite.currentPlaybackTickNumber);
     const status = await this.syncToTick(targetTickNumber);
+    if (revision !== this.lifecycleRevision) return;
     if (status.status === "not-found") {
       await this.recoverPlaybackFromUnavailableTick(status, targetTickNumber);
     }
 
+    if (revision !== this.lifecycleRevision) return;
     this.addTimelineMark("runtime-change");
     await this.restartTimelineFromCurrentSimulation();
   };
@@ -1048,23 +1071,28 @@ implements SimulationAction, SimulationInternalAction {
       return;
     }
 
+    const revision = this.lifecycleRevision;
     this.resetPlaybackHotQueue();
     const response = await this.bridge.resetAdmissionCounter(reset);
+    if (revision !== this.lifecycleRevision) return;
     runInAction(() => {
       this.stateReadWrite.runtimeStatus = response.status;
     });
 
     const targetTickNumber = Math.trunc(this.stateReadWrite.currentPlaybackTickNumber);
     const status = await this.syncToTick(targetTickNumber);
+    if (revision !== this.lifecycleRevision) return;
     if (status.status === "not-found") {
       await this.recoverPlaybackFromUnavailableTick(status, targetTickNumber);
     }
 
+    if (revision !== this.lifecycleRevision) return;
     this.addTimelineMark("runtime-change");
     await this.restartTimelineFromCurrentSimulation();
   };
 
   public readonly enableTimeline: SimulationAction["enableTimeline"] = async () => {
+    const revision = this.lifecycleRevision;
     runInAction(() => {
       this.stateReadWrite.timeline.enabled = true;
       this.stateReadWrite.timeline.readiness = "preparing";
@@ -1078,7 +1106,9 @@ implements SimulationAction, SimulationInternalAction {
       await this.start();
     }
 
+    if (revision !== this.lifecycleRevision) return;
     await this.restartTimelineFromCurrentSimulation();
+    if (revision !== this.lifecycleRevision) return;
     this.startTimelineStatusPolling();
   };
 
@@ -1538,6 +1568,7 @@ implements SimulationAction, SimulationInternalAction {
     status: Extract<SimulationTickPullStatus, { readonly status: "not-found" }>,
     fallbackPlaybackTickNumber: number,
   ): Promise<void> {
+    const revision = this.lifecycleRevision;
     const recoveryTickNumber = status.retainedFromTick
       ?? this.stateReadWrite.currentSnapshot?.tickNumber
       ?? status.latestTickNumber;
@@ -1552,6 +1583,7 @@ implements SimulationAction, SimulationInternalAction {
     }
 
     const recoveryStatus = await this.syncToTick(recoveryTickNumber, recoveryTickNumber);
+    if (revision !== this.lifecycleRevision) return;
     if (recoveryStatus.status !== "ready") {
       runInAction(() => {
         this.stateReadWrite.currentPlaybackTickNumber = fallbackPlaybackTickNumber;
@@ -1567,6 +1599,7 @@ implements SimulationAction, SimulationInternalAction {
       return;
     }
 
+    const revision = this.lifecycleRevision;
     this.timelineRestartInFlight = true;
     this.resetTimelinePresentationFrameCache();
     try {
@@ -1577,7 +1610,7 @@ implements SimulationAction, SimulationInternalAction {
         Math.floor(resolveTimelineTickNumberForStandardTick(currentStandardTickNumber)),
       );
       const exported = await this.exportLatestAlignedTimelineRuntimeState(startTimelineTickNumber);
-      if (exported === null || !this.stateReadWrite.timeline.enabled) {
+      if (revision !== this.lifecycleRevision || exported === null || !this.stateReadWrite.timeline.enabled) {
         return;
       }
 
@@ -1596,7 +1629,7 @@ implements SimulationAction, SimulationInternalAction {
         capacityTimelineTicks: TIMELINE_CAPACITY_TICKS,
         stepStandardTicks: TIMELINE_STEP_STANDARD_TICKS,
       });
-      if (!this.stateReadWrite.timeline.enabled) {
+      if (revision !== this.lifecycleRevision || this.timelineBridge !== bridge || !this.stateReadWrite.timeline.enabled) {
         return;
       }
 
@@ -1612,7 +1645,7 @@ implements SimulationAction, SimulationInternalAction {
         this.updateTimelineReadiness(loaded.status);
       });
     } finally {
-      this.timelineRestartInFlight = false;
+      if (revision === this.lifecycleRevision) this.timelineRestartInFlight = false;
     }
   }
 
@@ -1805,6 +1838,7 @@ implements SimulationAction, SimulationInternalAction {
       readonly runtimeExport: SimulationRuntimeExport;
     };
   } | null> {
+    const revision = this.lifecycleRevision;
     let candidateTimelineTickNumber = startTimelineTickNumber;
     const visitedTimelineTickNumbers = new Set<number>();
     for (
@@ -1817,6 +1851,7 @@ implements SimulationAction, SimulationInternalAction {
         candidateTimelineTickNumber,
       );
       const exported = await this.bridge.exportRuntimeState(exportTickNumber);
+      if (revision !== this.lifecycleRevision) return null;
       if (exported.runtimeExport !== null) {
         return {
           startTimelineTickNumber: candidateTimelineTickNumber,
@@ -1981,26 +2016,28 @@ implements SimulationAction, SimulationInternalAction {
   }
 
   private addTimelineMark(kind: "document-change" | "runtime-change" | "safety-resync"): void {
-    if (!this.stateReadWrite.timeline.enabled) {
-      return;
-    }
+    runInAction(() => {
+      if (!this.stateReadWrite.timeline.enabled) {
+        return;
+      }
 
-    const tickNumber = Math.max(
-      0,
-      Math.trunc(resolveTimelineTickNumberForStandardTick(
-        this.stateReadWrite.currentPlaybackTickNumber,
-      )),
-    );
-    this.stateReadWrite.timeline.marks.push({
-      id: `timeline-mark:${this.timelineMarkSerial}`,
-      tickNumber,
-      kind,
+      const tickNumber = Math.max(
+        0,
+        Math.trunc(resolveTimelineTickNumberForStandardTick(
+          this.stateReadWrite.currentPlaybackTickNumber,
+        )),
+      );
+      this.stateReadWrite.timeline.marks.push({
+        id: `timeline-mark:${this.timelineMarkSerial}`,
+        tickNumber,
+        kind,
+      });
+      this.timelineMarkSerial += 1;
+      this.stateReadWrite.timeline.availableToTickNumber = Math.min(
+        this.stateReadWrite.timeline.availableToTickNumber,
+        tickNumber,
+      );
     });
-    this.timelineMarkSerial += 1;
-    this.stateReadWrite.timeline.availableToTickNumber = Math.min(
-      this.stateReadWrite.timeline.availableToTickNumber,
-      tickNumber,
-    );
   }
 
   private syncTimelineCursorFromPlayback(options: {
@@ -2243,6 +2280,9 @@ implements SimulationAction, SimulationInternalAction {
   }
 
   private clearPlaybackProgress(): void {
+    this.lifecycleRevision += 1;
+    this.timelineRestartInFlight = false;
+    this.bridge.reset();
     this.topologyRevision += 1;
     this.completeTopologyPresentationBoundary(false);
     this.stopTimelineWorker();

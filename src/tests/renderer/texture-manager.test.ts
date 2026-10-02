@@ -53,6 +53,21 @@ describe("TextureActions", () => {
     manager.destroy()
   })
 
+  it("retries failed keys, identifies fallback explicitly, and only destroys owned textures", async () => {
+    const loaded = { ...createLoadedTextureMock("retry"), width: 16, height: 16, destroy: vi.fn() }
+    loadTexture.mockRejectedValueOnce(new Error("temporary failure")).mockResolvedValueOnce(loaded)
+    const manager = createTextureActions({ renderer: {} as never, app: null })
+    const fallback = await manager.getTexture("device-sprite-retry")
+    expect(manager.isFallbackTexture(fallback)).toBe(true)
+    expect(await manager.getTexture("device-sprite-retry")).toBe(loaded)
+    expect(manager.isFallbackTexture(loaded as never)).toBe(false)
+    manager.destroy()
+    manager.destroy()
+    expect(fallback.destroy).toHaveBeenCalledTimes(1)
+    expect(loaded.destroy).not.toHaveBeenCalled()
+    await expect(manager.getTexture("device-sprite-retry")).rejects.toThrow("disposed")
+  })
+
   it("returns a red fallback texture when the asset fails to load", async () => {
     loadTexture.mockRejectedValue(new Error("not found"))
 

@@ -28,11 +28,15 @@ const TOP_VIEW_ASSET_ROOT = "3d-top-view"
  */
 interface TextureActions {
   getTexture(unifiedResourceKey: string): Promise<Texture>;
+  isFallbackTexture(texture: Texture): boolean;
   destroy(): void;
 }
 
 class TextureActionsImpl implements TextureActions {
   private textureConfig: RenderTextureConfig
+
+  private destroyed = false
+  private fallbackTexture: Texture | null = null
 
   private readonly texturePromisesByKey = new Map<string, Promise<Texture>>()
   private readonly trackedBitmapTextures = new Set<Texture>()
@@ -71,20 +75,33 @@ class TextureActionsImpl implements TextureActions {
   }
 
   public getTexture(unifiedResourceKey: string): Promise<Texture> {
+    if (this.destroyed) return Promise.reject(new Error("Texture manager disposed"))
     const existing = this.texturePromisesByKey.get(unifiedResourceKey)
     if (existing !== undefined) {
       return existing
     }
 
-    const promise = this.resolveTexture(unifiedResourceKey)
+    const promise = this.resolveTexture(unifiedResourceKey).then((texture) => {
+      if (this.destroyed) throw new Error("Texture manager disposed")
+      if (this.isFallbackTexture(texture)) this.texturePromisesByKey.delete(unifiedResourceKey)
+      return texture
+    })
     this.texturePromisesByKey.set(unifiedResourceKey, promise)
     return promise
   }
 
+  public isFallbackTexture(texture: Texture): boolean {
+    return texture === this.fallbackTexture
+  }
+
   public destroy(): void {
+    if (this.destroyed) return
+    this.destroyed = true
     this.disposeResolutionReaction?.()
     this.texturePromisesByKey.clear()
     this.trackedBitmapTextures.clear()
+    this.fallbackTexture?.destroy(true)
+    this.fallbackTexture = null
   }
 
   private syncResolution(resolution: number): void {
@@ -110,6 +127,7 @@ class TextureActionsImpl implements TextureActions {
     for (const path of paths) {
       try {
         const texture = await Assets.load<Texture>(path)
+        if (this.destroyed) return texture
         this.trackedBitmapTextures.add(texture)
         return applyBitmapTextureConfig(texture, this.textureConfig)
       } catch {
@@ -167,6 +185,8 @@ class TextureActionsImpl implements TextureActions {
   }
 
   private createFallbackTexture(): Texture {
+    if (this.destroyed) throw new Error("Texture manager disposed")
+    if (this.fallbackTexture !== null) return this.fallbackTexture
     const canvas = document.createElement("canvas")
     canvas.width = 16
     canvas.height = 16
@@ -175,7 +195,8 @@ class TextureActionsImpl implements TextureActions {
       ctx.fillStyle = "#ff0000"
       ctx.fillRect(0, 0, 16, 16)
     }
-    return Texture.from(canvas)
+    this.fallbackTexture = Texture.from(canvas)
+    return this.fallbackTexture
   }
 }
 

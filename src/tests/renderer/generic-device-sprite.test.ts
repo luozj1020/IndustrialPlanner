@@ -178,6 +178,7 @@ vi.mock("pixi.js", () => {
   class MockTexture {
     public static readonly EMPTY = { id: "empty-texture", width: 0 }
     public static readonly WHITE = { id: "white-texture", width: 0 }
+    public static readonly from = vi.fn(() => ({ destroy: vi.fn(), width: 16, height: 16 }))
   }
 
   const MockAssets = {
@@ -195,6 +196,7 @@ vi.mock("pixi.js", () => {
   }
 })
 
+import { Texture } from "pixi.js"
 import { AYU_DARK_THEME, AYU_LIGHT_THEME } from "@/app/theme"
 import { EntityCollectionType } from "@/domain/editor/types/editor-types"
 import type { EntityDefinition } from "@/domain/registry/types/entity-definition"
@@ -266,6 +268,32 @@ describe("GenericDeviceSprite", () => {
   const SOLID_OUTPUT_KEY = "texture-solid-port-chevron-output"
   const LIQUID_INPUT_KEY = "texture-liquid-port-chevron-input"
   const LIQUID_OUTPUT_KEY = "texture-liquid-port-chevron-output"
+
+  it("destroys both generated fallback textures when the sprite is removed", async () => {
+    const context = vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue({
+      drawImage: vi.fn(), strokeRect: vi.fn(), fillRect: vi.fn(),
+    } as never)
+    vi.stubGlobal("Image", class {
+      naturalWidth = 64
+      naturalHeight = 64
+      onload: (() => void) | null = null
+      set src(_value: string) { queueMicrotask(() => this.onload?.()) }
+    })
+    const resultCount = vi.mocked(Texture.from).mock.results.length
+    const renderHost = createRenderHostStub({})
+    const sprite = new GenericDeviceSprite("fallback", createEntityDefinitionStub(), renderHost as never)
+    try {
+      await flushMicrotasks(12)
+      const generated = vi.mocked(Texture.from).mock.results.slice(resultCount).map((result) => result.value)
+      expect(generated).toHaveLength(2)
+      sprite.destroy()
+      for (const texture of generated) expect(texture.destroy).toHaveBeenCalledWith(true)
+    } finally {
+      sprite.destroy()
+      context.mockRestore()
+      vi.unstubAllGlobals()
+    }
+  })
 
   it("loads the sprite texture before making the device visible", async () => {
     const resolvedTexture = createLoadedTextureMock("device-texture")
@@ -2997,6 +3025,7 @@ function createRenderHostStub(
     },
     textureManager: {
       getTexture,
+      isFallbackTexture: () => false,
     },
   }
 }

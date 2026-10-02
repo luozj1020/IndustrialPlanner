@@ -1,4 +1,5 @@
-import { reaction, runInAction } from "mobx";
+import { runInAction } from "mobx";
+import { createPersistedReaction } from "@/shared/storage/persisted-reaction";
 
 import { normalizeSelectedActivityIds } from "@/shared/registry/activity-availability";
 import { readFromLocalStorage, saveToLocalStorage } from "@/shared/storage";
@@ -70,27 +71,17 @@ export function hookLocalstorage(appHost: AppHost): () => void {
     });
   }
 
-  const disposeWorkbenchReaction = reaction(
+  const disposeWorkbenchReaction = createPersistedReaction(
     () => JSON.stringify(appHost.internalState.workbench),
-    () => {
-      const toolboxState = appHost.internalState.workbench.dialogState.toolbox;
-      console.debug(
-        `[DialogOffset] persist workbench → toolbox: visible=${toolboxState.visible} maximized=${toolboxState.maximized} offset=(${toolboxState.offsetX}, ${toolboxState.offsetY}) size=(${toolboxState.width}, ${toolboxState.height})`,
-      );
-      saveToLocalStorage<WorkbenchStateReadWrite>(
-        WORKBENCH_STATE_LOCAL_STORAGE_KEY,
-        appHost.internalState.workbench,
-      );
-    },
+    (serialized) => saveToLocalStorage(WORKBENCH_STATE_LOCAL_STORAGE_KEY, serialized, {
+      serialize: (value) => value,
+    }),
   );
-  const disposeAppSettingsReaction = reaction(
+  const disposeAppSettingsReaction = createPersistedReaction(
     () => JSON.stringify(appHost.internalState.settings),
-    () => {
-      saveToLocalStorage<AppSettingsReadWrite>(
-        APP_SETTINGS_LOCAL_STORAGE_KEY,
-        appHost.internalState.settings,
-      );
-    },
+    (serialized) => saveToLocalStorage(APP_SETTINGS_LOCAL_STORAGE_KEY, serialized, {
+      serialize: (value) => value,
+    }),
   );
 
   return () => {

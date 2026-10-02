@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { runInAction } from "mobx";
 
-import { createAppHost } from "@/app/host/app-host";
+import { createAppHost as createAppHostImpl } from "@/app/host/app-host";
 import {
   APP_SHORTCUTS_LOCAL_STORAGE_KEY,
   SHORTCUT_KEY,
@@ -33,6 +33,19 @@ import { createWorkspaceState } from "@/domain/document/workspace-state";
 import { createDummyWorldDocument } from "@/tests/helpers/dummy-document";
 import { createEditorHost } from "@/editor/editor-host";
 import { createRegistryContract } from "@/registry";
+
+const appHosts: ReturnType<typeof createAppHostImpl>[] = [];
+
+function createAppHost(workspace: WorkspaceContract) {
+  const host = createAppHostImpl(workspace);
+  appHosts.push(host);
+  return host;
+}
+
+// Persistence batches changes; pagehide synchronously flushes the final value.
+function flushPersistedState(): void {
+  window.dispatchEvent(new Event("pagehide"));
+}
 
 function createWorkspace(): WorkspaceContract {
   return {
@@ -182,6 +195,7 @@ function createWorkbenchStorageSnapshot(options: {
 }
 
 afterEach(() => {
+  for (const host of appHosts.splice(0)) host.dispose();
   localStorage.clear();
   document.documentElement.removeAttribute("data-app-theme");
   document.documentElement.removeAttribute("style");
@@ -233,6 +247,7 @@ describe("createAppHost", () => {
     expect(appHost.internalState.workbench.toolbox.wiki.mobileSelectedCategories).toEqual([
       "excludeBottledLiquid",
     ]);
+    flushPersistedState();
     expect(localStorage.getItem(WORKBENCH_STATE_LOCAL_STORAGE_KEY)).toBe(
       JSON.stringify(createWorkbenchStorageSnapshot({
         toolboxWiki: createToolboxWikiStorageSnapshot({
@@ -453,6 +468,7 @@ describe("createAppHost", () => {
     expect(appHost.internalState.workbench.dialogState.help.offsetY).toBe(-8);
     expect(appHost.internalState.workbench.dialogState.help.width).toBe(768);
     expect(appHost.internalState.workbench.dialogState.help.height).toBe(512);
+    flushPersistedState();
     expect(localStorage.getItem(WORKBENCH_STATE_LOCAL_STORAGE_KEY)).toBe(
       JSON.stringify(createWorkbenchStorageSnapshot({
         toolboxDialog: createDialogStateSnapshot({
@@ -542,6 +558,7 @@ describe("createAppHost", () => {
     const expectedDialogState = { ...settingsDialog, visible: true };
 
     expect(appHost.internalState.workbench.dialogState.settings).toEqual(expectedDialogState);
+    flushPersistedState();
     expect(localStorage.getItem(WORKBENCH_STATE_LOCAL_STORAGE_KEY)).toBe(
       JSON.stringify(
         createWorkbenchStorageSnapshot({
@@ -602,6 +619,7 @@ describe("createAppHost", () => {
     expect(appHost.state.settings.debugShowGestureDiagnosticsWindow).toBe(false);
     expect(appHost.state.theme.name).toBe("Ayu Light");
     expect(document.documentElement.dataset.appTheme).toBe("ayu-light");
+    flushPersistedState();
     expect(localStorage.getItem(APP_SETTINGS_LOCAL_STORAGE_KEY)).toBe(
       JSON.stringify({
         locale: "en-US",
@@ -617,6 +635,7 @@ describe("createAppHost", () => {
       appHost.internalState.workbench.toolbox.wiki.openedPage = { kind: "entity", id: "item_port_grinder_1" };
     });
 
+    flushPersistedState();
     expect(localStorage.getItem(WORKBENCH_STATE_LOCAL_STORAGE_KEY)).toBe(
       JSON.stringify(createWorkbenchStorageSnapshot({
         leftDockOpen: false,
@@ -635,6 +654,7 @@ describe("createAppHost", () => {
         }),
       })),
     );
+    flushPersistedState();
     expect(localStorage.getItem(APP_SETTINGS_LOCAL_STORAGE_KEY)).toBe(
       JSON.stringify({
         locale: "en-US",
@@ -646,6 +666,7 @@ describe("createAppHost", () => {
       appHost.internalState.workbench.leftDockOpen = true;
     });
 
+    flushPersistedState();
     expect(localStorage.getItem(WORKBENCH_STATE_LOCAL_STORAGE_KEY)).toBe(
       JSON.stringify(createWorkbenchStorageSnapshot({
         leftDockOpen: false,
@@ -664,6 +685,7 @@ describe("createAppHost", () => {
         }),
       })),
     );
+    flushPersistedState();
     expect(localStorage.getItem(APP_SETTINGS_LOCAL_STORAGE_KEY)).toBe(
       JSON.stringify({
         locale: "en-US",

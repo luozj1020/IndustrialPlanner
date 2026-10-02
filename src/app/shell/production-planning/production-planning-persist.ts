@@ -13,6 +13,10 @@ import type {
   ProductionPlanningSourceConfig,
 } from "@/app/shell/production-planning/production-planning-model";
 
+// All panel mounts share one storage key. A reopened panel must await the
+// previous panel's final write before loading its saved state.
+let plannerWriteQueue = Promise.resolve();
+
 /**
  * 挂接 IndexedDB 持久化到 MobX store。
  * - 异步加载历史状态并 hydration
@@ -23,10 +27,33 @@ export function hookPlannerIndexedDbPersistence(
   store: ProductionPlanningInputStore,
 ): () => void {
   let hydrating = true;
+  let disposed = false;
+  let applyingHydration = false;
+  let changedDuringHydration = false;
+  let pendingState: PlannerPersistedState | null = null;
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  const flush = (): void => {
+    if (timer !== null) clearTimeout(timer);
+    timer = null;
+    const state = pendingState ?? (hydrating && changedDuringHydration ? toPersistedState(store) : null);
+    pendingState = null;
+    if (state !== null) {
+      plannerWriteQueue = plannerWriteQueue.then(() => savePlannerState(state)).catch((error: unknown) => {
+        console.error("Failed to persist production planner state.", error);
+      });
+    }
+  };
+  const scheduleSave = (state: PlannerPersistedState): void => {
+    pendingState = state;
+    if (timer === null) timer = setTimeout(flush, 150);
+  };
+  if (typeof window !== "undefined") window.addEventListener("pagehide", flush);
   // Step 1: 异步加载持久化状态
-  void loadPlannerState().then((persisted) => {
+  void plannerWriteQueue.then(() => loadPlannerState()).then((persisted) => {
+    if (disposed) return;
+    applyingHydration = true;
     runInAction(() => {
-      if (persisted !== null) {
+      if (persisted !== null && !changedDuringHydration) {
         const targets = normalizePorts(persisted.targets);
         const supplies = normalizePorts(persisted.supplies);
         const sourceConfig: ProductionPlanningSourceConfig = {
@@ -52,15 +79,27 @@ export function hookPlannerIndexedDbPersistence(
       }
       store.hydrated = true;
     });
+    applyingHydration = false;
     hydrating = false;
+    if (changedDuringHydration) scheduleSave(toPersistedState(store));
+  }).catch((error: unknown) => {
+    if (disposed) return;
+    applyingHydration = false;
+    console.error("Failed to restore production planner state.", error);
+    runInAction(() => { store.hydrated = true; });
+    hydrating = false;
+    if (changedDuringHydration) scheduleSave(toPersistedState(store));
   });
 
   // Step 2: reaction — 仅 hydration 完成后才开始写入
   const dispose = reaction(
     () => toPersistedState(store),
     (state) => {
-      if (!store.hydrated) return;
-      void savePlannerState(state);
+      if (hydrating) {
+        if (!applyingHydration) changedDuringHydration = true;
+        return;
+      }
+      scheduleSave(state);
     },
     { fireImmediately: false },
   );
@@ -80,8 +119,12 @@ export function hookPlannerIndexedDbPersistence(
   );
 
   return () => {
+    if (disposed) return;
+    disposed = true;
     dispose();
     disposeDemandReset();
+    if (typeof window !== "undefined") window.removeEventListener("pagehide", flush);
+    flush();
   };
 }
 

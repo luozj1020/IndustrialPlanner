@@ -252,9 +252,32 @@ export class SimulationWorkerRuntime {
     this.onError = callback;
   }
 
+  public reset(): void {
+    if (this.fillTimerId !== null) clearTimeout(this.fillTimerId);
+    this.fillTimerId = null;
+    this.topology = null;
+    this.runtimeState = null;
+    this.tickSnapshots.clear();
+    this.tickRuntimeStates.clear();
+    this.perfEntries = [];
+    this.nextTickNumber = 0;
+    this.stopLineTick = 0;
+    this.retainedFromTick = null;
+    this.latestTickNumber = null;
+    this.lastRequestedTickNumber = 0;
+    this.migrationAnchorTickNumber = null;
+    this.presentationGeneration = null;
+    this.lastDynamicRateAdjustmentTick = null;
+    this.mode = "idle";
+    this.error = null;
+  }
+
   public handleRequest(request: SimulationWorkerRequest): SimulationWorkerResponse {
     try {
       switch (request.type) {
+        case "reset":
+          this.reset();
+          return { type: "runtime-reset", requestId: request.requestId, status: this.getStatus() };
         case "load-topology":
           this.perfEnabled = request.perfEnabled ?? false;
           this.debugDataEnabled = request.debugDataEnabled ?? false;
@@ -372,6 +395,8 @@ export class SimulationWorkerRuntime {
       this.error = error instanceof Error ? error.message : String(error);
       const status = this.getStatus();
       switch (request.type) {
+        case "reset":
+          return { type: "runtime-reset", requestId: request.requestId, status };
         case "load-topology":
           return {
             type: "topology-loaded",
